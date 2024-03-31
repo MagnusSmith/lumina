@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: lumina
+  data:
+    mongodb:
+      uri: mongodb://tester:tester@172.19.0.3:27017/test
+      port: 27017
+      username: tester
+      password: tester
+      database: test
+  threads:
+    virtual:
+      enabled: true

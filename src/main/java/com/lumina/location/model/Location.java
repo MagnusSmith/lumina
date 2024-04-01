@@ -1,5 +1,6 @@
-package com.lumina.location;
+package com.lumina.location.model;
 
+import com.lumina.location.model.LocationBuilder;
 import com.lumina.meter.model.Meter;
 import com.lumina.meter.model.info.MeterInfo;
 import io.soabase.recordbuilder.core.RecordBuilder;
@@ -19,4 +20,10 @@ public record Location(@Id String id, String name, String projectId
     //        @DocumentReference(lookup="{'location':?#{#self.id}}", collection = "meterData")
     //    List<Meter> meters
 
-    ) implements LocationBuilder.With {}
+
+    ) implements LocationBuilder.With {
+
+    public Location(String name, String projectId) {
+        this(null, name, projectId);
+    }
+}

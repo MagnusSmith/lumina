@@ -1,7 +1,6 @@
 package com.lumina.location;
 
-import com.lumina.client.Client;
-import com.lumina.project.Project;
+import com.lumina.location.model.Location;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

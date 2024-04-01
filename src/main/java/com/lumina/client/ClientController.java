@@ -1,7 +1,7 @@
 package com.lumina.client;
 
-import com.lumina.client.dto.NewClient;
-import com.lumina.client.dto.UpdateClient;
+
+import com.lumina.client.model.Client;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,13 +21,13 @@ public class ClientController {
 
   @PostMapping("client")
   @ResponseStatus(HttpStatus.CREATED)
-  public Client create(@RequestBody NewClient newClient) {
-    return clientService.create(newClient.toClient());
+  public Client create(@RequestBody Client newClient) {
+    return clientService.create(newClient);
   }
 
   @PutMapping("client")
-  public Client update(@RequestBody UpdateClient updateClient) {
-    return clientService.update(updateClient.toClient());
+  public Client update(@RequestBody Client updateClient) {
+    return clientService.update(updateClient);
   }
 
   @GetMapping("client/{id}")

@@ -1,5 +1,6 @@
 package com.lumina.client;
 
+import com.lumina.client.model.Client;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -3,7 +3,6 @@ package com.lumina.meter;
 import com.lumina.NotFoundException;
 import com.lumina.catalogue.ItemRepository;
 import com.lumina.catalogue.model.CatalogueItem;
-import com.lumina.location.Location;
 import com.lumina.meter.model.Meter;
 import com.lumina.meter.model.info.LineInfo;
 import com.lumina.meter.model.info.MeterInfo;

@@ -1,14 +1,8 @@
 package com.lumina.project;
 
 
-import com.lumina.client.Client;
-import com.lumina.client.ClientService;
-import com.lumina.client.dto.NewClient;
-import com.lumina.client.dto.UpdateClient;
-import com.lumina.project.dto.NewProject;
-import com.lumina.project.dto.UpdateProject;
+import com.lumina.project.model.Project;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,13 +16,13 @@ public class ProjectController {
 
   @PostMapping("project")
   @ResponseStatus(HttpStatus.CREATED)
-  public Project create(@RequestBody NewProject newProject) {
-    return projectService.create(newProject.toProject());
+  public Project create(@RequestBody Project newProject) {
+    return projectService.create(newProject);
   }
 
   @PutMapping("project")
-  public Project update(@RequestBody UpdateProject updateProject) {
-    return projectService.update(updateProject.toProject());
+  public Project update(@RequestBody Project updateProject) {
+    return projectService.update(updateProject);
   }
 
   //  @GetMapping("project/{id}")

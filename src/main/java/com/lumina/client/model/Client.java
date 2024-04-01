@@ -1,6 +1,7 @@
-package com.lumina.client;
+package com.lumina.client.model;
 
-import com.lumina.project.Project;
+import com.lumina.client.model.ClientBuilder;
+import com.lumina.project.model.Project;
 import io.soabase.recordbuilder.core.RecordBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.ReadOnlyProperty;
@@ -23,15 +24,9 @@ public record Client (
     List<Project> projects
     ) implements ClientBuilder.With {
 
-//  public Client {
-//    clientId = Objects.requireNonNullElse(clientId, new ClientId(0L));
-//    }
-//
-//    public Client(String name, List<Project> projects){
-//        this(new ClientId(0L), name, projects);
-//    }
-//
-//    @Transient
-//    public static final String SEQUENCE_NAME = "clientData_sequence";
+    public Client(String name){
+        this(null, name, null);
+    }
+
 
 }

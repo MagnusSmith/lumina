@@ -1,6 +1,5 @@
 package com.lumina.meter;
 
-import com.lumina.location.Location;
 import com.lumina.meter.model.Meter;
 import com.lumina.meter.model.info.MeterInfo;
 import org.springframework.http.HttpStatus;

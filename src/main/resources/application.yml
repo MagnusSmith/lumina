@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: lumina
+  data:
+    mongodb:
+      uri: mongodb://tester:tester@172.17.0.1:27017/test
+      port: 27017
+      host: 172.17.0.1
+      username: tester
+      password: tester
+      database: test
+      authentication-database: admin  #Authentication database
+      auto-index-creation: true
+  threads:
+    virtual:
+      enabled: true
+  output:
+    ansi:
+      enabled: ALWAYS

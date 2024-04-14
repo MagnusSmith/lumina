@@ -45,7 +45,7 @@ public class CatalogueController {
   @GetMapping("catalogueItem/{model}")
   public ResponseEntity<CatalogueItem> getItem(@PathVariable String model) {
     return service
-        .findByIdModel(model)
+        .findByModel(model)
         .map(ResponseEntity::ok)
         .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
   }

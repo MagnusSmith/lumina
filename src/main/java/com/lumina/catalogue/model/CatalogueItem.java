@@ -1,6 +1,7 @@
 package com.lumina.catalogue.model;
 
 
+import com.lumina.meter.model.Line;
 import com.lumina.validation.EnumNamePattern;
 import io.soabase.recordbuilder.core.RecordBuilder;
 import jakarta.annotation.Nullable;
@@ -25,9 +26,9 @@ public record CatalogueItem(
     @NotBlank(message = "Description is mandatory") String description,
     @NotBlank(message = "Manufacturer is mandatory") String manufacturer,
 
-    List<Constraint> constraints) {
+    List<Constraint<Line>> constraints) {
 
-  public CatalogueItem(String model, Level level, MeterType type, String name, String description, String manufacturer, List<Constraint> constraints){
+  public CatalogueItem(String model, Level level, MeterType type, String name, String description, String manufacturer, List<Constraint<Line>> constraints){
     this(null,  model, level, type, name, description, manufacturer, constraints);
   }
 

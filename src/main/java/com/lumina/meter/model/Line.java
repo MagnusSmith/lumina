@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
     @Type(value = NumberLine.class, name = "NUMERIC"),
     @Type(value = TextLine.class, name = "TEXT")
 })
-public interface Line {
+public sealed interface Line permits NumberLine, TextLine{
   String name();
+  Object value();
 }

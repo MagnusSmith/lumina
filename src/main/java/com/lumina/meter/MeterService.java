@@ -10,6 +10,9 @@ import com.lumina.meter.model.info.MeterInfoBuilder;
 import java.util.List;
 import java.util.Optional;
 
+import com.lumina.meter.validation.MeterValidator;
+import com.lumina.validation.Errors;
+import com.lumina.validation.LuminaValidationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,17 +20,25 @@ public class MeterService {
 
   private final MeterRepository repository;
   private final ItemRepository itemRepository;
+  private final MeterValidator meterValidator;
 
-  public MeterService(MeterRepository repository, ItemRepository itemRepository) {
+  public MeterService(MeterRepository repository, ItemRepository itemRepository, MeterValidator meterValidator) {
     this.repository = repository;
     this.itemRepository = itemRepository;
+    this.meterValidator = meterValidator;
   }
 
   public MeterInfo create(Meter meter) {
     var model = meter.model();
     var catalogueItem = getCatalogueItem(model);
 
-    // validate
+    Errors errors = new Errors("meter");
+    meterValidator.validate(meter, errors);
+
+    if(errors.getErrorCount() > 0 ){
+      throw new LuminaValidationException(errors);
+    }
+
 
     var saved = repository.save(meter);
     return toMeterInfo(catalogueItem, saved);

@@ -9,8 +9,9 @@ group = "com.lumina"
 version = "0.0.1-SNAPSHOT"
 
 java {
-	sourceCompatibility = JavaVersion.VERSION_17
+	sourceCompatibility = JavaVersion.VERSION_22
 }
+
 
 repositories {
 	mavenCentral()
@@ -30,4 +31,16 @@ dependencies {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+tasks.withType<JavaCompile>().configureEach {
+	options.compilerArgs.add("--enable-preview")
+}
+
+tasks.withType<Test>().configureEach {
+	jvmArgs("--enable-preview")
+}
+
+tasks.withType<JavaExec>().configureEach {
+	jvmArgs("--enable-preview")
 }

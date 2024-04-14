@@ -1,5 +1,6 @@
 package com.lumina;
 
+import com.lumina.validation.LuminaValidationException;
 import com.lumina.validation.ValidationErrorResponse;
 import com.lumina.validation.Violation;
 import jakarta.validation.ConstraintViolationException;
@@ -31,5 +32,14 @@ public class ErrorHandlingAdvice {
         .collect(Collectors.toList());
     return  new ValidationErrorResponse(vList);
 
+  }
+
+  @ExceptionHandler(LuminaValidationException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ResponseBody
+  ValidationErrorResponse onLuminaValidationException(LuminaValidationException e) {
+    var vList = e.validationErrors().stream().map(fe -> new Violation(fe.field(), fe.errorCode().defaultDescription()))
+        .collect(Collectors.toList());
+    return  new ValidationErrorResponse(vList);
   }
 }

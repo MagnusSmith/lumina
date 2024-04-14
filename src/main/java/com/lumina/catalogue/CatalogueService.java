@@ -41,7 +41,7 @@ public class CatalogueService {
     return catalogueRepository.findAll();
   }
 
-  public Optional<CatalogueItem> findByIdModel(String model) {
+  public Optional<CatalogueItem> findByModel(String model) {
     return catalogueRepository.findByModel(model);
   }
 

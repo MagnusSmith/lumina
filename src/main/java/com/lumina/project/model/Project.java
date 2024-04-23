@@ -1,15 +1,14 @@
 package com.lumina.project.model;
 
+import static com.lumina.project.model.ProjectBuilder.*;
+
 import com.lumina.location.model.Location;
 import io.soabase.recordbuilder.core.RecordBuilder;
+import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
-
-import java.util.List;
-
-import static com.lumina.project.model.ProjectBuilder.*;
 
 @RecordBuilder
 @Document

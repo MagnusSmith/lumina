@@ -1,7 +1,6 @@
 package com.lumina.validation;
 
 public enum ErrorCode {
-
   LESS_THAN("isLessThan", "value is too small"),
   GREATER_THAN("isGreaterThan", "value is too large"),
   NOT_INTEGER("isNotInteger", "value is not an integer"),
@@ -12,10 +11,10 @@ public enum ErrorCode {
   REQUIRED("requiredField", "field is required"),
   NOT_FOUND("notFound", "could not be found");
 
-  private String code;
-  private String defaultDescription;
+  private final String code;
+  private final String defaultDescription;
 
-  private ErrorCode(String  code, String defaultDescription){
+  ErrorCode(String code, String defaultDescription) {
     this.code = code;
     this.defaultDescription = defaultDescription;
   }
@@ -24,4 +23,7 @@ public enum ErrorCode {
     return defaultDescription;
   }
 
+  public String code() {
+    return code;
+  }
 }

@@ -3,16 +3,13 @@ package com.lumina.meter;
 import com.lumina.NotFoundException;
 import com.lumina.catalogue.ItemRepository;
 import com.lumina.catalogue.model.CatalogueItem;
+import com.lumina.meter.dto.MeterDto;
 import com.lumina.meter.model.Meter;
-import com.lumina.meter.model.info.LineInfo;
-import com.lumina.meter.model.info.MeterInfo;
-import com.lumina.meter.model.info.MeterInfoBuilder;
-import java.util.List;
-import java.util.Optional;
-
 import com.lumina.meter.validation.MeterValidator;
 import com.lumina.validation.Errors;
 import com.lumina.validation.LuminaValidationException;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,78 +19,61 @@ public class MeterService {
   private final ItemRepository itemRepository;
   private final MeterValidator meterValidator;
 
-  public MeterService(MeterRepository repository, ItemRepository itemRepository, MeterValidator meterValidator) {
+  public MeterService(
+      MeterRepository repository, ItemRepository itemRepository, MeterValidator meterValidator) {
     this.repository = repository;
     this.itemRepository = itemRepository;
     this.meterValidator = meterValidator;
   }
 
-  public MeterInfo create(Meter meter) {
-    var model = meter.model();
-    var catalogueItem = getCatalogueItem(model);
-
+  public Meter create(Meter meter) {
     Errors errors = new Errors("meter");
     meterValidator.validate(meter, errors);
 
-    if(errors.getErrorCount() > 0 ){
+    if (errors.getErrorCount() > 0) {
       throw new LuminaValidationException(errors);
     }
 
-
-    var saved = repository.save(meter);
-    return toMeterInfo(catalogueItem, saved);
-
+    return repository.save(meter);
   }
 
+  public Meter update(Meter meter) {
+    Errors errors = new Errors("meter");
+    meterValidator.validate(meter, errors);
 
-  MeterInfo toMeterInfo(CatalogueItem item, Meter meter){
-
-
-    List<LineInfo> infoLines =
-        item.constraints().stream()
-            .map(
-                c ->
-                    meter.lines().stream()
-                        .filter(l -> l.name().equalsIgnoreCase(c.name()))
-                        .findAny()
-                        .map(sl -> new LineInfo(sl, c))
-                        .orElseGet(() -> new LineInfo(null, c)))
-            .toList();
-
-    var info =
-        MeterInfoBuilder.builder()
-            .id(meter.id())
-            .locationId(meter.locationId())
-            .model(meter.model())
-            .name(item.name())
-            .description(item.description())
-            .level(item.level())
-            .type(item.type())
-            .manufacturer(item.manufacturer())
-            .lines(infoLines)
-            .build();
-
-    return info;
-  }
-
-  CatalogueItem getCatalogueItem(String model){
-  return
-        itemRepository
-            .findByModel(model)
+    if (errors.getErrorCount() > 0) {
+      throw new LuminaValidationException(errors);
+    }
+    var meterToUpdate =
+        repository
+            .findById(meter.id())
             .orElseThrow(
                 () ->
                     new NotFoundException(
-                        "The meter model %s could not be found in the catalogue!"
-                            .formatted(model)));
+                        "The meter with id %s could not be found!".formatted(meter.id())));
+
+    return repository.save(meter);
   }
 
-  public Optional<MeterInfo> findById(String id) {
-    return repository.findById(id).map(m -> toMeterInfo(getCatalogueItem(m.model()), m));
+  public CatalogueItem findCatalogueItemByModel(String model) {
+    return itemRepository
+        .findByModel(model)
+        .orElseThrow(
+            () ->
+                new NotFoundException(
+                    "The meter model %s could not be found in the catalogue!".formatted(model)));
   }
 
+  public Optional<Meter> findById(String id) {
+    return repository.findById(id);
+  }
 
-  public List<MeterInfo> findByLocationId(String locationId){
-    return repository.findByLocationId(locationId).stream()
-        .map( m -> toMeterInfo(getCatalogueItem(m.model()), m)).toList();
+  public List<Meter> findByLocationId(String locationId) {
+    return repository.findByLocationId(locationId);
+  }
+
+  MeterDto toMeterDto(Meter meter){
+    var catItem = findCatalogueItemByModel(meter.model());
+    return MeterDto.from(catItem, meter);
   }
 }

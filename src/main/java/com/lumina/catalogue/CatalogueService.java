@@ -2,10 +2,9 @@ package com.lumina.catalogue;
 
 import com.lumina.NotFoundException;
 import com.lumina.catalogue.model.CatalogueItem;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.stereotype.Service;
 
 @Service
 public class CatalogueService {

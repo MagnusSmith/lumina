@@ -1,5 +1,7 @@
 package com.lumina.catalogue.model;
 
+import static com.lumina.validation.ErrorCode.*;
+
 import com.lumina.meter.model.Line;
 import com.lumina.meter.model.TextLine;
 import com.lumina.validation.ErrorBuilder;
@@ -7,8 +9,6 @@ import com.lumina.validation.Errors;
 import io.micrometer.common.util.StringUtils;
 import io.soabase.recordbuilder.core.RecordBuilder;
 import java.util.Objects;
-
-import static com.lumina.validation.ErrorCode.*;
 
 @RecordBuilder
 public record TextLineConstraint(

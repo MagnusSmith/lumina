@@ -3,12 +3,18 @@ plugins {
 	id("org.springframework.boot") version "3.2.3"
 	id("io.spring.dependency-management") version "1.1.4"
 	id("io.freefair.lombok") version "8.6"
+	id("com.diffplug.spotless") version "6.25.0"
 }
 
 group = "com.lumina"
 version = "0.0.1-SNAPSHOT"
 
+
 java {
+	toolchain {
+
+		languageVersion = JavaLanguageVersion.of(22)
+	}
 	sourceCompatibility = JavaVersion.VERSION_22
 }
 
@@ -43,4 +49,14 @@ tasks.withType<Test>().configureEach {
 
 tasks.withType<JavaExec>().configureEach {
 	jvmArgs("--enable-preview")
+}
+
+subprojects {
+	spotless {
+		java {
+			googleJavaFormat("1.22.0")
+			indentWithTabs(1)
+			indentWithSpaces(2)
+		}
+	}
 }

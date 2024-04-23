@@ -1,6 +1,5 @@
 package com.lumina.project;
 
-
 import com.lumina.project.model.Project;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -24,5 +23,4 @@ public class ProjectController {
   public Project update(@RequestBody Project updateProject) {
     return projectService.update(updateProject);
   }
-
 }

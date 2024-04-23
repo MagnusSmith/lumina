@@ -1,20 +1,17 @@
 package com.lumina.meter.validation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import com.lumina.catalogue.CatalogueService;
 import com.lumina.catalogue.model.*;
 import com.lumina.meter.model.*;
 import com.lumina.validation.Errors;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-
 import java.util.List;
 import java.util.Optional;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 public class MeterValidatorTest {
 
@@ -84,11 +81,11 @@ public class MeterValidatorTest {
     assertThat(errors.hasFieldError("lineOne")).isTrue();
     assertThat(errors.hasFieldError("lineThree")).isTrue();
     var err = errors.fieldError("lineOne");
-    assertThat(err.errorCode()).isEqualTo("requiredField");
+    assertThat(err.errorCode().code()).isEqualTo("requiredField");
     assertThat(err.fieldContext()).isEqualTo("meter.lines");
 
     errors.fieldError("lineThree");
-    assertThat(err.errorCode()).isEqualTo("requiredField");
+    assertThat(err.errorCode().code()).isEqualTo("requiredField");
     assertThat(err.fieldContext()).isEqualTo("meter.lines");
 
 

@@ -1,12 +1,13 @@
 package com.lumina.catalogue.model;
 
+import static com.lumina.validation.ErrorCode.*;
+
 import com.lumina.meter.model.Line;
 import com.lumina.meter.model.NumberLine;
 import com.lumina.validation.ErrorBuilder;
 import com.lumina.validation.Errors;
 import io.soabase.recordbuilder.core.RecordBuilder;
 import java.util.Objects;
-import static com.lumina.validation.ErrorCode.*;
 
 @RecordBuilder
 public record NumberLineConstraint(

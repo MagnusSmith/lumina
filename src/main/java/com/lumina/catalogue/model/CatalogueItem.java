@@ -6,10 +6,9 @@ import com.lumina.validation.EnumNamePattern;
 import io.soabase.recordbuilder.core.RecordBuilder;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.List;
 
 @Document(collection = "catalogueData")
 @TypeAlias("CatalogueItem")

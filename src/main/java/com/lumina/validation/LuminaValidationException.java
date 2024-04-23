@@ -1,7 +1,6 @@
 package com.lumina.validation;
 
 import jakarta.validation.ValidationException;
-
 import java.util.Set;
 
 public class LuminaValidationException extends ValidationException {

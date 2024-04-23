@@ -57,8 +57,8 @@ public class MeterValidator {
    return cs -> {
       errors.pushContext("lines[%d]".formatted(index));
       cs.validate(line, errors);
-      errors.popContext();;
-    };
+      errors.popContext();
+   };
   }
 
   void errorLine(String field, Errors errors){

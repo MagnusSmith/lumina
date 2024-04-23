@@ -1,15 +1,15 @@
 package com.lumina.catalogue.model;
 
+import static com.lumina.catalogue.model.NumberType.INTEGER;
+import static com.lumina.validation.ErrorCode.*;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.lumina.meter.model.NumberLine;
 import com.lumina.meter.model.TextLine;
 import com.lumina.validation.Errors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static com.lumina.catalogue.model.NumberType.INTEGER;
-import static com.lumina.validation.ErrorCode.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class TextLineConstraintTest {
   Errors errors;

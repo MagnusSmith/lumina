@@ -15,6 +15,13 @@ Next run the spring application with
 ./gradlew bootRun
 ```
 
+if you need to override the mongo uri then 
+
+```
+SPRING_DATA_MONGODB_URI=mongodb://tester:tester@localhost:28017/test ./gradlew bootRun 
+
+```
+
 Open a browser and go to
 ```
 http://localhost:8080/swagger-ui/index.html

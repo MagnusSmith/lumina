@@ -18,6 +18,9 @@ java {
 	sourceCompatibility = JavaVersion.VERSION_22
 }
 
+springBoot {
+	mainClass = "com.lumina.MeterConfigApplication"
+}
 
 repositories {
 	mavenCentral()
@@ -60,3 +63,4 @@ subprojects {
 		}
 	}
 }
+

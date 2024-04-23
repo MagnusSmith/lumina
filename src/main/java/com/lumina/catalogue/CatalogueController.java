@@ -1,13 +1,14 @@
 package com.lumina.catalogue;
 
-import com.lumina.catalogue.model.CatalogueItem;
-
+import com.lumina.catalogue.dto.CatalogueItemDto;
+import com.lumina.catalogue.dto.NewCatalogueItemDto;
+import com.lumina.catalogue.dto.UpdateCatalogueItemDto;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -22,14 +23,15 @@ public class CatalogueController {
 
   @PostMapping("catalogueItem")
   @ResponseStatus(HttpStatus.CREATED)
-  public CatalogueItem create(@Valid @RequestBody CatalogueItem item) {
-    return service.create(item);
+  public CatalogueItemDto create(@Valid @RequestBody NewCatalogueItemDto item) {
+
+    return CatalogueItemDto.from(service.create(NewCatalogueItemDto.toModel(item)));
   }
 
   @PutMapping("catalogueItem")
-  // @TODO: need to check id is set
-  public CatalogueItem update(@Valid @RequestBody CatalogueItem item) {
-    return service.update(item);
+  public CatalogueItemDto update(@Valid @RequestBody UpdateCatalogueItemDto item) {
+
+    return CatalogueItemDto.from(service.update(UpdateCatalogueItemDto.toModel(item)));
   }
 
   @DeleteMapping("catalogueItem/{model}")
@@ -38,14 +40,15 @@ public class CatalogueController {
   }
 
   @GetMapping("catalogueItems")
-  public List<CatalogueItem> getItems() {
-    return service.findAll();
+  public List<CatalogueItemDto> getItems() {
+    return service.findAll().stream().map(CatalogueItemDto::from).toList();
   }
 
   @GetMapping("catalogueItem/{model}")
-  public ResponseEntity<CatalogueItem> getItem(@PathVariable String model) {
+  public ResponseEntity<CatalogueItemDto> getItem(@PathVariable String model) {
     return service
-        .findByIdModel(model)
+        .findByModel(model)
+        .map(CatalogueItemDto::from)
         .map(ResponseEntity::ok)
         .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
   }

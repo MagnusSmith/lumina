@@ -3,13 +3,23 @@ plugins {
 	id("org.springframework.boot") version "3.2.3"
 	id("io.spring.dependency-management") version "1.1.4"
 	id("io.freefair.lombok") version "8.6"
+	id("com.diffplug.spotless") version "6.25.0"
 }
 
 group = "com.lumina"
 version = "0.0.1-SNAPSHOT"
 
+
 java {
-	sourceCompatibility = JavaVersion.VERSION_17
+	toolchain {
+
+		languageVersion = JavaLanguageVersion.of(22)
+	}
+	sourceCompatibility = JavaVersion.VERSION_22
+}
+
+springBoot {
+	mainClass = "com.lumina.MeterConfigApplication"
 }
 
 repositories {
@@ -31,3 +41,26 @@ dependencies {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
+tasks.withType<JavaCompile>().configureEach {
+	options.compilerArgs.add("--enable-preview")
+}
+
+tasks.withType<Test>().configureEach {
+	jvmArgs("--enable-preview")
+}
+
+tasks.withType<JavaExec>().configureEach {
+	jvmArgs("--enable-preview")
+}
+
+subprojects {
+	spotless {
+		java {
+			googleJavaFormat("1.22.0")
+			indentWithTabs(1)
+			indentWithSpaces(2)
+		}
+	}
+}
+

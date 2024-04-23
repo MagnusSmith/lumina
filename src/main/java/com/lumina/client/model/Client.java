@@ -1,14 +1,12 @@
 package com.lumina.client.model;
 
-import com.lumina.client.model.ClientBuilder;
 import com.lumina.project.model.Project;
 import io.soabase.recordbuilder.core.RecordBuilder;
+import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
-
-import java.util.List;
 
 @RecordBuilder
 @Document(collection = "clientData")

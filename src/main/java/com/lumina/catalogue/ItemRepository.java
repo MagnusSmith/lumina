@@ -1,9 +1,8 @@
 package com.lumina.catalogue;
 
 import com.lumina.catalogue.model.CatalogueItem;
-import org.springframework.data.mongodb.repository.MongoRepository;
-
 import java.util.Optional;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface ItemRepository extends MongoRepository<CatalogueItem, String> {
   boolean existsByModel(String model);

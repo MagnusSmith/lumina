@@ -1,10 +1,9 @@
 package com.lumina.catalogue.validation;
 
 import com.lumina.catalogue.ItemRepository;
-import org.springframework.stereotype.Component;
-
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import org.springframework.stereotype.Component;
 
 @Component
 public class UniqueModelValidator implements ConstraintValidator<UniqueModel, String> {

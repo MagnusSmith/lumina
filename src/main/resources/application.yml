@@ -3,8 +3,8 @@ spring:
     name: lumina
   data:
     mongodb:
-      uri: mongodb://tester:tester@172.17.0.1:27017/test
-      port: 27017
+      uri: mongodb://tester:tester@172.17.0.1:28017/test
+      port: 28017
       host: 172.17.0.1
       username: tester
       password: tester

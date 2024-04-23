@@ -1,7 +1,8 @@
 package com.lumina.location;
 
-
-import com.lumina.location.model.Location;
+import com.lumina.location.dto.LocationShortDto;
+import com.lumina.location.dto.NewLocationDto;
+import com.lumina.location.dto.UpdateLocationDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,21 +17,25 @@ public class LocationController {
   }
 
   @GetMapping("location/{id}")
-  public ResponseEntity<Location> findById(@PathVariable String id) {
+  public ResponseEntity<LocationShortDto> findById(@PathVariable String id) {
     return locationService
         .findById(id)
+        .map(LocationShortDto::from)
         .map(ResponseEntity::ok)
         .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
   }
 
   @PostMapping("location")
   @ResponseStatus(HttpStatus.CREATED)
-  public Location create(@RequestBody Location newLocation) {
-    return locationService.create(newLocation);
+  public LocationShortDto create(@RequestBody NewLocationDto newLocation) {
+
+    var location = locationService.create(NewLocationDto.toModel(newLocation));
+    return LocationShortDto.from(location);
   }
 
   @PutMapping("location")
-  public Location update(@RequestBody Location updateLocation) {
-    return locationService.update(updateLocation);
+  public LocationShortDto update(@RequestBody UpdateLocationDto updateLocation) {
+    var location = locationService.update(UpdateLocationDto.toModel(updateLocation));
+    return LocationShortDto.from(location);
   }
 }

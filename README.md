@@ -15,6 +15,13 @@ Next run the spring application with
 ./gradlew bootRun
 ```
 
+if you need to override the mongo uri then 
+
+```
+SPRING_DATA_MONGODB_URI=mongodb://tester:tester@localhost:28017/test ./gradlew bootRun 
+
+```
+
 Open a browser and go to
 ```
 http://localhost:8080/swagger-ui/index.html
@@ -46,7 +53,7 @@ curl -X 'POST' \
   "manufacturer": "The item manufacturer",
   "constraints": [
     {
-      "constraintType": "NUMERIC",
+      "type": "NUMERIC",
       "name": "age",
       "description": "Some numerical configuration",
       "numberType": "INTEGER",
@@ -55,7 +62,7 @@ curl -X 'POST' \
       "isRequired": true
     },
     {
-      "constraintType": "TEXT",
+      "type": "TEXT",
       "name": "publicKey",
       "description": "Some textural configuration",
       "minLength": 0,
@@ -76,7 +83,7 @@ curl -X 'POST' \
   "manufacturer": "The item manufacturer",
   "constraints": [
     {
-      "constraintType": "NUMERIC",
+      "type": "NUMERIC",
       "name": "age",
       "description": "Some numerical configuration",
       "numberType": "INTEGER",
@@ -85,7 +92,7 @@ curl -X 'POST' \
       "isRequired": true
     },
     {
-      "constraintType": "TEXT",
+      "type": "TEXT",
       "name": "publicKey",
       "description": "Some textural configuration",
       "minLength": 0,
@@ -171,7 +178,10 @@ returns
           {
             "id": "660aeb0fc1e5a312013963f1",
             "name": "Location One",
-            "projectId": "660aea55c1e5a312013963f0"
+            "projectId": "660aea55c1e5a312013963f0",
+            "meterIds": [
+              "660aee80c1e5a312013963f3"
+            ]
           }
         ]
       }
@@ -199,13 +209,13 @@ curl -X 'POST' \
   "model": "MAG001",
   "lines": [
     {
-      "constraintType": "NUMERIC",
+      "type": "NUMERIC",
       "name": "age",
       "numberType": "INTEGER",
       "value": 50
     },
     {
-      "constraintType": "TEXT",
+      "type": "TEXT",
       "name": "publicKey",
       "value": "SHA-256:mypublickeyvalue"
     }
@@ -227,13 +237,13 @@ We get the following response which gives additional aggregated information from
   "lines": [
     {
       "line": {
-        "constraintType": "NUMERIC",
+        "type": "NUMERIC",
         "name": "age",
         "numberType": "INTEGER",
         "value": 50
       },
       "constraint": {
-        "constraintType": "NUMERIC",
+        "type": "NUMERIC",
         "name": "age",
         "description": "Some numerical configuration",
         "numberType": "INTEGER",
@@ -244,12 +254,12 @@ We get the following response which gives additional aggregated information from
     },
     {
       "line": {
-        "constraintType": "TEXT",
+        "type": "TEXT",
         "name": "publicKey",
         "value": "SHA-256:mypublickeyvalue"
       },
       "constraint": {
-        "constraintType": "TEXT",
+        "type": "TEXT",
         "name": "publicKey",
         "description": "Some textural configuration",
         "minLength": 0,
@@ -283,13 +293,13 @@ This gives us the configurations of any meters at that location
       "model": "MAG001",
       "lines": [
         {
-          "constraintType": "NUMERIC",
+          "type": "NUMERIC",
           "name": "age",
           "numberType": "INTEGER",
           "value": 50
         },
         {
-          "constraintType": "TEXT",
+          "type": "TEXT",
           "name": "publicKey",
           "value": "SHA-256:mypublickeyvalue"
         }

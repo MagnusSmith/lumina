@@ -2,7 +2,11 @@ package com.lumina.catalogue;
 
 import com.lumina.catalogue.dto.CatalogueItemDto;
 import com.lumina.catalogue.dto.NewCatalogueItemDto;
+import com.lumina.catalogue.dto.PresetDto;
 import com.lumina.catalogue.dto.UpdateCatalogueItemDto;
+import com.lumina.catalogue.model.CatalogueItemBuilder;
+import com.lumina.catalogue.model.Level;
+import com.lumina.catalogue.model.MeterType;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -15,40 +19,77 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class CatalogueController {
 
-  private final CatalogueService service;
+  private final CatalogueService.Item itemService;
+  private final CatalogueService.PresetService presetService;
 
-  public CatalogueController(CatalogueService service) {
-    this.service = service;
+  public CatalogueController(
+      CatalogueService.Item itemService, CatalogueService.PresetService presetService) {
+    this.itemService = itemService;
+    this.presetService = presetService;
   }
 
   @PostMapping("catalogueItem")
   @ResponseStatus(HttpStatus.CREATED)
-  public CatalogueItemDto create(@Valid @RequestBody NewCatalogueItemDto item) {
+  public CatalogueItemDto create(@Valid @RequestBody NewCatalogueItemDto newItem) {
+    var item = NewCatalogueItemDto.toModel(newItem);
+    var presetItem =
+        presetService
+            .findByTypeAndLevel(item.type(), item.level())
+            .map(
+                preset ->
+                    CatalogueItemBuilder.from(item)
+                        .with()
+                        .constraints(preset.constraints())
+                        .lines(preset.lines())
+                        .build())
+            .orElse(item);
 
-    return CatalogueItemDto.from(service.create(NewCatalogueItemDto.toModel(item)));
+    return CatalogueItemDto.from(itemService.create(presetItem));
   }
 
   @PutMapping("catalogueItem")
   public CatalogueItemDto update(@Valid @RequestBody UpdateCatalogueItemDto item) {
 
-    return CatalogueItemDto.from(service.update(UpdateCatalogueItemDto.toModel(item)));
+    return CatalogueItemDto.from(itemService.update(UpdateCatalogueItemDto.toModel(item)));
   }
 
   @DeleteMapping("catalogueItem/{model}")
   public void delete(@PathVariable String model) {
-    service.delete(model);
+    itemService.delete(model);
   }
 
   @GetMapping("catalogueItems")
   public List<CatalogueItemDto> getItems() {
-    return service.findAll().stream().map(CatalogueItemDto::from).toList();
+    return itemService.findAll().stream().map(CatalogueItemDto::from).toList();
   }
 
   @GetMapping("catalogueItem/{model}")
   public ResponseEntity<CatalogueItemDto> getItem(@PathVariable String model) {
-    return service
+    return itemService
         .findByModel(model)
         .map(CatalogueItemDto::from)
+        .map(ResponseEntity::ok)
+        .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+  }
+
+  @PostMapping("cataloguePreset")
+  @ResponseStatus(HttpStatus.CREATED)
+  public PresetDto.Info create(@Valid @RequestBody PresetDto.New newPreset) {
+
+    return PresetDto.from(presetService.create(PresetDto.toModel(newPreset)));
+  }
+
+  @PutMapping("cataloguePreset")
+  public PresetDto.Info update(@Valid @RequestBody PresetDto.Update updatePreset) {
+    return PresetDto.from(presetService.update(PresetDto.toModel(updatePreset)));
+  }
+
+  @GetMapping("cataloguePreset/{type}/{level}")
+  public ResponseEntity<PresetDto.Info> getPreset(
+      @PathVariable MeterType type, @PathVariable Level level) {
+    return presetService
+        .findByTypeAndLevel(type, level)
+        .map(PresetDto::from)
         .map(ResponseEntity::ok)
         .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
   }

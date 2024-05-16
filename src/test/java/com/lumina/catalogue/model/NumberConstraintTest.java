@@ -5,14 +5,13 @@ import static com.lumina.catalogue.model.NumberType.INTEGER;
 import static com.lumina.validation.ErrorCode.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.lumina.meter.model.NumberLine;
-import com.lumina.meter.model.TextLine;
+import com.lumina.meter.model.Line;
 import com.lumina.validation.Errors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class NumberLineConstraintTest {
+public class NumberConstraintTest {
 
   Errors errors;
 
@@ -22,32 +21,12 @@ public class NumberLineConstraintTest {
   }
 
 
-  @Test
-  @DisplayName("A line supplied must be a NumberLine")
-  void valueMustBeANumber() {
-    var t1 = new TextLine("mustBeNumLine", "5");
-    var numberConstraint =
-        NumberLineConstraintBuilder.builder()
-            .isRequired(true)
-            .description("Should be Greater or equal to 0")
-            .numberType(INTEGER)
-            .min(0d)
-            .name("mustBeNumLine")
-            .build();
-    errors.pushContext("lines[0]");
-    numberConstraint.validate(t1, errors);
-    assertThat(errors.getErrorCount()).isOne();
-    assertThat(errors.hasFieldError("mustBeNumLine")).isTrue();
-    var err = errors.fieldError("mustBeNumLine");
-    assertThat(err.errorCode()).isEqualTo(WRONG_TYPE);
-    assertThat(err.errorCodeArgs()).contains(numberConstraint.numberType());
 
-  }
 
   @Test
   @DisplayName("A number that is not an integer passes to an integer NumberConstraint will produce error")
-  void valueMustBeANIntegerNumber() {
-    var n1 = new NumberLine("gtThanEqualToZero", INTEGER, 5.5d);
+  void valueMustBeAnIntegerNumber() {
+    var n1 = new Line.Number("gtThanEqualToZero", INTEGER, 5.5d);
     var numberConstraint =
         NumberLineConstraintBuilder.builder()
             .isRequired(true)
@@ -55,9 +34,10 @@ public class NumberLineConstraintTest {
             .numberType(INTEGER)
             .min(0d)
             .name("gtThanEqualToZero")
+            .stage(ValidationStage.New)
             .build();
     errors.pushContext("lines[0]");
-    numberConstraint.validate(n1, errors);
+    numberConstraint.validate(n1, errors, ValidationStage.One);
     errors.popContext();
     assertThat(errors.getErrorCount()).isOne();
     assertThat(errors.hasFieldError("gtThanEqualToZero")).isTrue();
@@ -71,7 +51,7 @@ public class NumberLineConstraintTest {
   @Test
   @DisplayName("An integer value greater or equal than min should produce no errors")
   void greaterThanEqualToMinShouldPass() {
-    var n1 = new NumberLine("gtThanEqualToZero", INTEGER, 0d);
+    var n1 = new Line.Number("gtThanEqualToZero", INTEGER, 0d);
     var numberConstraint =
         NumberLineConstraintBuilder.builder()
             .isRequired(true)
@@ -79,17 +59,18 @@ public class NumberLineConstraintTest {
             .numberType(INTEGER)
             .min(0d)
             .name("gtThanEqualToZero")
+            .stage(ValidationStage.New)
             .build();
     errors.pushContext("lines[0]");
-    numberConstraint.validate(n1, errors);
+    numberConstraint.validate(n1, errors, ValidationStage.New);
     errors.popContext();
     assertThat(errors.getErrorCount()).isZero();
   }
 
   @Test
   @DisplayName("Integer value less than min should produce error")
-  void intLessThanEqualToMinShouldFError() {
-    var n1 = new NumberLine("lessMin5", INTEGER, 4d);
+  void intLessThanEqualToMinShouldError() {
+    var n1 = new Line.Number("lessMin5", INTEGER, 4d);
     var numberConstraint =
         NumberLineConstraintBuilder.builder()
             .isRequired(true)
@@ -97,9 +78,10 @@ public class NumberLineConstraintTest {
             .numberType(INTEGER)
             .min(5d)
             .name("lessMinFive")
+            .stage(ValidationStage.One)
             .build();
     errors.pushContext("lines[0]");
-    numberConstraint.validate(n1, errors);
+    numberConstraint.validate(n1, errors, ValidationStage.One);
     assertThat(errors.getErrorCount()).isOne();
     assertThat(errors.hasFieldError("lessMinFive")).isTrue();
     var err = errors.fieldError("lessMinFive");
@@ -113,7 +95,7 @@ public class NumberLineConstraintTest {
   @Test
   @DisplayName("Double value less than min should produce error")
   void doubleLessThanEqualToMinShouldFail() {
-    var n1 = new NumberLine("lessMin5", FLOAT, 4d);
+    var n1 = new Line.Number("lessMin5", FLOAT, 4d);
     var numberConstraint =
         NumberLineConstraintBuilder.builder()
             .isRequired(true)
@@ -121,9 +103,36 @@ public class NumberLineConstraintTest {
             .numberType(FLOAT)
             .min(5d)
             .name("lessMinFive")
+            .stage(ValidationStage.One)
             .build();
     errors.pushContext("lines[0]");
-    numberConstraint.validate(n1, errors);
+    numberConstraint.validate(n1, errors, ValidationStage.One);
+    assertThat(errors.getErrorCount()).isOne();
+    assertThat(errors.hasFieldError("lessMinFive")).isTrue();
+    var err = errors.fieldError("lessMinFive");
+    assertThat(err.rejectedValue()).isNotNull();
+    assertThat(err.rejectedValue()).isInstanceOf(Double.class).isEqualTo(4.0);
+    assertThat(err.errorCode()).isEqualTo(LESS_THAN);
+    assertThat(err.errorCodeArgs()).contains(4.0, 5.0);
+    assertThat(err.fieldContext()).isEqualTo("meter.lines[0]");
+  }
+
+
+  @Test
+  @DisplayName("Double value less than min should not produce an error before validation stage")
+  void doubleLessThanEqualToMinShouldNotFailBeforeValidationStage() {
+    var n1 = new Line.Number("lessMin5", FLOAT, 4d);
+    var numberConstraint =
+        NumberLineConstraintBuilder.builder()
+            .isRequired(true)
+            .description("Should be greater than or equal to 5")
+            .numberType(FLOAT)
+            .min(5d)
+            .name("lessMinFive")
+            .stage(ValidationStage.One)
+            .build();
+    errors.pushContext("lines[0]");
+    numberConstraint.validate(n1, errors,  ValidationStage.One);
     assertThat(errors.getErrorCount()).isOne();
     assertThat(errors.hasFieldError("lessMinFive")).isTrue();
     var err = errors.fieldError("lessMinFive");

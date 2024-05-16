@@ -29,7 +29,7 @@ repositories {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.4.0")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
 	implementation("io.soabase.record-builder:record-builder-core:41")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")

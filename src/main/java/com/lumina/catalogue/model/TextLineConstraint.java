@@ -3,7 +3,7 @@ package com.lumina.catalogue.model;
 import static com.lumina.validation.ErrorCode.*;
 
 import com.lumina.meter.model.Line;
-import com.lumina.meter.model.TextLine;
+import com.lumina.validation.EnumNamePattern;
 import com.lumina.validation.ErrorBuilder;
 import com.lumina.validation.Errors;
 import io.micrometer.common.util.StringUtils;
@@ -12,11 +12,17 @@ import java.util.Objects;
 
 @RecordBuilder
 public record TextLineConstraint(
-    String name, String description, Integer minLength, Integer maxLength, boolean isRequired)
-    implements Constraint<Line> {
+    String name,
+    String description,
+    Integer minLength,
+    Integer maxLength,
+    boolean isRequired,
+    @EnumNamePattern(regexp = "ZERO|ONE|TWO|THREE")
+    ValidationStage stage)
+    implements Constraint<Line.Text> {
 
-  public void validate(Line line, Errors errors) {
-    if (line instanceof TextLine) {
+  public void validate(Line.Text line, Errors errors, ValidationStage stage) {
+    if (stage().shouldValidateAt(stage)) {
       var value = line.value();
       if (value instanceof String s) {
 
@@ -38,18 +44,10 @@ public record TextLineConstraint(
                     .errorCode(MAX_LENGTH)
                     .errorCodeArgs(new Object[] {value, maxLength})
                     .rejectedValue(value)
-
                     .build());
           }
         }
       }
-    } else {
-      errors.add(
-          ErrorBuilder.builder()
-              .field(name)
-              .errorCode(WRONG_TYPE)
-              .errorCodeArgs(new Object[] {})
-              .build());
     }
   }
 }

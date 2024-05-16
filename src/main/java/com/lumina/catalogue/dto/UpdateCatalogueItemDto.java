@@ -19,6 +19,6 @@ public record UpdateCatalogueItemDto(
     List<Constraint<Line>> constraints
 ) {
     public static CatalogueItem toModel(UpdateCatalogueItemDto dto){
-        return CatalogueItemBuilder.builder().id(dto.id()).model(dto.model()).level(dto.level()).type(dto.type()).name(dto.model()).description(dto.description()).manufacturer(dto.manufacturer()).build();
+        return CatalogueItemBuilder.builder().id(dto.id()).model(dto.model()).level(dto.level()).type(dto.type()).description(dto.description()).manufacturer(dto.manufacturer()).build();
     }
 }

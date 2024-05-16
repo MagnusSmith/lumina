@@ -3,9 +3,10 @@ package com.lumina.catalogue.model;
 import static com.lumina.validation.ErrorCode.*;
 
 import com.lumina.meter.model.Line;
-import com.lumina.meter.model.NumberLine;
+import com.lumina.validation.EnumNamePattern;
 import com.lumina.validation.ErrorBuilder;
 import com.lumina.validation.Errors;
+import com.mongodb.client.model.ValidationLevel;
 import io.soabase.recordbuilder.core.RecordBuilder;
 import java.util.Objects;
 
@@ -16,11 +17,13 @@ public record NumberLineConstraint(
     NumberType numberType,
     Double min,
     Double max,
-    boolean isRequired)
-    implements Constraint<Line> {
+    boolean isRequired,
+    @EnumNamePattern(regexp = "ZERO|ONE|TWO|THREE")
+    ValidationStage stage)
+    implements Constraint<Line.Number> {
 
-  public void validate(Line line, Errors errors) {
-    if (line instanceof NumberLine) {
+  public void validate(Line.Number line, Errors errors, ValidationStage stage) {
+    if (stage().shouldValidateAt(stage)) {
       var value = line.value();
       if (value instanceof Double valD) {
         if (numberType == NumberType.INTEGER) {
@@ -52,7 +55,7 @@ public record NumberLineConstraint(
                     .errorCodeArgs(new Object[] {valD})
                     .rejectedValue(valD)
                     .build());
-            }
+          }
         }
         if (numberType == NumberType.FLOAT) {
           if (Objects.nonNull(min) && min > valD) {
@@ -75,13 +78,6 @@ public record NumberLineConstraint(
           }
         }
       }
-    } else {
-      errors.add(
-          ErrorBuilder.builder()
-              .field(name)
-              .errorCode(WRONG_TYPE)
-              .errorCodeArgs(new Object[] {numberType})
-              .build());
     }
   }
 }

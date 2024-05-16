@@ -12,14 +12,14 @@ public record NewCatalogueItemDto(
     @NotBlank(message = "Model is mandatory") String model,
     @EnumNamePattern(regexp = "GATEWAY|DEVICE") Level level,
     @EnumNamePattern(regexp = "LORAWAN|MODBUS|SIDEWALK") MeterType type,
-    @NotBlank(message = "Name is mandatory") String name,
     @NotBlank(message = "Description is mandatory") String description,
-    @NotBlank(message = "Manufacturer is mandatory") String manufacturer,
+    @NotBlank(message = "Manufacturer is mandatory") String manufacturer
 
-    List<Constraint<Line>> constraints
+
 ) {
 
   public static CatalogueItem toModel(NewCatalogueItemDto dto){
-    return CatalogueItemBuilder.builder().model(dto.model()).level(dto.level()).type(dto.type()).name(dto.model()).description(dto.description()).manufacturer(dto.manufacturer()).build();
+    return CatalogueItemBuilder.builder().model(dto.model()).level(dto.level()).type(dto.type())
+        .description(dto.description()).manufacturer(dto.manufacturer()).build();
   }
 }

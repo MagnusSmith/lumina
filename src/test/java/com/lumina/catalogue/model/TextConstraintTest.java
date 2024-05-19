@@ -3,6 +3,7 @@ package com.lumina.catalogue.model;
 import static com.lumina.validation.ErrorCode.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.lumina.catalogue.model.constraint.TextLineConstraintBuilder;
 import com.lumina.meter.model.Line;
 import com.lumina.validation.Errors;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,8 +21,8 @@ public class TextConstraintTest {
 
 
   @Test
-  @DisplayName("A value less than minimum length will produce a field error")
-  void valueMustSatisfyMinimumLengthOrError() {
+  @DisplayName("A value less than minimum length should produce a field error")
+  void valueShouldSatisfyMinimumLengthOrError() {
     var n1 = new Line.Text("notTooShort", "Hello");
     var textConstraint =
         TextLineConstraintBuilder.builder()

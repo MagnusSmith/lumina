@@ -6,8 +6,10 @@ import com.lumina.meter.dto.UpdateMeterDto;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,10 +24,9 @@ public class MeterController {
 
   @PostMapping("meter")
   @ResponseStatus(HttpStatus.CREATED)
-  MeterDto create(@RequestBody NewMeterDto newMeter) {
-
+  MeterDto create(@RequestBody @Valid NewMeterDto newMeter) {
+    var catalogueItem = meterService.findCatalogueItemByModel(newMeter.model());
     var meter = meterService.create(NewMeterDto.toModel(newMeter));
-    var catalogueItem = meterService.findCatalogueItemByModel(meter.model());
     return MeterDto.from(catalogueItem, meter, false);
   }
 

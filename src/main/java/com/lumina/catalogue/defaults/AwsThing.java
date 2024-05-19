@@ -1,7 +1,7 @@
 package com.lumina.catalogue.defaults;
 
-import com.lumina.catalogue.model.Constraint;
-import com.lumina.catalogue.model.TextLineConstraintBuilder;
+import com.lumina.catalogue.model.constraint.Constraint;
+import com.lumina.catalogue.model.constraint.TextLineConstraintBuilder;
 import com.lumina.catalogue.model.ValidationStage;
 import com.lumina.meter.model.Line;
 

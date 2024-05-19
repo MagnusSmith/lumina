@@ -1,15 +1,19 @@
-package com.lumina.catalogue.model;
+package com.lumina.catalogue.model.constraint;
 
 import static com.lumina.validation.ErrorCode.*;
 
+import com.lumina.catalogue.model.NumberType;
+import com.lumina.catalogue.model.ValidationStage;
 import com.lumina.meter.model.Line;
-import com.lumina.validation.EnumNamePattern;
 import com.lumina.validation.ErrorBuilder;
 import com.lumina.validation.Errors;
-import com.mongodb.client.model.ValidationLevel;
+import com.lumina.validation.ValidationStageEnum;
 import io.soabase.recordbuilder.core.RecordBuilder;
-import java.util.Objects;
+import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Objects;
+@Document
 @RecordBuilder
 public record NumberLineConstraint(
     String name,
@@ -18,12 +22,12 @@ public record NumberLineConstraint(
     Double min,
     Double max,
     boolean isRequired,
-    @EnumNamePattern(regexp = "ZERO|ONE|TWO|THREE")
+    @ValidationStageEnum
     ValidationStage stage)
     implements Constraint<Line.Number> {
 
-  public void validate(Line.Number line, Errors errors, ValidationStage stage) {
-    if (stage().shouldValidateAt(stage)) {
+  public void validate(Line.Number line, Errors errors, ValidationStage validationStage) {
+    if (stage().shouldValidateAt(validationStage)) {
       var value = line.value();
       if (value instanceof Double valD) {
         if (numberType == NumberType.INTEGER) {

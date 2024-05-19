@@ -5,6 +5,7 @@ import static com.lumina.catalogue.model.NumberType.INTEGER;
 import static com.lumina.validation.ErrorCode.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.lumina.catalogue.model.constraint.NumberLineConstraintBuilder;
 import com.lumina.meter.model.Line;
 import com.lumina.validation.Errors;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +35,7 @@ public class NumberConstraintTest {
             .numberType(INTEGER)
             .min(0d)
             .name("gtThanEqualToZero")
-            .stage(ValidationStage.New)
+            .stage(ValidationStage.One)
             .build();
     errors.pushContext("lines[0]");
     numberConstraint.validate(n1, errors, ValidationStage.One);

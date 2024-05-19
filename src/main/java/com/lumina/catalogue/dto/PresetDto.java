@@ -1,6 +1,7 @@
 package com.lumina.catalogue.dto;
 
 import com.lumina.catalogue.model.*;
+import com.lumina.catalogue.model.constraint.Constraint;
 import com.lumina.meter.model.Line;
 import com.lumina.validation.EnumNamePattern;
 import io.soabase.recordbuilder.core.RecordBuilder;

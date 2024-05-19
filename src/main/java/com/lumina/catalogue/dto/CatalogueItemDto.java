@@ -1,7 +1,7 @@
 package com.lumina.catalogue.dto;
 
 import com.lumina.catalogue.model.CatalogueItem;
-import com.lumina.catalogue.model.Constraint;
+import com.lumina.catalogue.model.constraint.Constraint;
 import com.lumina.catalogue.model.Level;
 import com.lumina.catalogue.model.MeterType;
 import com.lumina.meter.model.Line;

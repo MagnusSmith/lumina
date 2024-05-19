@@ -9,7 +9,8 @@ public enum ErrorCode {
   MAX_LENGTH("maxLength", "value is too long"),
   NOT_EMPTY("notEmpty", ""),
   REQUIRED("requiredField", "field is required"),
-  NOT_FOUND("notFound", "could not be found");
+  NOT_FOUND("notFound", "could not be found"),
+  INVALID_PATTERN("invalidPattern", "value does not match allowed pattern");
 
   private final String code;
   private final String defaultDescription;

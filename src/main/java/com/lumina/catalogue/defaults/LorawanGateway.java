@@ -1,6 +1,9 @@
 package com.lumina.catalogue.defaults;
 
 import com.lumina.catalogue.model.*;
+import com.lumina.catalogue.model.constraint.Constraint;
+import com.lumina.catalogue.model.constraint.NumberLineConstraintBuilder;
+import com.lumina.catalogue.model.constraint.TextLineConstraintBuilder;
 import com.lumina.meter.model.Line;
 
 import java.util.ArrayList;
@@ -121,7 +124,7 @@ public class LorawanGateway {
         TextLineConstraintBuilder.builder()
             .name("lorawan.awsId")
             .description("LoRaWAN Wireless device Id")
-            .minLength(32)
+            .minLength(3)
             .maxLength(36)
             .isRequired(false)
             .stage(ValidationStage.One)

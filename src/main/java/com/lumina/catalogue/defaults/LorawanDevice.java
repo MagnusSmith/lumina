@@ -1,10 +1,11 @@
 package com.lumina.catalogue.defaults;
 
 import com.lumina.catalogue.model.*;
+import com.lumina.catalogue.model.constraint.Constraint;
+import com.lumina.catalogue.model.constraint.TextLineConstraintBuilder;
 import com.lumina.meter.model.Line;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class LorawanDevice {

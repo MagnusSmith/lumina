@@ -29,11 +29,11 @@ public class PatternConstraintTest {
             .description("A special id split into 4 digit words separated by a '-'")
             .pattern("\\d{4}-\\d{4}-\\d{4}-\\d{4}")
             .isRequired(true)
-            .stage(ValidationStage.One)
+            .stage(ValidationStage.Connection)
             .build();
 
     errors.pushContext("lines[0]");
-    patternConstraint.validate(n1, errors, ValidationStage.One);
+    patternConstraint.validate(n1, errors, ValidationStage.Connection);
     assertThat(errors.getErrorCount()).isZero();
 
   }
@@ -50,11 +50,11 @@ public class PatternConstraintTest {
             .description("A special id split into 4 digit words separated by a '-'")
             .pattern("\\d{4}-\\d{4}-\\d{4}-\\d{4}")
             .isRequired(true)
-            .stage(ValidationStage.One)
+            .stage(ValidationStage.Connection)
             .build();
 
     errors.pushContext("lines[0]");
-    patternConstraint.validate(n1, errors, ValidationStage.One);
+    patternConstraint.validate(n1, errors, ValidationStage.Connection);
     assertThat(errors.getErrorCount()).isOne();
     assertThat(errors.hasFieldError("pl1")).isTrue();
     var err = errors.fieldError("pl1");

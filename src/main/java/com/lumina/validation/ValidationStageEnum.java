@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Documented
 @Constraint(validatedBy = EnumNamePatternValidator.class)
 public @interface ValidationStageEnum {
-  String regexp() default "NEW|ONE|TWO|THREE";
+  String regexp() default "INTAKE|CONNECTION|STAGING|DEPLOYMENT";
   String message() default "must match \"{regexp}\"";
   Class<?>[] groups() default {};
   Class<? extends Payload>[] payload() default {};

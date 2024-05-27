@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/catalogue/")
 public class CatalogueController {
 
   private final CatalogueService.Item itemService;
@@ -28,7 +28,7 @@ public class CatalogueController {
     this.presetService = presetService;
   }
 
-  @PostMapping("catalogueItem")
+  @PostMapping("item")
   @ResponseStatus(HttpStatus.CREATED)
   public CatalogueItemDto create(@Valid @RequestBody NewCatalogueItemDto newItem) {
     var item = NewCatalogueItemDto.toModel(newItem);
@@ -47,23 +47,23 @@ public class CatalogueController {
     return CatalogueItemDto.from(itemService.create(presetItem));
   }
 
-  @PutMapping("catalogueItem")
+  @PutMapping("item")
   public CatalogueItemDto update(@Valid @RequestBody UpdateCatalogueItemDto item) {
 
     return CatalogueItemDto.from(itemService.update(UpdateCatalogueItemDto.toModel(item)));
   }
 
-  @DeleteMapping("catalogueItem/{model}")
+  @DeleteMapping("item/{model}")
   public void delete(@PathVariable String model) {
     itemService.delete(model);
   }
 
-  @GetMapping("catalogueItems")
+  @GetMapping("items")
   public List<CatalogueItemDto> getItems() {
     return itemService.findAll().stream().map(CatalogueItemDto::from).toList();
   }
 
-  @GetMapping("catalogueItem/{model}")
+  @GetMapping("item/{model}")
   public ResponseEntity<CatalogueItemDto> getItem(@PathVariable String model) {
     return itemService
         .findByModel(model)
@@ -72,19 +72,19 @@ public class CatalogueController {
         .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
   }
 
-  @PostMapping("cataloguePreset")
+  @PostMapping("preset")
   @ResponseStatus(HttpStatus.CREATED)
   public PresetDto.Info create(@Valid @RequestBody PresetDto.New newPreset) {
 
     return PresetDto.from(presetService.create(PresetDto.toModel(newPreset)));
   }
 
-  @PutMapping("cataloguePreset")
+  @PutMapping("preset")
   public PresetDto.Info update(@Valid @RequestBody PresetDto.Update updatePreset) {
     return PresetDto.from(presetService.update(PresetDto.toModel(updatePreset)));
   }
 
-  @GetMapping("cataloguePreset/{type}/{level}")
+  @GetMapping("preset/{type}/{level}")
   public ResponseEntity<PresetDto.Info> getPreset(
       @PathVariable MeterType type, @PathVariable Level level) {
     return presetService

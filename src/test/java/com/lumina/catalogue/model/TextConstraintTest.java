@@ -30,11 +30,11 @@ public class TextConstraintTest {
             .description("A String with a minimum length")
             .minLength(6)
             .isRequired(true)
-            .stage(ValidationStage.New)
+            .stage(ValidationStage.Intake)
             .build();
 
     errors.pushContext("lines[0]");
-    textConstraint.validate(n1, errors, ValidationStage.One);
+    textConstraint.validate(n1, errors, ValidationStage.Connection);
     assertThat(errors.getErrorCount()).isOne();
     assertThat(errors.hasFieldError("notTooShort")).isTrue();
     var err = errors.fieldError("notTooShort");

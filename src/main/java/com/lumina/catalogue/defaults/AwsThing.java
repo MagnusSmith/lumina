@@ -16,7 +16,7 @@ public class AwsThing {
             .description("AWS ThingTypeName")
             .minLength(5)
             .isRequired(false)
-            .stage(ValidationStage.Two)
+            .stage(ValidationStage.Staging)
             .build();
 
     Constraint<? extends Line> awsThingGroup =
@@ -25,7 +25,7 @@ public class AwsThing {
             .description("The AWS ThingGroup")
             .minLength(5)
             .isRequired(false)
-            .stage(ValidationStage.Two)
+            .stage(ValidationStage.Staging)
             .build();
 
     Constraint<? extends Line> awsThingId =
@@ -34,7 +34,7 @@ public class AwsThing {
             .description("AWS ThingId")
             .minLength(5)
             .isRequired(false)
-            .stage(ValidationStage.Two)
+            .stage(ValidationStage.Staging)
             .build();
 
     Constraint<? extends Line> awsThingArn =
@@ -43,7 +43,7 @@ public class AwsThing {
             .description("AWS ThingARN")
             .minLength(5)
             .isRequired(false)
-            .stage(ValidationStage.Two)
+            .stage(ValidationStage.Staging)
             .build();
 
     Constraint<? extends Line> awsDestinationName =
@@ -53,7 +53,7 @@ public class AwsThing {
             .minLength(0)
             .maxLength(0)
             .isRequired(false)
-            .stage(ValidationStage.Two)
+            .stage(ValidationStage.Staging)
             .build();
 
     return List.of(awsThingTypeName, awsThingGroup, awsThingId, awsThingArn, awsDestinationName);

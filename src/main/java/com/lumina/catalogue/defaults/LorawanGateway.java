@@ -23,7 +23,7 @@ public class LorawanGateway {
             .description("The name of the device")
             .minLength(0)
             .maxLength(75)
-            .stage(ValidationStage.One)
+            .stage(ValidationStage.Connection)
             .isRequired(false)
             .build();
 
@@ -33,7 +33,7 @@ public class LorawanGateway {
             .description("The LNS URI")
             .minLength(50)
             .maxLength(80)
-            .stage(ValidationStage.One)
+            .stage(ValidationStage.Connection)
             .isRequired(false)
             .build();
 
@@ -44,7 +44,7 @@ public class LorawanGateway {
             .minLength(50)
             .maxLength(80)
             .isRequired(false)
-            .stage(ValidationStage.One)
+            .stage(ValidationStage.Connection)
             .build();
 
     Constraint<? extends Line> lnsTrust =
@@ -54,7 +54,7 @@ public class LorawanGateway {
             .minLength(0)
             .maxLength(16)
             .isRequired(false)
-            .stage(ValidationStage.One)
+            .stage(ValidationStage.Connection)
             .build();
 
     Constraint<? extends Line> privateKey =
@@ -64,7 +64,7 @@ public class LorawanGateway {
             .minLength(0)
             .maxLength(16)
             .isRequired(false)
-            .stage(ValidationStage.One)
+            .stage(ValidationStage.Connection)
             .build();
 
     Constraint<? extends Line> pemCert =
@@ -74,7 +74,7 @@ public class LorawanGateway {
             .minLength(0)
             .maxLength(16)
             .isRequired(false)
-            .stage(ValidationStage.One)
+            .stage(ValidationStage.Connection)
             .build();
 
 // HEXADECIMAL
@@ -85,7 +85,7 @@ public class LorawanGateway {
             .minLength(16)
             .maxLength(16)
             .isRequired(true)
-            .stage(ValidationStage.One)
+            .stage(ValidationStage.Connection)
             .build();
 
 
@@ -96,7 +96,7 @@ public class LorawanGateway {
             .numberType(NumberType.INTEGER)
             .min(1d)
             .isRequired(false)
-            .stage(ValidationStage.One)
+            .stage(ValidationStage.Connection)
             .build();
 
 
@@ -107,7 +107,7 @@ public class LorawanGateway {
             .description("The CUPS URI")
             .minLength(128)
             .isRequired(false)
-            .stage(ValidationStage.One)
+            .stage(ValidationStage.Connection)
             .build();
 
 
@@ -117,7 +117,7 @@ public class LorawanGateway {
             .description("LoRaWAN Frequency Band")
             .minLength(5)
             .isRequired(false)
-            .stage(ValidationStage.One)
+            .stage(ValidationStage.Connection)
             .build();
 
     Constraint<? extends Line> awsId =
@@ -127,7 +127,7 @@ public class LorawanGateway {
             .minLength(3)
             .maxLength(36)
             .isRequired(false)
-            .stage(ValidationStage.One)
+            .stage(ValidationStage.Connection)
             .build();
 
     var f =

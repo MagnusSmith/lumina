@@ -9,9 +9,9 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "feature/constraints_validation" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "feature/constraints_validation" ]
+    branches: [ "main" ]
 
 jobs:
   build_and_publish:

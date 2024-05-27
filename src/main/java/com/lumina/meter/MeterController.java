@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/")
 public class MeterController {
 
   private final MeterService meterService;
@@ -50,7 +50,7 @@ public class MeterController {
         .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
   }
 
-  @GetMapping("/meter/location/{locationId}")
+  @GetMapping("meter/location/{locationId}")
   public List<MeterDto> findByLocationId(@PathVariable String locationId, @RequestParam Optional<Boolean>  withConstraints){
     return meterService.findByLocationId(locationId).stream()
         .map(m -> meterService.toMeterDto(m, withConstraints.isPresent())).toList();

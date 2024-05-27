@@ -8,7 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/")
 public class ProjectController {
   private final ProjectService projectService;
 

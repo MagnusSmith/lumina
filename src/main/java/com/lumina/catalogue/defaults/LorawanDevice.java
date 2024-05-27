@@ -21,7 +21,7 @@ public class LorawanDevice {
           .description("LoRaWAN Dev Eui ??")
           .minLength(16)
           .isRequired(false)
-          .stage(ValidationStage.One)
+          .stage(ValidationStage.Connection)
           .build();
 
   Constraint<? extends Line> appEui =
@@ -30,7 +30,7 @@ public class LorawanDevice {
           .description("LoRaWAN App Eui ??")
           .minLength(16)
           .isRequired(false)
-          .stage(ValidationStage.One)
+          .stage(ValidationStage.Connection)
           .build();
 
 
@@ -40,7 +40,7 @@ public class LorawanDevice {
           .description("LoRaWAN App Key")
           .minLength(16)
           .isRequired(false)
-          .stage(ValidationStage.One)
+          .stage(ValidationStage.Connection)
           .build();
 
   Constraint<? extends Line> deviceProfileId=
@@ -49,7 +49,7 @@ public class LorawanDevice {
           .description("LoRaWAN Device Profile Id")
           .minLength(16)
           .isRequired(false)
-          .stage(ValidationStage.One)
+          .stage(ValidationStage.Connection)
           .build();
 
 
@@ -59,7 +59,7 @@ public class LorawanDevice {
           .description("LoRaWAN Service Profile Id")
           .minLength(16)
           .isRequired(false)
-          .stage(ValidationStage.One)
+          .stage(ValidationStage.Connection)
           .build();
 
   Constraint<? extends Line> awsId =
@@ -68,7 +68,7 @@ public class LorawanDevice {
           .description("LoRaWAN AWS Id")
           .minLength(5)
           .isRequired(false)
-          .stage(ValidationStage.One)
+          .stage(ValidationStage.Connection)
           .build();
 
 

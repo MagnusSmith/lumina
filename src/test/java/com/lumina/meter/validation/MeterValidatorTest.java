@@ -42,7 +42,7 @@ public class MeterValidatorTest {
             .locationId("location1")
             .model("A0001")
             .lines(List.of(l1, l2, l3, l4))
-            .stage(ValidationStage.One)
+            .stage(ValidationStage.Connection)
             .build();
     MeterValidator validator = new MeterValidator(catalogueService);
     Errors errors = new Errors("meter");
@@ -68,7 +68,7 @@ public class MeterValidatorTest {
             .locationId("location1")
             .model("A0001")
             .lines(List.of(l1, l2, l3, l5))
-            .stage(ValidationStage.One)
+            .stage(ValidationStage.Connection)
             .build();
     MeterValidator validator = new MeterValidator(catalogueService);
     Errors errors = new Errors("meter");
@@ -92,7 +92,7 @@ public class MeterValidatorTest {
             .locationId("location1")
             .model("A0001")
             .lines(List.of(l2, l4))
-            .stage(ValidationStage.One)
+            .stage(ValidationStage.Connection)
             .build();
     MeterValidator validator = new MeterValidator(catalogueService);
     Errors errors = new Errors("meter");
@@ -120,7 +120,7 @@ public class MeterValidatorTest {
             .min(2d)
             .max(5d)
             .isRequired(true)
-            .stage(ValidationStage.One)
+            .stage(ValidationStage.Connection)
             .build();
 
     Constraint<? extends Line> l2 =
@@ -130,7 +130,7 @@ public class MeterValidatorTest {
             .numberType(NumberType.FLOAT)
             .min(9.9d)
             .isRequired(true)
-            .stage(ValidationStage.One)
+            .stage(ValidationStage.Connection)
             .build();
 
     Constraint<? extends Line> l3 =
@@ -140,7 +140,7 @@ public class MeterValidatorTest {
             .minLength(5)
             .maxLength(15)
             .isRequired(true)
-            .stage(ValidationStage.One)
+            .stage(ValidationStage.Connection)
             .build();
 
     Constraint<? extends Line> l4 =
@@ -149,7 +149,7 @@ public class MeterValidatorTest {
             .description("Optional text less than or equal to 4 characters long")
             .maxLength(4)
             .isRequired(false)
-            .stage(ValidationStage.One)
+            .stage(ValidationStage.Connection)
             .build();
 
     String model = "A0001";

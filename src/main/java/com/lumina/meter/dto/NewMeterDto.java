@@ -17,7 +17,7 @@ public record NewMeterDto (
         .locationId(dto.locationId)
         .model(dto.model)
         .lines(new ArrayList<>())
-        .stage(ValidationStage.New)
+        .stage(ValidationStage.Intake)
         .build();
   }
 }

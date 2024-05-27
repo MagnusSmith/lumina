@@ -4,10 +4,10 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public enum ValidationStage {
-  New,
-  One,
-  Two,
-  Three;
+  Intake,
+  Connection,
+  Staging,
+  Deployment;
 
   public static final String PATTERN =  Arrays.stream(ValidationStage.values()).map(Enum::name).collect(Collectors.joining("|"));
 

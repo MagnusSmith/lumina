@@ -31,7 +31,6 @@ public record TextLineConstraint(
     if (stage().shouldValidateAt( validationStage)) {
       var value = line.value();
       if (value instanceof String s) {
-
         if (StringUtils.isBlank(s)) {
           errors.rejectValue(name, REQUIRED);
         } else {

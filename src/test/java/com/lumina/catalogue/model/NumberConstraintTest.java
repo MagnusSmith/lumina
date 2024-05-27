@@ -35,10 +35,10 @@ public class NumberConstraintTest {
             .numberType(INTEGER)
             .min(0d)
             .name("gtThanEqualToZero")
-            .stage(ValidationStage.One)
+            .stage(ValidationStage.Connection)
             .build();
     errors.pushContext("lines[0]");
-    numberConstraint.validate(n1, errors, ValidationStage.One);
+    numberConstraint.validate(n1, errors, ValidationStage.Connection);
     errors.popContext();
     assertThat(errors.getErrorCount()).isOne();
     assertThat(errors.hasFieldError("gtThanEqualToZero")).isTrue();
@@ -60,10 +60,10 @@ public class NumberConstraintTest {
             .numberType(INTEGER)
             .min(0d)
             .name("gtThanEqualToZero")
-            .stage(ValidationStage.New)
+            .stage(ValidationStage.Intake)
             .build();
     errors.pushContext("lines[0]");
-    numberConstraint.validate(n1, errors, ValidationStage.New);
+    numberConstraint.validate(n1, errors, ValidationStage.Intake);
     errors.popContext();
     assertThat(errors.getErrorCount()).isZero();
   }
@@ -79,10 +79,10 @@ public class NumberConstraintTest {
             .numberType(INTEGER)
             .min(5d)
             .name("lessMinFive")
-            .stage(ValidationStage.One)
+            .stage(ValidationStage.Connection)
             .build();
     errors.pushContext("lines[0]");
-    numberConstraint.validate(n1, errors, ValidationStage.One);
+    numberConstraint.validate(n1, errors, ValidationStage.Connection);
     assertThat(errors.getErrorCount()).isOne();
     assertThat(errors.hasFieldError("lessMinFive")).isTrue();
     var err = errors.fieldError("lessMinFive");
@@ -104,10 +104,10 @@ public class NumberConstraintTest {
             .numberType(FLOAT)
             .min(5d)
             .name("lessMinFive")
-            .stage(ValidationStage.One)
+            .stage(ValidationStage.Connection)
             .build();
     errors.pushContext("lines[0]");
-    numberConstraint.validate(n1, errors, ValidationStage.One);
+    numberConstraint.validate(n1, errors, ValidationStage.Connection);
     assertThat(errors.getErrorCount()).isOne();
     assertThat(errors.hasFieldError("lessMinFive")).isTrue();
     var err = errors.fieldError("lessMinFive");
@@ -130,10 +130,10 @@ public class NumberConstraintTest {
             .numberType(FLOAT)
             .min(5d)
             .name("lessMinFive")
-            .stage(ValidationStage.One)
+            .stage(ValidationStage.Connection)
             .build();
     errors.pushContext("lines[0]");
-    numberConstraint.validate(n1, errors,  ValidationStage.One);
+    numberConstraint.validate(n1, errors,  ValidationStage.Connection);
     assertThat(errors.getErrorCount()).isOne();
     assertThat(errors.hasFieldError("lessMinFive")).isTrue();
     var err = errors.fieldError("lessMinFive");

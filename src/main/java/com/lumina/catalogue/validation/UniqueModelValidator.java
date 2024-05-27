@@ -16,6 +16,6 @@ public class UniqueModelValidator implements ConstraintValidator<UniqueModel, St
 
   @Override
   public boolean isValid(String model, ConstraintValidatorContext constraintValidatorContext) {
-    return !repos.existsByModel(model);
+    return repos.findByModel(model).isEmpty();
   }
 }

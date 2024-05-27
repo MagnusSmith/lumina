@@ -39,3 +39,4 @@ out/
 **/.DS_Store
 /mongodb-data/
 /mongodb-log/
+.env

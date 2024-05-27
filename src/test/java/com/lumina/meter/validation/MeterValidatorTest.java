@@ -6,7 +6,13 @@ import static org.mockito.Mockito.when;
 
 import com.lumina.catalogue.CatalogueService;
 import com.lumina.catalogue.model.*;
+import com.lumina.catalogue.model.CatalogueItemBuilder;
+
+import com.lumina.catalogue.model.constraint.Constraint;
+import com.lumina.catalogue.model.constraint.NumberLineConstraintBuilder;
+import com.lumina.catalogue.model.constraint.TextLineConstraintBuilder;
 import com.lumina.meter.model.*;
+import com.lumina.meter.model.MeterBuilder;
 import com.lumina.validation.Errors;
 import java.util.List;
 import java.util.Optional;
@@ -17,44 +23,53 @@ public class MeterValidatorTest {
 
   CatalogueItem item;
 
-  CatalogueService catalogueService = mock(CatalogueService.class);
-
-
+  CatalogueService.Item catalogueService = mock(CatalogueService.Item.class);
 
   @Test
   @DisplayName("A Meter with optional lines should be valid when all lines are valid")
-  void shouldValidateMeterWithOptionalWithoutErrors(){
+  void shouldValidateMeterWithOptionalWithoutErrors() {
 
     item = setUpCatalogueItem();
     when(catalogueService.findByModel("A0001")).thenReturn(Optional.of(item));
 
-    Line l1 = new NumberLine("lineOne", NumberType.INTEGER, 3d);
-    Line l2 = new NumberLine("lineTwo", NumberType.FLOAT, 9.999d);
-    Line l3 = new TextLine("lineThree", "Hello World!");
-    Line l4 = new TextLine("lineFour", "ABC");
+    Line l1 = new Line.Number("lineOne", NumberType.INTEGER, 3d);
+    Line l2 = new Line.Number("lineTwo", NumberType.FLOAT, 9.999d);
+    Line l3 = new Line.Text("lineThree", "Hello World!");
+    Line l4 = new Line.Text("lineFour", "ABC");
 
-    Meter meter = MeterBuilder.builder().locationId("location1").model("A0001").lines(List.of(l1, l2, l3, l4)).build();
+    Meter meter =
+        MeterBuilder.builder()
+            .locationId("location1")
+            .model("A0001")
+            .lines(List.of(l1, l2, l3, l4))
+            .stage(ValidationStage.Connection)
+            .build();
     MeterValidator validator = new MeterValidator(catalogueService);
     Errors errors = new Errors("meter");
     validator.validate(meter, errors);
 
     assertThat(errors.getErrorCount()).isZero();
-
   }
-
 
   @Test
   @DisplayName("A Meter without optional lines should be valid when all lines are valid")
-  void shouldValidateMeterWithoutErrors(){
+  void shouldValidateMeterWithoutErrors() {
 
     item = setUpCatalogueItem();
     when(catalogueService.findByModel("A0001")).thenReturn(Optional.of(item));
 
-    Line l1 = new NumberLine("lineOne", NumberType.INTEGER, 3d);
-    Line l2 = new NumberLine("lineTwo", NumberType.FLOAT, 9.999d);
-    Line l3 = new TextLine("lineThree", "Hello World!");
+    Line l1 = new Line.Number("lineOne", NumberType.INTEGER, 3d);
+    Line l2 = new Line.Number("lineTwo", NumberType.FLOAT, 9.999d);
+    Line l3 = new Line.Text("lineThree", "Hello World!");
+    Line l5 = new Line.ReadOnly("lineFive", "Read Only");
 
-    Meter meter = MeterBuilder.builder().locationId("location1").model("A0001").lines(List.of(l1, l2, l3)).build();
+    Meter meter =
+        MeterBuilder.builder()
+            .locationId("location1")
+            .model("A0001")
+            .lines(List.of(l1, l2, l3, l5))
+            .stage(ValidationStage.Connection)
+            .build();
     MeterValidator validator = new MeterValidator(catalogueService);
     Errors errors = new Errors("meter");
     validator.validate(meter, errors);
@@ -64,15 +79,21 @@ public class MeterValidatorTest {
 
   @Test
   @DisplayName("A Meter without required lines should produce errors")
-  void shouldErrorWithoutRequiredLines(){
+  void shouldErrorWithoutRequiredLines() {
 
     item = setUpCatalogueItem();
     when(catalogueService.findByModel("A0001")).thenReturn(Optional.of(item));
 
-    Line l2 = new NumberLine("lineTwo", NumberType.FLOAT, 9.999d);
-    Line l4 = new TextLine("lineFour", "ABC");
+    Line l2 = new Line.Number("lineTwo", NumberType.FLOAT, 9.999d);
+    Line l4 = new Line.Text("lineFour", "ABC");
 
-    Meter meter = MeterBuilder.builder().locationId("location1").model("A0001").lines(List.of(l2, l4)).build();
+    Meter meter =
+        MeterBuilder.builder()
+            .locationId("location1")
+            .model("A0001")
+            .lines(List.of(l2, l4))
+            .stage(ValidationStage.Connection)
+            .build();
     MeterValidator validator = new MeterValidator(catalogueService);
     Errors errors = new Errors("meter");
     validator.validate(meter, errors);
@@ -87,46 +108,49 @@ public class MeterValidatorTest {
     errors.fieldError("lineThree");
     assertThat(err.errorCode().code()).isEqualTo("requiredField");
     assertThat(err.fieldContext()).isEqualTo("meter.lines");
-
-
-
   }
 
+  CatalogueItem setUpCatalogueItem() {
 
+    Constraint<? extends Line> l1 =
+        NumberLineConstraintBuilder.builder()
+            .name("lineOne")
+            .description("An integer between 2 and 5")
+            .numberType(NumberType.INTEGER)
+            .min(2d)
+            .max(5d)
+            .isRequired(true)
+            .stage(ValidationStage.Connection)
+            .build();
 
-  CatalogueItem setUpCatalogueItem(){
+    Constraint<? extends Line> l2 =
+        NumberLineConstraintBuilder.builder()
+            .name("lineTwo")
+            .description("A Double greater than 9.9")
+            .numberType(NumberType.FLOAT)
+            .min(9.9d)
+            .isRequired(true)
+            .stage(ValidationStage.Connection)
+            .build();
 
-    Constraint<Line> l1 = NumberLineConstraintBuilder.builder()
-        .name("lineOne")
-        .description("An integer between 2 and 5")
-        .numberType(NumberType.INTEGER)
-        .min(2d)
-        .max(5d)
-        .isRequired(true)
-        .build();
+    Constraint<? extends Line> l3 =
+        TextLineConstraintBuilder.builder()
+            .name("lineThree")
+            .description("Text between 5 and 15 characters long")
+            .minLength(5)
+            .maxLength(15)
+            .isRequired(true)
+            .stage(ValidationStage.Connection)
+            .build();
 
-    Constraint<Line> l2 = NumberLineConstraintBuilder.builder()
-        .name("lineTwo")
-        .description("A Double greater than 9.9")
-        .numberType(NumberType.FLOAT)
-        .min(9.9d)
-        .isRequired(true)
-        .build();
-
-    Constraint<Line> l3 = TextLineConstraintBuilder.builder()
-        .name("lineThree")
-        .description("Text between 5 and 15 characters long")
-        .minLength(5)
-        .maxLength(15)
-        .isRequired(true)
-        .build();
-
-    Constraint<Line> l4 = TextLineConstraintBuilder.builder()
-        .name("lineFour")
-        .description("Optional text less than or equal to 4 characters long")
-        .maxLength(4)
-        .isRequired(false)
-        .build();
+    Constraint<? extends Line> l4 =
+        TextLineConstraintBuilder.builder()
+            .name("lineFour")
+            .description("Optional text less than or equal to 4 characters long")
+            .maxLength(4)
+            .isRequired(false)
+            .stage(ValidationStage.Connection)
+            .build();
 
     String model = "A0001";
 
@@ -140,9 +164,13 @@ public class MeterValidatorTest {
 
     String manufacturer = "ManufacturerOne";
 
-    return  CatalogueItemBuilder.builder().model(model).name(name).level(level).type(meterType)
-        .description(description).manufacturer(manufacturer).constraints(List.of(l1, l2, l3,l4)).build();
-
+    return CatalogueItemBuilder.builder()
+        .model(model)
+        .level(level)
+        .type(meterType)
+        .description(description)
+        .manufacturer(manufacturer)
+        .constraints(List.of(l1, l2, l3, l4))
+        .build();
   }
-
 }

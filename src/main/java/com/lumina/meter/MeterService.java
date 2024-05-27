@@ -3,6 +3,7 @@ package com.lumina.meter;
 import com.lumina.NotFoundException;
 import com.lumina.catalogue.ItemRepository;
 import com.lumina.catalogue.model.CatalogueItem;
+import com.lumina.catalogue.model.ValidationStage;
 import com.lumina.meter.dto.MeterDto;
 import com.lumina.meter.model.Meter;
 import com.lumina.meter.validation.MeterValidator;
@@ -16,13 +17,13 @@ import org.springframework.stereotype.Service;
 public class MeterService {
 
   private final MeterRepository repository;
-  private final ItemRepository itemRepository;
+  private final ItemRepository catalogueItemRepository;
   private final MeterValidator meterValidator;
 
   public MeterService(
-      MeterRepository repository, ItemRepository itemRepository, MeterValidator meterValidator) {
+      MeterRepository repository, ItemRepository catalogueItemRepository, MeterValidator meterValidator) {
     this.repository = repository;
-    this.itemRepository = itemRepository;
+    this.catalogueItemRepository = catalogueItemRepository;
     this.meterValidator = meterValidator;
   }
 
@@ -56,7 +57,7 @@ public class MeterService {
   }
 
   public CatalogueItem findCatalogueItemByModel(String model) {
-    return itemRepository
+    return catalogueItemRepository
         .findByModel(model)
         .orElseThrow(
             () ->
@@ -72,8 +73,10 @@ public class MeterService {
     return repository.findByLocationId(locationId);
   }
 
-  MeterDto toMeterDto(Meter meter){
+  MeterDto toMeterDto(Meter meter, boolean withConstraints){
     var catItem = findCatalogueItemByModel(meter.model());
-    return MeterDto.from(catItem, meter);
+    return MeterDto.from(catItem, meter, withConstraints);
   }
+
+
 }

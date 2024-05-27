@@ -1,14 +1,19 @@
-package com.lumina.catalogue.model;
+package com.lumina.catalogue.model.constraint;
 
 import static com.lumina.validation.ErrorCode.*;
 
+import com.lumina.catalogue.model.NumberType;
+import com.lumina.catalogue.model.ValidationStage;
 import com.lumina.meter.model.Line;
-import com.lumina.meter.model.NumberLine;
 import com.lumina.validation.ErrorBuilder;
 import com.lumina.validation.Errors;
+import com.lumina.validation.ValidationStageEnum;
 import io.soabase.recordbuilder.core.RecordBuilder;
-import java.util.Objects;
+import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Objects;
+@Document
 @RecordBuilder
 public record NumberLineConstraint(
     String name,
@@ -16,11 +21,13 @@ public record NumberLineConstraint(
     NumberType numberType,
     Double min,
     Double max,
-    boolean isRequired)
-    implements Constraint<Line> {
+    boolean isRequired,
+    @ValidationStageEnum
+    ValidationStage stage)
+    implements Constraint<Line.Number> {
 
-  public void validate(Line line, Errors errors) {
-    if (line instanceof NumberLine) {
+  public void validate(Line.Number line, Errors errors, ValidationStage validationStage) {
+    if (stage().shouldValidateAt(validationStage)) {
       var value = line.value();
       if (value instanceof Double valD) {
         if (numberType == NumberType.INTEGER) {
@@ -52,7 +59,7 @@ public record NumberLineConstraint(
                     .errorCodeArgs(new Object[] {valD})
                     .rejectedValue(valD)
                     .build());
-            }
+          }
         }
         if (numberType == NumberType.FLOAT) {
           if (Objects.nonNull(min) && min > valD) {
@@ -75,13 +82,6 @@ public record NumberLineConstraint(
           }
         }
       }
-    } else {
-      errors.add(
-          ErrorBuilder.builder()
-              .field(name)
-              .errorCode(WRONG_TYPE)
-              .errorCodeArgs(new Object[] {numberType})
-              .build());
     }
   }
 }

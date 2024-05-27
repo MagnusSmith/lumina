@@ -24,6 +24,15 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
       ME_CONFIG_MONGODB_URL: mongodb://root:example@mongodb:27017/
 
+  meter-config-service:
+    depends_on:
+      - mongodb
+    profiles:
+      - registry
+    image: ghcr.io/lumina360/meter-config-service:latest
+    ports:
+      - '8080:8080'
+
 volumes:
   mongodb-data:
     driver: local

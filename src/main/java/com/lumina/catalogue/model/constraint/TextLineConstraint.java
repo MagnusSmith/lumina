@@ -1,25 +1,36 @@
-package com.lumina.catalogue.model;
+package com.lumina.catalogue.model.constraint;
 
 import static com.lumina.validation.ErrorCode.*;
 
+import com.lumina.catalogue.model.ValidationStage;
 import com.lumina.meter.model.Line;
-import com.lumina.meter.model.TextLine;
 import com.lumina.validation.ErrorBuilder;
 import com.lumina.validation.Errors;
+import com.lumina.validation.ValidationStageEnum;
 import io.micrometer.common.util.StringUtils;
 import io.soabase.recordbuilder.core.RecordBuilder;
+import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.Objects;
 
+
+@Document
 @RecordBuilder
 public record TextLineConstraint(
-    String name, String description, Integer minLength, Integer maxLength, boolean isRequired)
-    implements Constraint<Line> {
+    String name,
+    String description,
+    Integer minLength,
+    Integer maxLength,
+    boolean isRequired,
+    @ValidationStageEnum
+    ValidationStage stage)
+    implements Constraint<Line.Text> {
 
-  public void validate(Line line, Errors errors) {
-    if (line instanceof TextLine) {
+  public void validate(Line.Text line, Errors errors, ValidationStage validationStage) {
+    if (stage().shouldValidateAt( validationStage)) {
       var value = line.value();
       if (value instanceof String s) {
-
         if (StringUtils.isBlank(s)) {
           errors.rejectValue(name, REQUIRED);
         } else {
@@ -38,18 +49,10 @@ public record TextLineConstraint(
                     .errorCode(MAX_LENGTH)
                     .errorCodeArgs(new Object[] {value, maxLength})
                     .rejectedValue(value)
-
                     .build());
           }
         }
       }
-    } else {
-      errors.add(
-          ErrorBuilder.builder()
-              .field(name)
-              .errorCode(WRONG_TYPE)
-              .errorCodeArgs(new Object[] {})
-              .build());
     }
   }
 }

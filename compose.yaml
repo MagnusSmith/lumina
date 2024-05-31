@@ -28,7 +28,7 @@ services:
     depends_on:
       - mongodb
     profiles:
-      - registry
+      - repository
     image: ghcr.io/lumina360/meter-config-service:latest
     ports:
       - '8080:8080'

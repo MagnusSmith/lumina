@@ -11,14 +11,14 @@ on:
   push:
     paths:
       - 'application/**'
-      - 'cdk/**/*Service*'
-      - 'cdk/pom.xml'
+      - 'cdk/**'
+      - 'cdk/build.gradle.kts'
       - '.github/workflows/publish-meter-config-service.yml'
   workflow_dispatch:
 jobs:
   build-and-publish:
     runs-on: ubuntu-20.04
-    name: Build and publish Todo App
+    name: Build and publish meter-config-service
     outputs:
       dockerImageTag: ${{ steps.dockerImageTag.outputs.tag }}
     steps:

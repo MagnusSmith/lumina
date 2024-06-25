@@ -1,7 +1,7 @@
 # This is a one-off workflow to set up everything we need to deploy Docker images
 # with CDK. This workflow deploys everything that is not specific to a certain
 # environment (staging, prod, ...).
-name: 01 - Manually Bootstrap the CDK Environment
+name: Manually Bootstrap the CDK Environment
 
 on:
   workflow_dispatch

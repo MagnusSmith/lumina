@@ -1,7 +1,7 @@
 HELP.md
 .gradle
 build/
-!gradle/wrapper/gradle-wrapper.jar
+!application/gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
 
@@ -37,6 +37,11 @@ out/
 .vscode/
 .DS_Store
 **/.DS_Store
-/mongodb-data/
-/mongodb-log/
+**/mongodb-data/
+**/mongodb-log/
 .env
+
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out

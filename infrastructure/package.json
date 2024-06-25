@@ -1,0 +1,21 @@
+{
+  "name": "meter-config-service-cdk",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "info": "IMPORTANT NOTE: Please make sure to replace the values inside the cdk.json with your configuration",
+    "bootstrap": "cdk bootstrap --app \"gradle -q run -DmainClass=com.lumina.cdk.BootstrapApp\"",
+    "network:deploy": "cdk deploy --app \"gradle -q run -DmainClass=com.lumina.cdk.NetworkApp\" --require-approval never",
+    "network:destroy": "cdk destroy --app \"gradle -q run -DmainClass=com.lumina.cdk.NetworkApp\" --force --require-approval never",
+    "repository:deploy": "cdk deploy --app \"gradle -q run -DmainClass=com.lumina.cdk.DockerRepositoryApp\" --require-approval never",
+    "repository:destroy": "cdk destroy --app \"gradle -q run -DmainClass=com.lumina.cdk.DockerRepositoryApp\" --force --require-approval never",
+    "service:deploy": "cdk deploy --app \"gradle -q run -DmainClass=com.lumina.cdk.ServiceApp\" --require-approval never",
+    "service:destroy": "cdk destroy --app \"gradle -q run -DmainClass=com.lumina.cdk.ServiceApp\" --force --require-approval never"
+  },
+  "devDependencies": {
+    "aws-cdk": "2.146.0"
+  },
+  "engines": {
+    "node": ">=16"
+  }
+}

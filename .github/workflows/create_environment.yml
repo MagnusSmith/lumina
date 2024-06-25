@@ -16,7 +16,7 @@ on:
         default: 'development'
 jobs:
   deploy-network-stack:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/feature/aws_ecr_deploy'
     runs-on: ubuntu-20.04
     name: Deploy the network stack
     steps:

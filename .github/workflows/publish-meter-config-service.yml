@@ -67,11 +67,11 @@ jobs:
         working-directory: application
         run: |
           docker build -t meter-config-service .
-          docker tag todo-app ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/meter-config-service:${DOCKER_IMAGE_TAG}
-          docker tag todo-app ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/meter-config-service:latest
+          docker tag meter-config-service ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/meter-config-service:${DOCKER_IMAGE_TAG}
+          docker tag meter-config-service ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/meter-config-service:latest
           aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
           docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/meter-config-service:${DOCKER_IMAGE_TAG}
-          docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/tmeter-config-service:latest
+          docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/meter-config-service:latest
 
   #      Superseded by GitHub Action's concurrency support, see below
   #      - name: Sending deployment event to queue
@@ -88,7 +88,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-20.04
-    name: Deploy Todo App
+    name: Deploy meter-config-service
     needs: build-and-publish
     timeout-minutes: 15
     #if: ${{ false }}  # disabled for now as we ran out of AWS credits
@@ -126,5 +126,5 @@ jobs:
       - name: Clean up old parameter stacks
         working-directory: cdk
         run: |
-          aws cloudformation describe-stacks --region eu-central-1 --query "Stacks[].StackName" --output text | sed -e "s/\s\+/\n/g" | grep -e "staging-todo-app-Service-Parameters" | sort -r | tail -n+2 > stacks_to_be_deleted.txt
+          aws cloudformation describe-stacks --region eu-central-1 --query "Stacks[].StackName" --output text | sed -e "s/\s\+/\n/g" | grep -e "development-meter-config-service-Service-Parameters" | sort -r | tail -n+2 > stacks_to_be_deleted.txt
           for stack in $(cat stacks_to_be_deleted.txt); do aws cloudformation delete-stack --stack-name $stack --region eu-central-1;  done

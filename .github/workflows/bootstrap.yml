@@ -15,7 +15,7 @@ jobs:
   deploy:
     runs-on: ubuntu-20.04
     name: Bootstrap CDK
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/feature/aws_ecr_deploy'
     steps:
 
       - name: Checkout code

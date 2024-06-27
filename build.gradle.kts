@@ -34,10 +34,10 @@ subprojects {
     }
 
     compileJava {
-        options.compilerArgs += ['--enable-preview']
+        options.compilerArgs += ["--enable-preview"]
     }
     test {
-        jvmArgs(['--enable-preview'])
+        jvmArgs([""--enable-preview"])
     }
 
 

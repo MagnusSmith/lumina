@@ -1,7 +1,7 @@
 plugins {
     java
     application apply(true)
-    id("com.diffplug.spotless") version "7.0.0.BETA1"
+
 
     //id("software.amazon.awscdk") version "2.58.1"
 }

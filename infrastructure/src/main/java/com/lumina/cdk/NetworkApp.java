@@ -1,12 +1,13 @@
 package com.lumina.cdk;
 
+import static com.lumina.cdk.Validations.requireNonEmpty;
+
 import dev.stratospheric.cdk.Network;
 import dev.stratospheric.cdk.Network.NetworkInputParameters;
 import software.amazon.awscdk.App;
 import software.amazon.awscdk.Environment;
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.StackProps;
-import static com.lumina.cdk.Validations.requireNonEmpty;
 
 public class NetworkApp {
   public static void main(final String[] args) {
@@ -20,36 +21,33 @@ public class NetworkApp {
 
     String region = (String) app.getNode().tryGetContext("region");
     requireNonEmpty(region, "context variable 'region' must not be null");
- //   String sslCertificateArn = (String) app.getNode().tryGetContext("sslCertificateArn");
- //   requireNonEmpty(sslCertificateArn, "context variable 'sslCertificateArn' must not be null");
+    //   String sslCertificateArn = (String) app.getNode().tryGetContext("sslCertificateArn");
+    //   requireNonEmpty(sslCertificateArn, "context variable 'sslCertificateArn' must not be
+    // null");
 
     Environment awsEnvironment = makeEnv(accountId, region);
 
-    Stack networkStack = new Stack(app, "NetworkStack", StackProps.builder()
-        .stackName(environmentName + "-Network")
-        .env(awsEnvironment)
-        .build());
+    Stack networkStack =
+        new Stack(
+            app,
+            "NetworkStack",
+            StackProps.builder()
+                .stackName(environmentName + "-Network")
+                .env(awsEnvironment)
+                .build());
 
     NetworkInputParameters inputParameters = new NetworkInputParameters();
 
-//    if(!sslCertificateArn.isEmpty()){
-//      inputParameters.withSslCertificateArn(sslCertificateArn);
-//    }
+    //    if(!sslCertificateArn.isEmpty()){
+    //      inputParameters.withSslCertificateArn(sslCertificateArn);
+    //    }
 
-    new Network(
-        networkStack,
-        "Network",
-        awsEnvironment,
-        environmentName,
-        inputParameters);
+    new Network(networkStack, "Network", awsEnvironment, environmentName, inputParameters);
 
     app.synth();
   }
 
   static Environment makeEnv(String account, String region) {
-    return Environment.builder()
-        .account(account)
-        .region(region)
-        .build();
+    return Environment.builder().account(account).region(region).build();
   }
 }

@@ -10,9 +10,10 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = UniqueModelValidator.class)
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-
 public @interface UniqueModel {
   String message() default "Model is already registered";
-  Class<?>[] groups() default { };
-  Class<? extends Payload>[] payload() default { };
+
+  Class<?>[] groups() default {};
+
+  Class<? extends Payload>[] payload() default {};
 }

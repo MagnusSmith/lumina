@@ -9,13 +9,10 @@ public enum ValidationStage {
   Staging,
   Deployment;
 
-  public static final String PATTERN =  Arrays.stream(ValidationStage.values()).map(Enum::name).collect(Collectors.joining("|"));
+  public static final String PATTERN =
+      Arrays.stream(ValidationStage.values()).map(Enum::name).collect(Collectors.joining("|"));
 
-
-  public boolean shouldValidateAt(ValidationStage stage){
+  public boolean shouldValidateAt(ValidationStage stage) {
     return this.compareTo(stage) <= 0;
   }
-
-
-
 }

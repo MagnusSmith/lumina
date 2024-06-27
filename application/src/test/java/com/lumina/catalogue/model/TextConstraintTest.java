@@ -18,8 +18,6 @@ public class TextConstraintTest {
     errors = new Errors("meter");
   }
 
-
-
   @Test
   @DisplayName("A value less than minimum length should produce a field error")
   void valueShouldSatisfyMinimumLengthOrError() {

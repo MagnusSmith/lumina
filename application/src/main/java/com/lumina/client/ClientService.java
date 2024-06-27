@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class ClientService {
 
-
   private final ClientRepository repository;
 
   public ClientService(ClientRepository repository) {
@@ -26,7 +25,6 @@ public class ClientService {
   public Optional<Client> findById(String id) {
     return repository.findById(id);
   }
-
 
   public List<Client> findAll() {
     return repository.findAll();

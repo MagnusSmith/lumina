@@ -9,11 +9,8 @@ import com.lumina.validation.Errors;
 import com.lumina.validation.ValidationStageEnum;
 import io.micrometer.common.util.StringUtils;
 import io.soabase.recordbuilder.core.RecordBuilder;
-import org.springframework.data.annotation.TypeAlias;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import java.util.Objects;
-
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
 @RecordBuilder
@@ -23,12 +20,11 @@ public record TextLineConstraint(
     Integer minLength,
     Integer maxLength,
     boolean isRequired,
-    @ValidationStageEnum
-    ValidationStage stage)
+    @ValidationStageEnum ValidationStage stage)
     implements Constraint<Line.Text> {
 
   public void validate(Line.Text line, Errors errors, ValidationStage validationStage) {
-    if (stage().shouldValidateAt( validationStage)) {
+    if (stage().shouldValidateAt(validationStage)) {
       var value = line.value();
       if (value instanceof String s) {
         if (StringUtils.isBlank(s)) {

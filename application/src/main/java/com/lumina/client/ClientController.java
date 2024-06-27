@@ -1,6 +1,5 @@
 package com.lumina.client;
 
-
 import com.lumina.client.dto.ClientDto;
 import com.lumina.client.dto.NewClientDto;
 import com.lumina.client.dto.UpdateClientDto;
@@ -19,7 +18,6 @@ public class ClientController {
     this.clientService = clientService;
   }
 
-
   @PostMapping("client")
   @ResponseStatus(HttpStatus.CREATED)
   public ClientDto create(@RequestBody NewClientDto newClient) {
@@ -34,7 +32,7 @@ public class ClientController {
   }
 
   @GetMapping("client/{id}")
-  public ResponseEntity<ClientDto> getById(@PathVariable String id){
+  public ResponseEntity<ClientDto> getById(@PathVariable String id) {
     return clientService
         .findById(id)
         .map(ClientDto::from)
@@ -43,8 +41,7 @@ public class ClientController {
   }
 
   @GetMapping("client")
-  public List<ClientDto> findAll(){
+  public List<ClientDto> findAll() {
     return clientService.findAll().stream().map(ClientDto::from).toList();
   }
-
 }

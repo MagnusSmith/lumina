@@ -9,10 +9,9 @@ import com.lumina.validation.ErrorBuilder;
 import com.lumina.validation.Errors;
 import com.lumina.validation.ValidationStageEnum;
 import io.soabase.recordbuilder.core.RecordBuilder;
-import org.springframework.data.annotation.TypeAlias;
+import java.util.Objects;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Objects;
 @Document
 @RecordBuilder
 public record NumberLineConstraint(
@@ -22,8 +21,7 @@ public record NumberLineConstraint(
     Double min,
     Double max,
     boolean isRequired,
-    @ValidationStageEnum
-    ValidationStage stage)
+    @ValidationStageEnum ValidationStage stage)
     implements Constraint<Line.Number> {
 
   public void validate(Line.Number line, Errors errors, ValidationStage validationStage) {

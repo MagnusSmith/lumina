@@ -10,7 +10,7 @@ public class UniqueModelValidator implements ConstraintValidator<UniqueModel, St
 
   private final ItemRepository repos;
 
-  UniqueModelValidator(final ItemRepository repos){
+  UniqueModelValidator(final ItemRepository repos) {
     this.repos = repos;
   }
 

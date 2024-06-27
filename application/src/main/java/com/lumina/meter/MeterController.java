@@ -3,13 +3,11 @@ package com.lumina.meter;
 import com.lumina.meter.dto.MeterDto;
 import com.lumina.meter.dto.NewMeterDto;
 import com.lumina.meter.dto.UpdateMeterDto;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
-
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -30,7 +28,6 @@ public class MeterController {
     return MeterDto.from(catalogueItem, meter, false);
   }
 
-
   @PutMapping("meter")
   MeterDto update(@RequestBody UpdateMeterDto updateMeter) {
 
@@ -39,10 +36,9 @@ public class MeterController {
     return MeterDto.from(catalogueItem, meter, false);
   }
 
-
-
   @GetMapping("meter/{id}")
-  public ResponseEntity<MeterDto> findById(@PathVariable String id, @RequestParam Optional<Boolean> withConstraints){
+  public ResponseEntity<MeterDto> findById(
+      @PathVariable String id, @RequestParam Optional<Boolean> withConstraints) {
     return meterService
         .findById(id)
         .map(m -> meterService.toMeterDto(m, withConstraints.isPresent()))
@@ -51,12 +47,10 @@ public class MeterController {
   }
 
   @GetMapping("meter/location/{locationId}")
-  public List<MeterDto> findByLocationId(@PathVariable String locationId, @RequestParam Optional<Boolean>  withConstraints){
+  public List<MeterDto> findByLocationId(
+      @PathVariable String locationId, @RequestParam Optional<Boolean> withConstraints) {
     return meterService.findByLocationId(locationId).stream()
-        .map(m -> meterService.toMeterDto(m, withConstraints.isPresent())).toList();
+        .map(m -> meterService.toMeterDto(m, withConstraints.isPresent()))
+        .toList();
   }
-
-
-
-
 }

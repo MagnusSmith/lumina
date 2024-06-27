@@ -1,13 +1,12 @@
 package com.lumina.catalogue.dto;
 
 import com.lumina.catalogue.model.CatalogueItem;
-import com.lumina.catalogue.model.constraint.Constraint;
 import com.lumina.catalogue.model.Level;
 import com.lumina.catalogue.model.MeterType;
+import com.lumina.catalogue.model.constraint.Constraint;
 import com.lumina.meter.model.Line;
 import io.soabase.recordbuilder.core.RecordBuilder;
 import java.util.List;
-
 
 @RecordBuilder
 public record CatalogueItemDto(

@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 import com.lumina.catalogue.CatalogueService;
 import com.lumina.catalogue.model.*;
 import com.lumina.catalogue.model.CatalogueItemBuilder;
-
 import com.lumina.catalogue.model.constraint.Constraint;
 import com.lumina.catalogue.model.constraint.NumberLineConstraintBuilder;
 import com.lumina.catalogue.model.constraint.TextLineConstraintBuilder;

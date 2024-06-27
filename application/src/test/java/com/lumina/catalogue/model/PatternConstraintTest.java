@@ -1,14 +1,14 @@
 package com.lumina.catalogue.model;
 
+import static com.lumina.validation.ErrorCode.INVALID_PATTERN;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.lumina.catalogue.model.constraint.PatternLineConstraintBuilder;
 import com.lumina.meter.model.Line;
 import com.lumina.validation.Errors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static com.lumina.validation.ErrorCode.INVALID_PATTERN;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class PatternConstraintTest {
   Errors errors;
@@ -17,7 +17,6 @@ public class PatternConstraintTest {
   void setup() {
     errors = new Errors("meter");
   }
-
 
   @Test
   @DisplayName("A value should match pattern")
@@ -35,10 +34,7 @@ public class PatternConstraintTest {
     errors.pushContext("lines[0]");
     patternConstraint.validate(n1, errors, ValidationStage.Connection);
     assertThat(errors.getErrorCount()).isZero();
-
   }
-
-
 
   @Test
   @DisplayName("A value should match pattern or will produce a field error")
@@ -63,8 +59,4 @@ public class PatternConstraintTest {
 
     assertThat(err.fieldContext()).isEqualTo("meter.lines[0]");
   }
-
-
-
-
 }

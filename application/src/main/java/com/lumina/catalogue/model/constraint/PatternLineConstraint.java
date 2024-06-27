@@ -8,12 +8,9 @@ import com.lumina.validation.ErrorBuilder;
 import com.lumina.validation.Errors;
 import com.lumina.validation.ValidationStageEnum;
 import io.soabase.recordbuilder.core.RecordBuilder;
-import org.springframework.data.annotation.TypeAlias;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @RecordBuilder
 @Document
@@ -48,6 +45,4 @@ public record PatternLineConstraint(
       }
     }
   }
-
-
 }

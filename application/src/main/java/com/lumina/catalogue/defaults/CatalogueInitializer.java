@@ -16,30 +16,21 @@ public class CatalogueInitializer implements ApplicationListener<ContextRefreshe
     this.presetService = presetService;
   }
 
-
   @Override
   public void onApplicationEvent(ContextRefreshedEvent event) {
 
-   var lorawanGatewayIsPresent =  presetService.findByTypeAndLevel(MeterType.LORAWAN, Level.GATEWAY)
-        .isPresent();
+    var lorawanGatewayIsPresent =
+        presetService.findByTypeAndLevel(MeterType.LORAWAN, Level.GATEWAY).isPresent();
 
-   if(!lorawanGatewayIsPresent){
-     presetService.create(LorawanGateway.preset());
-   }
-
-    var lorawanDeviceIsPresent =  presetService.findByTypeAndLevel(MeterType.LORAWAN, Level.DEVICE)
-        .isPresent();
-
-    if(!lorawanDeviceIsPresent){
-      presetService.create(LorawanDevice.preset());
+    if (!lorawanGatewayIsPresent) {
+      presetService.create(LorawanGateway.preset());
     }
 
+    var lorawanDeviceIsPresent =
+        presetService.findByTypeAndLevel(MeterType.LORAWAN, Level.DEVICE).isPresent();
 
+    if (!lorawanDeviceIsPresent) {
+      presetService.create(LorawanDevice.preset());
+    }
   }
-
-
-
-
-
-
 }

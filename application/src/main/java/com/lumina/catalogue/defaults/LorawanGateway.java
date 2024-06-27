@@ -5,14 +5,17 @@ import com.lumina.catalogue.model.constraint.Constraint;
 import com.lumina.catalogue.model.constraint.NumberLineConstraintBuilder;
 import com.lumina.catalogue.model.constraint.TextLineConstraintBuilder;
 import com.lumina.meter.model.Line;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class LorawanGateway {
 
-  public static Preset preset(){
-    return PresetBuilder.builder().type(MeterType.LORAWAN).level(Level.GATEWAY).constraints(constraints()).build();
+  public static Preset preset() {
+    return PresetBuilder.builder()
+        .type(MeterType.LORAWAN)
+        .level(Level.GATEWAY)
+        .constraints(constraints())
+        .build();
   }
 
   static List<Constraint<? extends Line>> constraints() {
@@ -77,7 +80,7 @@ public class LorawanGateway {
             .stage(ValidationStage.Connection)
             .build();
 
-// HEXADECIMAL
+    // HEXADECIMAL
     Constraint<? extends Line> devEui =
         TextLineConstraintBuilder.builder()
             .name("lorawan.devEui")
@@ -87,7 +90,6 @@ public class LorawanGateway {
             .isRequired(true)
             .stage(ValidationStage.Connection)
             .build();
-
 
     Constraint<? extends Line> comInterval =
         NumberLineConstraintBuilder.builder()
@@ -99,8 +101,6 @@ public class LorawanGateway {
             .stage(ValidationStage.Connection)
             .build();
 
-
-
     Constraint<? extends Line> cupsUri =
         TextLineConstraintBuilder.builder()
             .name("cupsUri")
@@ -109,7 +109,6 @@ public class LorawanGateway {
             .isRequired(false)
             .stage(ValidationStage.Connection)
             .build();
-
 
     Constraint<? extends Line> freqBand =
         TextLineConstraintBuilder.builder()
@@ -131,18 +130,19 @@ public class LorawanGateway {
             .build();
 
     var f =
-        new ArrayList<>(List.of(
-            name,
-            comInterval,
-            pemCert,
-            publicKey,
-            privateKey,
-            lnsTrust,
-            lnsUri,
-            cupsUri,
-            devEui,
-            freqBand,
-            awsId));
+        new ArrayList<>(
+            List.of(
+                name,
+                comInterval,
+                pemCert,
+                publicKey,
+                privateKey,
+                lnsTrust,
+                lnsUri,
+                cupsUri,
+                devEui,
+                freqBand,
+                awsId));
 
     f.addAll(AwsThing.constraints());
     return f;

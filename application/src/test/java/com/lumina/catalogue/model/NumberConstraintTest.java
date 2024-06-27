@@ -21,11 +21,9 @@ public class NumberConstraintTest {
     errors = new Errors("meter");
   }
 
-
-
-
   @Test
-  @DisplayName("A number that is not an integer passes to an integer NumberConstraint will produce error")
+  @DisplayName(
+      "A number that is not an integer passes to an integer NumberConstraint will produce error")
   void valueMustBeAnIntegerNumber() {
     var n1 = new Line.Number("gtThanEqualToZero", INTEGER, 5.5d);
     var numberConstraint =
@@ -44,9 +42,8 @@ public class NumberConstraintTest {
     assertThat(errors.hasFieldError("gtThanEqualToZero")).isTrue();
     var err = errors.fieldError("gtThanEqualToZero");
     assertThat(err.rejectedValue()).isInstanceOf(Double.class).isEqualTo(5.5);
-    assertThat(err.errorCode()).isEqualTo( NOT_INTEGER);
+    assertThat(err.errorCode()).isEqualTo(NOT_INTEGER);
     assertThat(err.errorCodeArgs()).contains(5.5);
-
   }
 
   @Test
@@ -118,7 +115,6 @@ public class NumberConstraintTest {
     assertThat(err.fieldContext()).isEqualTo("meter.lines[0]");
   }
 
-
   @Test
   @DisplayName("Double value less than min should not produce an error before validation stage")
   void doubleLessThanEqualToMinShouldNotFailBeforeValidationStage() {
@@ -133,7 +129,7 @@ public class NumberConstraintTest {
             .stage(ValidationStage.Connection)
             .build();
     errors.pushContext("lines[0]");
-    numberConstraint.validate(n1, errors,  ValidationStage.Connection);
+    numberConstraint.validate(n1, errors, ValidationStage.Connection);
     assertThat(errors.getErrorCount()).isOne();
     assertThat(errors.hasFieldError("lessMinFive")).isTrue();
     var err = errors.fieldError("lessMinFive");

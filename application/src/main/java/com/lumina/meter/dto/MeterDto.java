@@ -5,7 +5,6 @@ import com.lumina.catalogue.model.constraint.Constraint;
 import com.lumina.meter.model.Line;
 import com.lumina.meter.model.Meter;
 import io.soabase.recordbuilder.core.RecordBuilder;
-
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.data.annotation.Id;
@@ -21,13 +20,12 @@ public record MeterDto(
     String manufacturer,
     List<Line> lines,
     List<Constraint<? extends Line>> constraints,
-    ValidationStage stage)  implements MeterDtoBuilder.With {
-
-
+    ValidationStage stage)
+    implements MeterDtoBuilder.With {
 
   public static MeterDto from(CatalogueItem item, Meter meter, boolean withConstraints) {
 
-    return    MeterDtoBuilder.builder()
+    return MeterDtoBuilder.builder()
         .id(meter.id())
         .locationId(meter.locationId())
         .model(meter.model())
@@ -36,8 +34,8 @@ public record MeterDto(
         .type(item.type())
         .manufacturer(item.manufacturer())
         .lines(meter.lines())
-        .stage(meter.stage()).constraints(withConstraints ? item.constraints() : new ArrayList<>())
+        .stage(meter.stage())
+        .constraints(withConstraints ? item.constraints() : new ArrayList<>())
         .build();
   }
-
 }

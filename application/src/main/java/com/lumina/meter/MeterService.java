@@ -3,7 +3,6 @@ package com.lumina.meter;
 import com.lumina.NotFoundException;
 import com.lumina.catalogue.ItemRepository;
 import com.lumina.catalogue.model.CatalogueItem;
-import com.lumina.catalogue.model.ValidationStage;
 import com.lumina.meter.dto.MeterDto;
 import com.lumina.meter.model.Meter;
 import com.lumina.meter.validation.MeterValidator;
@@ -21,7 +20,9 @@ public class MeterService {
   private final MeterValidator meterValidator;
 
   public MeterService(
-      MeterRepository repository, ItemRepository catalogueItemRepository, MeterValidator meterValidator) {
+      MeterRepository repository,
+      ItemRepository catalogueItemRepository,
+      MeterValidator meterValidator) {
     this.repository = repository;
     this.catalogueItemRepository = catalogueItemRepository;
     this.meterValidator = meterValidator;
@@ -73,10 +74,8 @@ public class MeterService {
     return repository.findByLocationId(locationId);
   }
 
-  MeterDto toMeterDto(Meter meter, boolean withConstraints){
+  MeterDto toMeterDto(Meter meter, boolean withConstraints) {
     var catItem = findCatalogueItemByModel(meter.model());
     return MeterDto.from(catItem, meter, withConstraints);
   }
-
-
 }

@@ -23,6 +23,18 @@ java {
     sourceCompatibility = JavaVersion.VERSION_22
     targetCompatibility = JavaVersion.VERSION_22
 }
+subprojects {
+    apply(plugin = "com.diffplug.spotless")
+    spotless {
+        java {
+            googleJavaFormat("1.22.0")
+            indentWithSpaces(2)
+            formatAnnotations()
+        }
+    }
+}
+
+
 
 
 tasks.withType<Test> {
@@ -40,6 +52,8 @@ tasks.withType<Test>().configureEach {
 tasks.withType<JavaExec>().configureEach {
     jvmArgs("--enable-preview")
 }
+
+
 
 
 

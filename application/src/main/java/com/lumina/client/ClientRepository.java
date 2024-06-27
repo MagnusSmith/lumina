@@ -7,5 +7,4 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 interface ClientRepository extends MongoRepository<Client, String> {
 
   Optional<Client> findById(String id);
-
 }

@@ -14,11 +14,11 @@ You can use this image to run the service locally without having to build the pr
 To pull the image you will need to use the personal access token to login to the docker repository 
 ```
 export CRPAT=<the pat token>
-echo $CR_PAT | docker login ghcr.io -u USERNAME --password-stdin
+echo $CRPAT | docker login ghcr.io -u USERNAME --password-stdin
 ```
 This should return Login Succeeded!
 
-Now you can start thenlocal docker stack that will pull the meter-config-serice from the container registry and startup the application with a local mongodb
+Now you can start then local docker stack that will pull the meter-config-serice from the container registry and startup the application with a local mongodb
 
 
 In the same directory as the compose.yaml file enter

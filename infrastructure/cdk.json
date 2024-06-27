@@ -1,0 +1,10 @@
+{
+  "context": {
+    "applicationName": "meter-config-service",
+    "region": "us-east-1",
+    "accountId": "992382386289",
+    "springProfile": "aws",
+    "environmentName": "staging",
+    "dockerImageUrl": "ghcr.io/lumina360/meter-config-service:latest"
+  }
+}

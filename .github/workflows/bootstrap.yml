@@ -1,0 +1,48 @@
+# This is a one-off workflow to set up everything we need to deploy Docker images
+# with CDK. This workflow deploys everything that is not specific to a certain
+# environment (staging, prod, ...).
+name: 01 - Manually Bootstrap the CDK Environment
+
+on:
+  workflow_dispatch
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    name: Bootstrap CDK
+ #   if: github.ref == 'refs/heads/feature/aws_ecr_deploy'
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 22
+        uses: actions/setup-java@v4
+        with:
+          java-version: '22'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      # Configure Gradle for optimal use in GiHub Actions, including caching of downloaded dependencies.
+      # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
+        with:
+          gradle-version: '8.8'
+
+      - name: NPM install
+        working-directory: infrastructure
+        run: npm install
+
+      - name: Deploy CDK bootstrap stack
+        working-directory: infrastructure
+        run: npm run bootstrap
+
+      - name: Deploy Docker registry
+        working-directory: infrastructure
+        run: npm run repository:deploy

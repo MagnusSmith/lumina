@@ -22,6 +22,14 @@ java {
     }
     sourceCompatibility = JavaVersion.VERSION_22
     targetCompatibility = JavaVersion.VERSION_22
+
+//    compileJava {
+//        options.compilerArgs += ["--enable-preview"]
+//    }
+//    test {
+//        jvmArgs(["--enable-preview"])
+//    }
+
 }
 subprojects {
     apply(plugin = "com.diffplug.spotless")
@@ -33,12 +41,6 @@ subprojects {
         }
     }
 
-    compileJava {
-        options.compilerArgs += ["--enable-preview"]
-    }
-    test {
-        jvmArgs(["--enable-preview"])
-    }
 
 
     tasks.withType<Test> {

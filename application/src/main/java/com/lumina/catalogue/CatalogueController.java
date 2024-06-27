@@ -19,78 +19,78 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/catalogue/")
 public class CatalogueController {
 
-  private final CatalogueService.Item itemService;
-  private final CatalogueService.PresetService presetService;
+    private final CatalogueService.Item itemService;
+    private final CatalogueService.PresetService presetService;
 
-  public CatalogueController(
-      CatalogueService.Item itemService, CatalogueService.PresetService presetService) {
-    this.itemService = itemService;
-    this.presetService = presetService;
-  }
+    public CatalogueController(
+            CatalogueService.Item itemService, CatalogueService.PresetService presetService) {
+        this.itemService = itemService;
+        this.presetService = presetService;
+    }
 
-  @PostMapping("item")
-  @ResponseStatus(HttpStatus.CREATED)
-  public CatalogueItemDto create(@Valid @RequestBody NewCatalogueItemDto newItem) {
-    var item = NewCatalogueItemDto.toModel(newItem);
-    var presetItem =
-        presetService
-            .findByTypeAndLevel(item.type(), item.level())
-            .map(
-                preset ->
-                    CatalogueItemBuilder.from(item)
-                        .with()
-                        .constraints(preset.constraints())
-                        .lines(preset.lines())
-                        .build())
-            .orElse(item);
+    @PostMapping("item")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CatalogueItemDto create(@Valid @RequestBody NewCatalogueItemDto newItem) {
+        var item = NewCatalogueItemDto.toModel(newItem);
+        var presetItem =
+                presetService
+                        .findByTypeAndLevel(item.type(), item.level())
+                        .map(
+                                preset ->
+                                        CatalogueItemBuilder.from(item)
+                                                .with()
+                                                .constraints(preset.constraints())
+                                                .lines(preset.lines())
+                                                .build())
+                        .orElse(item);
 
-    return CatalogueItemDto.from(itemService.create(presetItem));
-  }
+        return CatalogueItemDto.from(itemService.create(presetItem));
+    }
 
-  @PutMapping("item")
-  public CatalogueItemDto update(@Valid @RequestBody UpdateCatalogueItemDto item) {
+    @PutMapping("item")
+    public CatalogueItemDto update(@Valid @RequestBody UpdateCatalogueItemDto item) {
 
-    return CatalogueItemDto.from(itemService.update(UpdateCatalogueItemDto.toModel(item)));
-  }
+        return CatalogueItemDto.from(itemService.update(UpdateCatalogueItemDto.toModel(item)));
+    }
 
-  @DeleteMapping("item/{model}")
-  public void delete(@PathVariable String model) {
-    itemService.delete(model);
-  }
+    @DeleteMapping("item/{model}")
+    public void delete(@PathVariable String model) {
+        itemService.delete(model);
+    }
 
-  @GetMapping("items")
-  public List<CatalogueItemDto> getItems() {
-    return itemService.findAll().stream().map(CatalogueItemDto::from).toList();
-  }
+    @GetMapping("items")
+    public List<CatalogueItemDto> getItems() {
+        return itemService.findAll().stream().map(CatalogueItemDto::from).toList();
+    }
 
-  @GetMapping("item/{model}")
-  public ResponseEntity<CatalogueItemDto> getItem(@PathVariable String model) {
-    return itemService
-        .findByModel(model)
-        .map(CatalogueItemDto::from)
-        .map(ResponseEntity::ok)
-        .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-  }
+    @GetMapping("item/{model}")
+    public ResponseEntity<CatalogueItemDto> getItem(@PathVariable String model) {
+        return itemService
+                .findByModel(model)
+                .map(CatalogueItemDto::from)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
 
-  @PostMapping("preset")
-  @ResponseStatus(HttpStatus.CREATED)
-  public PresetDto.Info create(@Valid @RequestBody PresetDto.New newPreset) {
+    @PostMapping("preset")
+    @ResponseStatus(HttpStatus.CREATED)
+    public PresetDto.Info create(@Valid @RequestBody PresetDto.New newPreset) {
 
-    return PresetDto.from(presetService.create(PresetDto.toModel(newPreset)));
-  }
+        return PresetDto.from(presetService.create(PresetDto.toModel(newPreset)));
+    }
 
-  @PutMapping("preset")
-  public PresetDto.Info update(@Valid @RequestBody PresetDto.Update updatePreset) {
-    return PresetDto.from(presetService.update(PresetDto.toModel(updatePreset)));
-  }
+    @PutMapping("preset")
+    public PresetDto.Info update(@Valid @RequestBody PresetDto.Update updatePreset) {
+        return PresetDto.from(presetService.update(PresetDto.toModel(updatePreset)));
+    }
 
-  @GetMapping("preset/{type}/{level}")
-  public ResponseEntity<PresetDto.Info> getPreset(
-      @PathVariable MeterType type, @PathVariable Level level) {
-    return presetService
-        .findByTypeAndLevel(type, level)
-        .map(PresetDto::from)
-        .map(ResponseEntity::ok)
-        .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-  }
+    @GetMapping("preset/{type}/{level}")
+    public ResponseEntity<PresetDto.Info> getPreset(
+            @PathVariable MeterType type, @PathVariable Level level) {
+        return presetService
+                .findByTypeAndLevel(type, level)
+                .map(PresetDto::from)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
 }

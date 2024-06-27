@@ -8,27 +8,25 @@ import org.springframework.stereotype.Service;
 @Service
 public class ClientService {
 
+    private final ClientRepository repository;
 
-  private final ClientRepository repository;
+    public ClientService(ClientRepository repository) {
+        this.repository = repository;
+    }
 
-  public ClientService(ClientRepository repository) {
-    this.repository = repository;
-  }
+    public Client create(Client client) {
+        return repository.save(client);
+    }
 
-  public Client create(Client client) {
-    return repository.save(client);
-  }
+    public Client update(Client client) {
+        return repository.save(client);
+    }
 
-  public Client update(Client client) {
-    return repository.save(client);
-  }
+    public Optional<Client> findById(String id) {
+        return repository.findById(id);
+    }
 
-  public Optional<Client> findById(String id) {
-    return repository.findById(id);
-  }
-
-
-  public List<Client> findAll() {
-    return repository.findAll();
-  }
+    public List<Client> findAll() {
+        return repository.findAll();
+    }
 }

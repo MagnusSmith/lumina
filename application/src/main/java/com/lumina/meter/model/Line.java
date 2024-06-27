@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.lumina.catalogue.model.NumberType;
 import com.lumina.catalogue.model.constraint.Constraint;
-
 import java.util.function.Predicate;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
@@ -16,18 +15,19 @@ import java.util.function.Predicate;
     @Type(value = Line.ReadOnly.class, name = "READ_ONLY")
 })
 public sealed interface Line permits Line.Number, Line.Text, Line.Pattern, Line.ReadOnly {
-  String name();
-  Object value();
-  default Predicate<Constraint<?>> isConstrainedBy() {
-    return c ->  name().equals(c.name());
-  }
+    String name();
 
+    Object value();
 
-  record Number(String name, NumberType numberType, Double value) implements Line {}
+    default Predicate<Constraint<?>> isConstrainedBy() {
+        return c -> name().equals(c.name());
+    }
 
-  record Text(String name, String value) implements Line {}
+    record Number(String name, NumberType numberType, Double value) implements Line {}
 
-  record ReadOnly(String name, String value) implements Line {}
+    record Text(String name, String value) implements Line {}
 
-  record Pattern(String name, String value) implements Line {}
+    record ReadOnly(String name, String value) implements Line {}
+
+    record Pattern(String name, String value) implements Line {}
 }

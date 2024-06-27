@@ -14,8 +14,11 @@ import java.lang.annotation.Target;
 @Documented
 @Constraint(validatedBy = EnumNamePatternValidator.class)
 public @interface EnumNamePattern {
-  String regexp();
-  String message() default "must match \"{regexp}\"";
-  Class<?>[] groups() default {};
-  Class<? extends Payload>[] payload() default {};
+    String regexp();
+
+    String message() default "must match \"{regexp}\"";
+
+    Class<?>[] groups() default {};
+
+    Class<? extends Payload>[] payload() default {};
 }

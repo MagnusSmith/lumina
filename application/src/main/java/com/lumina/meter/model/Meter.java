@@ -10,4 +10,5 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "meter")
 @TypeAlias("Meter")
 @RecordBuilder
-public record Meter(@Id String id, String locationId, String model, List<Line> lines, ValidationStage stage) {}
+public record Meter(
+        @Id String id, String locationId, String model, List<Line> lines, ValidationStage stage) {}

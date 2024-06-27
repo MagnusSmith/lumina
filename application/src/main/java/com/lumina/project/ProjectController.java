@@ -10,20 +10,20 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/")
 public class ProjectController {
-  private final ProjectService projectService;
+    private final ProjectService projectService;
 
-  public ProjectController(ProjectService projectService) {
-    this.projectService = projectService;
-  }
+    public ProjectController(ProjectService projectService) {
+        this.projectService = projectService;
+    }
 
-  @PostMapping("project")
-  @ResponseStatus(HttpStatus.CREATED)
-  public Project create(@RequestBody @Validated NewProjectDto newProjectDto) {
-    return projectService.create(NewProjectDto.toModel(newProjectDto));
-  }
+    @PostMapping("project")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Project create(@RequestBody @Validated NewProjectDto newProjectDto) {
+        return projectService.create(NewProjectDto.toModel(newProjectDto));
+    }
 
-  @PutMapping("project")
-  public Project update(@RequestBody @Validated UpdateProjectDto updateProjectDto) {
-    return projectService.update(UpdateProjectDto.toModel(updateProjectDto));
-  }
+    @PutMapping("project")
+    public Project update(@RequestBody @Validated UpdateProjectDto updateProjectDto) {
+        return projectService.update(UpdateProjectDto.toModel(updateProjectDto));
+    }
 }

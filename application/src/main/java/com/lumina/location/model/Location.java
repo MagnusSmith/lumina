@@ -13,15 +13,15 @@ import org.springframework.data.mongodb.core.mapping.DocumentReference;
 @Document(collection = "location")
 @TypeAlias("Location")
 public record Location(
-    @Id String id,
-    String name,
-    String projectId,
-    @ReadOnlyProperty
-        @DocumentReference(lookup = "{'location':?#{#self.id}}", collection = "meterData")
-        List<Meter> meters)
-    implements LocationBuilder.With {
+        @Id String id,
+        String name,
+        String projectId,
+        @ReadOnlyProperty
+                @DocumentReference(lookup = "{'location':?#{#self.id}}", collection = "meterData")
+                List<Meter> meters)
+        implements LocationBuilder.With {
 
-  public Location(String name, String projectId) {
-    this(null, name, projectId, null);
-  }
+    public Location(String name, String projectId) {
+        this(null, name, projectId, null);
+    }
 }

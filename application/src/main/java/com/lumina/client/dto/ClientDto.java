@@ -6,8 +6,8 @@ import java.util.List;
 
 public record ClientDto(String id, String name, List<ProjectDto> projects) {
 
-  public static ClientDto from(Client client) {
-     return new ClientDto(client.id(), client.name(), client.projects().stream().map(ProjectDto::from).toList());
-  }
-
+    public static ClientDto from(Client client) {
+        return new ClientDto(
+                client.id(), client.name(), client.projects().stream().map(ProjectDto::from).toList());
+    }
 }

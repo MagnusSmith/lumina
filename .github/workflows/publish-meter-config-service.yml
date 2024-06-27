@@ -1,5 +1,5 @@
 # This workflow builds the Docker image for the meter-config-service and then deploys the application.
-name: Publish meter-config-service
+name: 03 - Publish meter-config-service
 
 env:
   AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}

@@ -10,32 +10,32 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/")
 public class LocationController {
-    private final LocationService locationService;
+  private final LocationService locationService;
 
-    public LocationController(LocationService locationService) {
-        this.locationService = locationService;
-    }
+  public LocationController(LocationService locationService) {
+    this.locationService = locationService;
+  }
 
-    @GetMapping("location/{id}")
-    public ResponseEntity<LocationShortDto> findById(@PathVariable String id) {
-        return locationService
-                .findById(id)
-                .map(LocationShortDto::from)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-    }
+  @GetMapping("location/{id}")
+  public ResponseEntity<LocationShortDto> findById(@PathVariable String id) {
+    return locationService
+        .findById(id)
+        .map(LocationShortDto::from)
+        .map(ResponseEntity::ok)
+        .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+  }
 
-    @PostMapping("location")
-    @ResponseStatus(HttpStatus.CREATED)
-    public LocationShortDto create(@RequestBody NewLocationDto newLocation) {
+  @PostMapping("location")
+  @ResponseStatus(HttpStatus.CREATED)
+  public LocationShortDto create(@RequestBody NewLocationDto newLocation) {
 
-        var location = locationService.create(NewLocationDto.toModel(newLocation));
-        return LocationShortDto.from(location);
-    }
+    var location = locationService.create(NewLocationDto.toModel(newLocation));
+    return LocationShortDto.from(location);
+  }
 
-    @PutMapping("location")
-    public LocationShortDto update(@RequestBody UpdateLocationDto updateLocation) {
-        var location = locationService.update(UpdateLocationDto.toModel(updateLocation));
-        return LocationShortDto.from(location);
-    }
+  @PutMapping("location")
+  public LocationShortDto update(@RequestBody UpdateLocationDto updateLocation) {
+    var location = locationService.update(UpdateLocationDto.toModel(updateLocation));
+    return LocationShortDto.from(location);
+  }
 }

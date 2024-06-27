@@ -14,22 +14,22 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableMongoRepositories(basePackages = "com.lumina")
 public class MongoConfig extends AbstractMongoClientConfiguration {
 
-    @Value("${spring.data.mongodb.uri}")
-    private String mongoUri;
+  @Value("${spring.data.mongodb.uri}")
+  private String mongoUri;
 
-    @Override
-    protected String getDatabaseName() {
-        return "test";
-    }
+  @Override
+  protected String getDatabaseName() {
+    return "test";
+  }
 
-    @Override
-    public MongoClient mongoClient() {
-        ConnectionString connectionString = new ConnectionString(mongoUri);
-        return MongoClients.create(connectionString);
-    }
+  @Override
+  public MongoClient mongoClient() {
+    ConnectionString connectionString = new ConnectionString(mongoUri);
+    return MongoClients.create(connectionString);
+  }
 
-    @Bean
-    public MongoTemplate mongoTemplate() {
-        return new MongoTemplate(mongoClient(), getDatabaseName());
-    }
+  @Bean
+  public MongoTemplate mongoTemplate() {
+    return new MongoTemplate(mongoClient(), getDatabaseName());
+  }
 }

@@ -15,34 +15,34 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @RecordBuilder
 @Document
 public record PatternLineConstraint(
-        String name,
-        String description,
-        String pattern,
-        boolean isRequired,
-        @ValidationStageEnum ValidationStage stage)
-        implements Constraint<Line.Pattern> {
-    @Override
-    public void validate(Line.Pattern line, Errors errors, ValidationStage stage) {
-        if (stage().shouldValidateAt(stage)) {
-            var value = line.value();
+    String name,
+    String description,
+    String pattern,
+    boolean isRequired,
+    @ValidationStageEnum ValidationStage stage)
+    implements Constraint<Line.Pattern> {
+  @Override
+  public void validate(Line.Pattern line, Errors errors, ValidationStage stage) {
+    if (stage().shouldValidateAt(stage)) {
+      var value = line.value();
 
-            Pattern regExPattern;
-            try {
+      Pattern regExPattern;
+      try {
 
-                regExPattern = Pattern.compile(pattern);
+        regExPattern = Pattern.compile(pattern);
 
-                if (!regExPattern.matcher(value).matches()) {
-                    errors.add(
-                            ErrorBuilder.builder()
-                                    .field(name)
-                                    .errorCode(INVALID_PATTERN)
-                                    .errorCodeArgs(new Object[] {value, pattern})
-                                    .rejectedValue(value)
-                                    .build());
-                }
-            } catch (PatternSyntaxException e) {
-                throw new IllegalArgumentException("Given regex is invalid", e);
-            }
+        if (!regExPattern.matcher(value).matches()) {
+          errors.add(
+              ErrorBuilder.builder()
+                  .field(name)
+                  .errorCode(INVALID_PATTERN)
+                  .errorCodeArgs(new Object[] {value, pattern})
+                  .rejectedValue(value)
+                  .build());
         }
+      } catch (PatternSyntaxException e) {
+        throw new IllegalArgumentException("Given regex is invalid", e);
+      }
     }
+  }
 }

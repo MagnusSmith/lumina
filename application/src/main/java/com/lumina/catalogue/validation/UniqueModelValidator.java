@@ -8,14 +8,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class UniqueModelValidator implements ConstraintValidator<UniqueModel, String> {
 
-    private final ItemRepository repos;
+  private final ItemRepository repos;
 
-    UniqueModelValidator(final ItemRepository repos) {
-        this.repos = repos;
-    }
+  UniqueModelValidator(final ItemRepository repos) {
+    this.repos = repos;
+  }
 
-    @Override
-    public boolean isValid(String model, ConstraintValidatorContext constraintValidatorContext) {
-        return repos.findByModel(model).isEmpty();
-    }
+  @Override
+  public boolean isValid(String model, ConstraintValidatorContext constraintValidatorContext) {
+    return repos.findByModel(model).isEmpty();
+  }
 }

@@ -1,22 +1,16 @@
 package com.lumina.cdk;
 
+import static com.lumina.cdk.Validations.requireNonEmpty;
+
 import dev.stratospheric.cdk.ApplicationEnvironment;
 import dev.stratospheric.cdk.Network;
-
 import dev.stratospheric.cdk.Service;
+import java.util.HashMap;
+import java.util.Map;
 import software.amazon.awscdk.App;
 import software.amazon.awscdk.Environment;
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.StackProps;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static java.util.Collections.singletonList;
-
-
-import static com.lumina.cdk.Validations.requireNonEmpty;
 
 public class ServiceApp {
   public static void main(final String[] args) {
@@ -42,28 +36,34 @@ public class ServiceApp {
 
     Environment awsEnvironment = makeEnv(accountId, region);
 
-    ApplicationEnvironment applicationEnvironment = new ApplicationEnvironment(
-        applicationName,
-        environmentName
-    );
+    ApplicationEnvironment applicationEnvironment =
+        new ApplicationEnvironment(applicationName, environmentName);
 
-    Stack serviceStack = new Stack(app, "ServiceStack", StackProps.builder()
-        .stackName(applicationEnvironment.prefix("Service"))
-        .env(awsEnvironment)
-        .build());
+    Stack serviceStack =
+        new Stack(
+            app,
+            "ServiceStack",
+            StackProps.builder()
+                .stackName(applicationEnvironment.prefix("Service"))
+                .env(awsEnvironment)
+                .build());
 
     Service.DockerImageSource dockerImageSource = new Service.DockerImageSource(dockerImageUrl);
-    Network.NetworkOutputParameters networkOutputParameters = Network.getOutputParametersFromParameterStore(serviceStack, applicationEnvironment.getEnvironmentName());
-    Service.ServiceInputParameters serviceInputParameters = new Service.ServiceInputParameters(dockerImageSource, environmentVariables(springProfile))
-        .withHealthCheckIntervalSeconds(30);
+    Network.NetworkOutputParameters networkOutputParameters =
+        Network.getOutputParametersFromParameterStore(
+            serviceStack, applicationEnvironment.getEnvironmentName());
+    Service.ServiceInputParameters serviceInputParameters =
+        new Service.ServiceInputParameters(dockerImageSource, environmentVariables(springProfile))
+            .withHealthCheckIntervalSeconds(30);
 
-    Service service = new Service(
-        serviceStack,
-        "Service",
-        awsEnvironment,
-        applicationEnvironment,
-        serviceInputParameters,
-        networkOutputParameters);
+    Service service =
+        new Service(
+            serviceStack,
+            "Service",
+            awsEnvironment,
+            applicationEnvironment,
+            serviceInputParameters,
+            networkOutputParameters);
 
     app.synth();
   }
@@ -75,9 +75,6 @@ public class ServiceApp {
   }
 
   static Environment makeEnv(String account, String region) {
-    return Environment.builder()
-        .account(account)
-        .region(region)
-        .build();
+    return Environment.builder().account(account).region(region).build();
   }
 }

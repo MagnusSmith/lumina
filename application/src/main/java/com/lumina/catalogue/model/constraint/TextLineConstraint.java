@@ -15,40 +15,40 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 @RecordBuilder
 public record TextLineConstraint(
-        String name,
-        String description,
-        Integer minLength,
-        Integer maxLength,
-        boolean isRequired,
-        @ValidationStageEnum ValidationStage stage)
-        implements Constraint<Line.Text> {
+    String name,
+    String description,
+    Integer minLength,
+    Integer maxLength,
+    boolean isRequired,
+    @ValidationStageEnum ValidationStage stage)
+    implements Constraint<Line.Text> {
 
-    public void validate(Line.Text line, Errors errors, ValidationStage validationStage) {
-        if (stage().shouldValidateAt(validationStage)) {
-            var value = line.value();
-            if (value instanceof String s) {
-                if (StringUtils.isBlank(s)) {
-                    errors.rejectValue(name, REQUIRED);
-                } else {
-                    if (Objects.nonNull(minLength) && minLength > s.length()) {
-                        errors.add(
-                                ErrorBuilder.builder()
-                                        .field(name)
-                                        .errorCode(MIN_LENGTH)
-                                        .errorCodeArgs(new Object[] {value, minLength})
-                                        .rejectedValue(value)
-                                        .build());
-                    } else if (Objects.nonNull(maxLength) && maxLength < s.length()) {
-                        errors.add(
-                                ErrorBuilder.builder()
-                                        .field(name)
-                                        .errorCode(MAX_LENGTH)
-                                        .errorCodeArgs(new Object[] {value, maxLength})
-                                        .rejectedValue(value)
-                                        .build());
-                    }
-                }
-            }
+  public void validate(Line.Text line, Errors errors, ValidationStage validationStage) {
+    if (stage().shouldValidateAt(validationStage)) {
+      var value = line.value();
+      if (value instanceof String s) {
+        if (StringUtils.isBlank(s)) {
+          errors.rejectValue(name, REQUIRED);
+        } else {
+          if (Objects.nonNull(minLength) && minLength > s.length()) {
+            errors.add(
+                ErrorBuilder.builder()
+                    .field(name)
+                    .errorCode(MIN_LENGTH)
+                    .errorCodeArgs(new Object[] {value, minLength})
+                    .rejectedValue(value)
+                    .build());
+          } else if (Objects.nonNull(maxLength) && maxLength < s.length()) {
+            errors.add(
+                ErrorBuilder.builder()
+                    .field(name)
+                    .errorCode(MAX_LENGTH)
+                    .errorCodeArgs(new Object[] {value, maxLength})
+                    .rejectedValue(value)
+                    .build());
+          }
         }
+      }
     }
+  }
 }

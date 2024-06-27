@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public record NewClientDto(String name) {
 
-    public static Client toModel(NewClientDto newClient) {
-        return ClientBuilder.builder().name(newClient.name()).projects(new ArrayList<>()).build();
-    }
+  public static Client toModel(NewClientDto newClient) {
+    return ClientBuilder.builder().name(newClient.name()).projects(new ArrayList<>()).build();
+  }
 }

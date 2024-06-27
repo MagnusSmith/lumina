@@ -11,4 +11,4 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @TypeAlias("Meter")
 @RecordBuilder
 public record Meter(
-        @Id String id, String locationId, String model, List<Line> lines, ValidationStage stage) {}
+    @Id String id, String locationId, String model, List<Line> lines, ValidationStage stage) {}

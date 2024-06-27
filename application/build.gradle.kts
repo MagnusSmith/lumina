@@ -4,7 +4,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.4"
     id("io.freefair.lombok") version "8.6"
     id("com.google.cloud.tools.jib") version "3.4.2"
-    id("com.diffplug.spotless") version "7.0.0.BETA1"
+
 }
 
 
@@ -72,16 +72,7 @@ jib {
         annotationProcessor("io.soabase.record-builder:record-builder-processor:41")
     }
 
-//subprojects {
-    spotless {
-        java {
-            googleJavaFormat("1.22.0")
-            indentWithTabs(1)
-            indentWithSpaces(2)
-            formatAnnotations()
-        }
-    }
-//}
+
 
 
 

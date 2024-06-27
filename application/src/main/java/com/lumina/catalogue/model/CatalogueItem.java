@@ -15,26 +15,26 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @RecordBuilder
 public record CatalogueItem(
 
-        // @NotBlank(message = "Id is mandatory")
-        @Nullable String id,
-        // @UniqueModel
-        @NotBlank(message = "Model is mandatory") String model,
-        @EnumNamePattern(regexp = "GATEWAY|DEVICE") Level level,
-        @EnumNamePattern(regexp = "LORAWAN|MODBUS|SIDEWALK") MeterType type,
-        @NotBlank(message = "Description is mandatory") String description,
-        @NotBlank(message = "Manufacturer is mandatory") String manufacturer,
-        List<? extends Line> lines,
-        List<Constraint<? extends Line>> constraints)
-        implements Item {
+    // @NotBlank(message = "Id is mandatory")
+    @Nullable String id,
+    // @UniqueModel
+    @NotBlank(message = "Model is mandatory") String model,
+    @EnumNamePattern(regexp = "GATEWAY|DEVICE") Level level,
+    @EnumNamePattern(regexp = "LORAWAN|MODBUS|SIDEWALK") MeterType type,
+    @NotBlank(message = "Description is mandatory") String description,
+    @NotBlank(message = "Manufacturer is mandatory") String manufacturer,
+    List<? extends Line> lines,
+    List<Constraint<? extends Line>> constraints)
+    implements Item {
 
-    public CatalogueItem(
-            String model,
-            Level level,
-            MeterType type,
-            String description,
-            String manufacturer,
-            List<? extends Line> lines,
-            List<Constraint<? extends Line>> constraints) {
-        this(null, model, level, type, description, manufacturer, lines, constraints);
-    }
+  public CatalogueItem(
+      String model,
+      Level level,
+      MeterType type,
+      String description,
+      String manufacturer,
+      List<? extends Line> lines,
+      List<Constraint<? extends Line>> constraints) {
+    this(null, model, level, type, description, manufacturer, lines, constraints);
+  }
 }

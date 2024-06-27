@@ -6,5 +6,5 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "catalogue")
 @TypeAlias("Item")
 public sealed interface Item permits Preset, CatalogueItem {
-    String id();
+  String id();
 }

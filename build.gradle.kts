@@ -37,7 +37,7 @@ subprojects {
         options.compilerArgs += ["--enable-preview"]
     }
     test {
-        jvmArgs([""--enable-preview"])
+        jvmArgs(["--enable-preview"])
     }
 
 

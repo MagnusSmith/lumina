@@ -15,7 +15,7 @@ jobs:
   deploy:
     runs-on: ubuntu-20.04
     name: Bootstrap CDK
-    if: github.ref == 'refs/heads/feature/aws_ecr_deploy'
+ #   if: github.ref == 'refs/heads/feature/aws_ecr_deploy'
     steps:
 
       - name: Checkout code
@@ -36,13 +36,13 @@ jobs:
           gradle-version: '8.8'
 
       - name: NPM install
-        working-directory: cdk
+        working-directory: infrastructure
         run: npm install
 
       - name: Deploy CDK bootstrap stack
-        working-directory: cdk
+        working-directory: infrastructure
         run: npm run bootstrap
 
       - name: Deploy Docker registry
-        working-directory: cdk
+        working-directory: infrastructure
         run: npm run repository:deploy

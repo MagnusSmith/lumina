@@ -31,6 +31,9 @@ jobs:
         with:
           java-version: '22'
           distribution: 'temurin'
+          java-package: jdk
+          enable-preview: true
+
 
       # Configure Gradle for optimal use in GiHub Actions, including caching of downloaded dependencies.
       # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
@@ -103,6 +106,8 @@ jobs:
         with:
           java-version: '22'
           distribution: 'temurin'
+          java-package: jdk
+          enable-preview: true
 
       # Configure Gradle for optimal use in GiHub Actions, including caching of downloaded dependencies.
       # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md

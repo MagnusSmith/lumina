@@ -67,7 +67,6 @@ jobs:
     - name: Build with Gradle
       uses: gradle/gradle-build-action@v2
       with:
-        arguments: build --stacktrace
         java-version: '22'
         gradle-version: '8.8'
         working-directory: application

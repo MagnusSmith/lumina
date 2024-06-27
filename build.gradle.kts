@@ -33,6 +33,13 @@ subprojects {
         }
     }
 
+    compileJava {
+        options.compilerArgs += ['--enable-preview']
+    }
+    test {
+        jvmArgs(['--enable-preview'])
+    }
+
 
     tasks.withType<Test> {
         useJUnitPlatform()

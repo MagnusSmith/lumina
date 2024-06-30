@@ -15,7 +15,7 @@ public record Error(
     if (fieldContext.isEmpty()) {
       return field;
     } else {
-      return STR."\{fieldContext}.\{field}";
+      return "%s.%s".formatted(fieldContext, field);
     }
   }
 }

@@ -13,7 +13,7 @@ public class Errors {
   }
 
   public String pushContext(String subContext) {
-    context = context.isEmpty() ? subContext : STR."\{context}.\{subContext}";
+    context = context.isEmpty() ? subContext : "%s.%s".formatted(context, subContext);
     return context;
   }
 

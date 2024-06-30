@@ -68,7 +68,7 @@ jobs:
         if: github.ref == 'refs/heads/main' || contains(github.event.head_commit.message, 'DEPLOY NOW')
         env:
           DOCKER_IMAGE_TAG: ${{ steps.dockerImageTag.outputs.tag }}
-        run: gradle :application:jib -Djib.to.tags=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/meter-config-service:${DOCKER_IMAGE_TAG},${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/meter-config-service:latest
+        run: gradle :application:jib  -Djib.to.image=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/meter-config-service -Djib.to.tags=${DOCKER_IMAGE_TAG},latest
 
 
 

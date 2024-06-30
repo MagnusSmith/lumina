@@ -62,7 +62,7 @@ jobs:
 
       - name: Create Docker image tag
         id: dockerImageTag
-        run: echo "$(date +'%Y%m%d%H%M%S')-${GITHUB_SHA}" >> $GITHUB_OUTPUT
+        run: echo "tag=$(date +'%Y%m%d%H%M%S')-${GITHUB_SHA}" >> $GITHUB_OUTPUT
 
       - name: Build and Publish with Gradle
         if: github.ref == 'refs/heads/main' || contains(github.event.head_commit.message, 'DEPLOY NOW')

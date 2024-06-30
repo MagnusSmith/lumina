@@ -14,15 +14,6 @@ repositories {
 }
 
 
-
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(22)
-    }
-    sourceCompatibility = JavaVersion.VERSION_22
-    targetCompatibility = JavaVersion.VERSION_22
-
 //    compileJava {
 //        options.compilerArgs += ["--enable-preview"]
 //    }
@@ -30,15 +21,25 @@ java {
 //        jvmArgs(["--enable-preview"])
 //    }
 
-}
+
 subprojects {
     apply(plugin = "com.diffplug.spotless")
+    apply(plugin = "java")
+
     spotless {
         java {
             googleJavaFormat("1.22.0")
             indentWithSpaces(2)
             formatAnnotations()
         }
+    }
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(22)
+        }
+        sourceCompatibility = JavaVersion.VERSION_22
+        targetCompatibility = JavaVersion.VERSION_22
     }
 
 

@@ -27,21 +27,22 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up JDK 22
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v4.2.1
         with:
           java-version: '22'
           distribution: 'temurin'
           java-package: jdk
-          enable-preview: true
+
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3.4.2
+        with:
+          gradle-version: '8.8'
+
 
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: build --stacktrace
-          gradle-version: '8.8'
-          build-root-directory: application
-        env:
-          GRADLE_OPTS: "-Dorg.gradle.jvmargs='--enable-preview'"
+        run: gradle  :application:build --stacktrace
+
 
       - name: Zip build reports
         if: always()
@@ -99,34 +100,32 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up JDK 22
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v4.2.1
         with:
           java-version: '22'
           distribution: 'temurin'
           java-package: jdk
-          enable-preview: true
 
-
-      - name: Build with Gradle
-        uses: gradle/gradle-build-action@v2
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3.4.2
         with:
           gradle-version: '8.8'
-          build-root-directory: application
-        env:
-          GRADLE_OPTS: "-Dorg.gradle.jvmargs='--enable-preview'"
+
+      - name: Build and Publish with Gradle
+        run: gradle :application:build
 
       - name: NPM install
-        working-directory: cdk
+        working-directory: infrastructure
         run: npm install
 
       - name: Deploy service stack
-        working-directory: cdk
+        working-directory: infrastructure
         run: npm run service:deploy -- -c dockerImageTag=${{ needs.build-and-publish.outputs.dockerImageTag }}
 
       # Each Service stack updates creates a new parameter stack that CloudFormation does not clean up for us.
       # This step deletes all "*Service-Parameters*" stacks except the latest one to keep the house clean.
       - name: Clean up old parameter stacks
-        working-directory: cdk
+        working-directory: infrastructure
         run: |
           aws cloudformation describe-stacks --region eu-central-1 --query "Stacks[].StackName" --output text | sed -e "s/\s\+/\n/g" | grep -e "development-meter-config-service-Service-Parameters" | sort -r | tail -n+2 > stacks_to_be_deleted.txt
           for stack in $(cat stacks_to_be_deleted.txt); do aws cloudformation delete-stack --stack-name $stack --region eu-central-1;  done

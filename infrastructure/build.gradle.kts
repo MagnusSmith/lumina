@@ -1,9 +1,6 @@
 plugins {
     java
     application apply(true)
-
-
-    //id("software.amazon.awscdk") version "2.58.1"
 }
 
 repositories {
@@ -13,22 +10,22 @@ application {
     mainClass = System.getProperty("mainClass")
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(22)
+    }
+    sourceCompatibility = JavaVersion.VERSION_22
+    targetCompatibility = JavaVersion.VERSION_22
 
-//dependencyManagement {
-//    imports {
-//        mavenBom("software.amazon.awscdk:bom:2.58.1") // or your preferred version
-//    }
-//}
+
+}
+
 
 dependencies {
-  //  implementation(platform("software.amazon.awssdk:bom:2.58.1"))
+
     implementation("io.soabase.record-builder:record-builder-core:41")
 
     annotationProcessor("io.soabase.record-builder:record-builder-processor:41")
-//    implementation("software.amazon.awscdk:aws-ec2")
-//    implementation("software.amazon.awscdk:aws-ecs")
-//    implementation("software.amazon.awssdk:aws-ecs-patterns")
-//    implementation("software.amazon.awscdk:aws-docdb")
     implementation("dev.stratospheric:cdk-constructs:0.1.15")
 }
 
@@ -40,6 +37,22 @@ tasks.withType<Jar> {
     }
 }
 
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.compilerArgs.add("--enable-preview")
+}
+
+tasks.withType<Test>().configureEach {
+    jvmArgs("--enable-preview")
+}
+
+tasks.withType<JavaExec>().configureEach {
+    jvmArgs("--enable-preview")
+}
 
 
 

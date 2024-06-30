@@ -7,6 +7,17 @@ plugins {
 
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(22)
+    }
+    sourceCompatibility = JavaVersion.VERSION_22
+    targetCompatibility = JavaVersion.VERSION_22
+
+
+}
+
+
 
 springBoot {
     mainClass = "com.lumina.MeterConfigApplication"
@@ -73,7 +84,21 @@ jib {
     }
 
 
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
 
+tasks.withType<JavaCompile>().configureEach {
+    options.compilerArgs.add("--enable-preview")
+}
+
+tasks.withType<Test>().configureEach {
+    jvmArgs("--enable-preview")
+}
+
+tasks.withType<JavaExec>().configureEach {
+    jvmArgs("--enable-preview")
+}
 
 
 

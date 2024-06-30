@@ -55,23 +55,37 @@ jobs:
           name: reports
           path: reports.zip
 
+
+      - name: Configure AWS Credentials
+        run: |
+          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+
       - name: Create Docker image tag
         id: dockerImageTag
         run: echo "tag=$(date +'%Y%m%d%H%M%S')-${GITHUB_SHA}" >> $GITHUB_OUTPUT
 
-      - name: Publish Docker image to ECR registry
-       # if: ${{ false }}  # disabled for now as we ran out of AWS credits
+      - name: Build and Publish with Gradle
         if: github.ref == 'refs/heads/main' || contains(github.event.head_commit.message, 'DEPLOY NOW')
         env:
           DOCKER_IMAGE_TAG: ${{ steps.dockerImageTag.outputs.tag }}
-        working-directory: application
-        run: |
-          docker build -t meter-config-service .
-          docker tag meter-config-service ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/meter-config-service:${DOCKER_IMAGE_TAG}
-          docker tag meter-config-service ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/meter-config-service:latest
-          aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
-          docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/meter-config-service:${DOCKER_IMAGE_TAG}
-          docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/meter-config-service:latest
+        run: gradle :application:jib -Djib.to.tags=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/meter-config-service:${DOCKER_IMAGE_TAG},${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/meter-config-service:latest
+
+
+
+#
+#      - name: Publish Docker image to ECR registry
+#       # if: ${{ false }}  # disabled for now as we ran out of AWS credits
+#        if: github.ref == 'refs/heads/main' || contains(github.event.head_commit.message, 'DEPLOY NOW')
+#        env:
+#          DOCKER_IMAGE_TAG: ${{ steps.dockerImageTag.outputs.tag }}
+#        working-directory: application
+#        run: |
+#          docker build -t meter-config-service .
+#          docker tag meter-config-service ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/meter-config-service:${DOCKER_IMAGE_TAG}
+#          docker tag meter-config-service ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/meter-config-service:latest
+#          aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+#          docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/meter-config-service:${DOCKER_IMAGE_TAG}
+#          docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/meter-config-service:latest
 
   #      Superseded by GitHub Action's concurrency support, see below
   #      - name: Sending deployment event to queue

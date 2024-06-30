@@ -1,3 +1,6 @@
+import com.google.cloud.tools.jib.api.Jib
+import com.google.cloud.tools.jib.gradle.JibTask
+
 plugins {
     java
     id("org.springframework.boot") version "3.2.3"
@@ -99,6 +102,7 @@ tasks.withType<Test>().configureEach {
 tasks.withType<JavaExec>().configureEach {
     jvmArgs("--enable-preview")
 }
+
 
 
 

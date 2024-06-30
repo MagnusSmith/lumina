@@ -4,7 +4,7 @@
     "region": "us-east-1",
     "accountId": "992382386289",
     "springProfile": "aws",
-    "environmentName": "staging",
-    "dockerImageUrl": "ghcr.io/lumina360/meter-config-service:latest"
+    "environmentName": "development",
+    "dockerImageUrl": "992382386289.dkr.ecr.us-east-1.amazonaws.com/meter-config-service:latest",
   }
 }

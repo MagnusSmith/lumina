@@ -13,7 +13,7 @@
     "service:destroy": "cdk destroy --app \"gradle -q run -DmainClass=com.lumina.cdk.ServiceApp\" --force --require-approval never"
   },
   "devDependencies": {
-    "aws-cdk": "2.146.0"
+    "aws-cdk": "2.148.1"
   },
   "engines": {
     "node": ">=16"

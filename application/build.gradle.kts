@@ -3,19 +3,19 @@ import com.google.cloud.tools.jib.gradle.JibTask
 
 plugins {
     java
-    id("org.springframework.boot") version "3.2.3"
-    id("io.spring.dependency-management") version "1.1.4"
-    id("io.freefair.lombok") version "8.6"
-    id("com.google.cloud.tools.jib") version "3.4.3"
+    id("org.springframework.boot") version "3.5.7"
+    id("io.spring.dependency-management") version "1.1.7"
+    id("io.freefair.lombok") version "9.1.0"
+    id("com.google.cloud.tools.jib") version "3.5.1"
 
 }
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(22)
+        languageVersion = JavaLanguageVersion.of(25)
     }
-    sourceCompatibility = JavaVersion.VERSION_22
-    targetCompatibility = JavaVersion.VERSION_22
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 
 
 }
@@ -34,7 +34,7 @@ jib {
 
 
     from {
-        image = "public.ecr.aws/amazoncorretto/amazoncorretto:22"
+        image = "public.ecr.aws/amazoncorretto/amazoncorretto:25"
     }
 
     to {
@@ -78,12 +78,12 @@ jib {
         implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
         implementation("org.springframework.boot:spring-boot-starter-web")
         implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
-        implementation("io.soabase.record-builder:record-builder-core:41")
+        implementation("io.soabase.record-builder:record-builder-core:51")
         implementation("org.springframework.boot:spring-boot-starter-validation")
         developmentOnly("org.springframework.boot:spring-boot-devtools")
         developmentOnly("org.springframework.boot:spring-boot-docker-compose")
         testImplementation("org.springframework.boot:spring-boot-starter-test")
-        annotationProcessor("io.soabase.record-builder:record-builder-processor:41")
+        annotationProcessor("io.soabase.record-builder:record-builder-processor:51")
     }
 
 

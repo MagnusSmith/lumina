@@ -36,7 +36,7 @@ http://localhost:8080/swagger-ui/index.html
 
 ### Local Build 
 
-Install Java 22
+Install Java 25
 
 Start up the mongodb docker container.   users will be automatically created.  Run the following in the lumina directory 
 ``` 

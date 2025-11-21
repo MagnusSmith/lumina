@@ -1,8 +1,8 @@
 plugins {
     java
-    id("io.freefair.lombok") version "8.6"
-    id("com.diffplug.spotless") version "7.0.0.BETA1"
-    id("io.spring.dependency-management") version "1.1.4"
+    id("io.freefair.lombok") version "9.1.0"
+    id("com.diffplug.spotless") version "8.1.0"
+    id("io.spring.dependency-management") version "1.1.7"
 }
 
 group = "com.lumina"
@@ -28,7 +28,7 @@ subprojects {
 
     spotless {
         java {
-            googleJavaFormat("1.22.0")
+            googleJavaFormat("1.32.0")
             indentWithSpaces(2)
             formatAnnotations()
         }
@@ -36,10 +36,10 @@ subprojects {
 
     java {
         toolchain {
-            languageVersion = JavaLanguageVersion.of(22)
+            languageVersion = JavaLanguageVersion.of(25)
         }
-        sourceCompatibility = JavaVersion.VERSION_22
-        targetCompatibility = JavaVersion.VERSION_22
+        sourceCompatibility = JavaVersion.VERSION_25
+        targetCompatibility = JavaVersion.VERSION_25
     }
 
 

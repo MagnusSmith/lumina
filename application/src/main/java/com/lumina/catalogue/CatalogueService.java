@@ -1,5 +1,6 @@
 package com.lumina.catalogue;
 
+import com.lumina.DuplicateResourceException;
 import com.lumina.NotFoundException;
 import com.lumina.catalogue.model.CatalogueItem;
 import com.lumina.catalogue.model.Level;
@@ -66,7 +67,9 @@ public class CatalogueService {
           .findByTypeAndLevel(preset.type(), preset.level())
           .ifPresent(
               p -> {
-                throw new RuntimeException("The Preset %s already exists.".formatted(p));
+                throw new DuplicateResourceException(
+                    "A preset for type %s and level %s already exists."
+                        .formatted(preset.type(), preset.level()));
               });
       return presetRepository.insert(preset);
     }

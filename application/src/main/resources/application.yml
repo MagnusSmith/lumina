@@ -17,3 +17,17 @@ spring:
   output:
     ansi:
       enabled: ALWAYS
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+
+logging:
+  level:
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+    com.lumina: DEBUG

@@ -195,7 +195,7 @@ In this example two default preset constraints are added
       "description": "Some textural configuration",
       "minLength": 0,
       "maxLength": 256,
-      "isRequired": false
+      "isRequired": false,
       "stage": "Two"
     }
   ]

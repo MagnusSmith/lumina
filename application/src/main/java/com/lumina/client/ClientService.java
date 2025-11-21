@@ -1,5 +1,6 @@
 package com.lumina.client;
 
+import com.lumina.NotFoundException;
 import com.lumina.client.model.Client;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,12 @@ public class ClientService {
   }
 
   public Client update(Client client) {
+    repository
+        .findById(client.id())
+        .orElseThrow(
+            () ->
+                new NotFoundException(
+                    "The client with id %s could not be found!".formatted(client.id())));
     return repository.save(client);
   }
 

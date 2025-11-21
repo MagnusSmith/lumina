@@ -3,6 +3,7 @@ package com.lumina.location;
 import com.lumina.location.dto.LocationShortDto;
 import com.lumina.location.dto.NewLocationDto;
 import com.lumina.location.dto.UpdateLocationDto;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,14 +28,14 @@ public class LocationController {
 
   @PostMapping("location")
   @ResponseStatus(HttpStatus.CREATED)
-  public LocationShortDto create(@RequestBody NewLocationDto newLocation) {
+  public LocationShortDto create(@RequestBody @Valid NewLocationDto newLocation) {
 
     var location = locationService.create(NewLocationDto.toModel(newLocation));
     return LocationShortDto.from(location);
   }
 
   @PutMapping("location")
-  public LocationShortDto update(@RequestBody UpdateLocationDto updateLocation) {
+  public LocationShortDto update(@RequestBody @Valid UpdateLocationDto updateLocation) {
     var location = locationService.update(UpdateLocationDto.toModel(updateLocation));
     return LocationShortDto.from(location);
   }

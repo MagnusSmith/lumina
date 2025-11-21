@@ -46,4 +46,20 @@ public class ErrorHandlingAdvice {
             .collect(Collectors.toList());
     return new ValidationErrorResponse(vList);
   }
+
+  @ExceptionHandler(NotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  @ResponseBody
+  ValidationErrorResponse onNotFoundException(NotFoundException e) {
+    var vList = java.util.List.of(new Violation("resource", e.getMessage()));
+    return new ValidationErrorResponse(vList);
+  }
+
+  @ExceptionHandler(DuplicateResourceException.class)
+  @ResponseStatus(HttpStatus.CONFLICT)
+  @ResponseBody
+  ValidationErrorResponse onDuplicateResourceException(DuplicateResourceException e) {
+    var vList = java.util.List.of(new Violation("resource", e.getMessage()));
+    return new ValidationErrorResponse(vList);
+  }
 }

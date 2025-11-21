@@ -1,0 +1,51 @@
+# Version Control
+.git
+.gitignore
+.github
+
+# Build artifacts
+.gradle
+build/
+target/
+bin/
+out/
+
+# IDE files
+.idea
+.vscode
+*.iml
+*.iws
+*.ipr
+.classpath
+.project
+.settings
+.sts4-cache
+
+# OS files
+.DS_Store
+**/.DS_Store
+
+# MongoDB data
+mongodb-data/
+mongodb-log/
+
+# Environment files
+.env
+*.env
+
+# Documentation
+*.md
+HELP.md
+
+# Test reports
+**/build/reports
+
+# CDK
+.cdk.staging
+cdk.out
+
+# Node modules
+node_modules/
+
+# Gradle wrapper (keep only the jar)
+!gradle/wrapper/gradle-wrapper.jar

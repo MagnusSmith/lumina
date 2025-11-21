@@ -1,5 +1,6 @@
 package com.lumina.location;
 
+import com.lumina.NotFoundException;
 import com.lumina.location.model.Location;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,12 @@ public class LocationService {
   }
 
   public Location update(Location location) {
+    repository
+        .findById(location.id())
+        .orElseThrow(
+            () ->
+                new NotFoundException(
+                    "The location with id %s could not be found!".formatted(location.id())));
     return repository.save(location);
   }
 

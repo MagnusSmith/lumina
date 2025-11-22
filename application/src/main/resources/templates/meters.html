@@ -47,9 +47,9 @@
                     <p><strong>ID:</strong> <code th:text="${meter.id}">ID</code></p>
                     <p><strong>Location:</strong> <code th:text="${meter.locationId}">Location ID</code></p>
                     <p><strong>Model:</strong> <span th:text="${meter.model}">Model</span></p>
-                    <p><strong>Configuration Lines:</strong> <span th:text="${#lists.size(meter.configurationLines)}">0</span></p>
+                    <p><strong>Configuration Lines:</strong> <span th:text="${#lists.size(meter.lines)}">0</span></p>
 
-                    <div th:if="${!#lists.isEmpty(meter.configurationLines)}" class="config-preview">
+                    <div th:if="${!#lists.isEmpty(meter.lines)}" class="config-preview">
                         <details>
                             <summary>View Configuration</summary>
                             <table class="config-table">
@@ -61,7 +61,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr th:each="line : ${meter.configurationLines}">
+                                    <tr th:each="line : ${meter.lines}">
                                         <td th:text="${line.variable}">Variable</td>
                                         <td th:text="${line.value}">Value</td>
                                         <td th:text="${line.stage}">Stage</td>
@@ -70,10 +70,6 @@
                             </table>
                         </details>
                     </div>
-
-                    <p class="text-muted" th:if="${meter.createdAt}">
-                        Created: <span th:text="${#temporals.format(meter.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
-                    </p>
                 </div>
             </div>
 

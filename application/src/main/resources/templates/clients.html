@@ -17,11 +17,10 @@
         <!-- Create Form -->
         <div id="create-client-form" class="card hidden">
             <h2>Create New Client</h2>
+            <div id="client-form-error" class="alert alert-error hidden"></div>
             <form hx-post="/api/client"
                   hx-ext="json-enc"
-                  hx-target="#clients-list"
-                  hx-swap="afterbegin"
-                  hx-on::after-request="this.reset(); document.getElementById('create-client-form').classList.add('hidden')">
+                  hx-on::after-request="if(event.detail.successful) { window.location.reload(); } else { document.getElementById('client-form-error').textContent = 'Error creating client. Please check your input.'; document.getElementById('client-form-error').classList.remove('hidden'); }">
 
                 <div class="form-group">
                     <label for="name">Client Name *</label>
@@ -38,7 +37,7 @@
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary">Create</button>
                     <button type="button" class="btn btn-secondary"
-                            onclick="document.getElementById('create-client-form').classList.add('hidden')">Cancel</button>
+                            onclick="document.getElementById('create-client-form').classList.add('hidden'); document.getElementById('client-form-error').classList.add('hidden');">Cancel</button>
                 </div>
             </form>
         </div>

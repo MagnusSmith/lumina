@@ -17,10 +17,10 @@
         <!-- Create Form -->
         <div id="create-form" class="card hidden">
             <h2>Create New Catalogue Item</h2>
+            <div id="form-error" class="alert alert-error hidden"></div>
             <form hx-post="/api/catalogue/item"
-                  hx-target="#catalogue-list"
-                  hx-swap="afterbegin"
-                  hx-on::after-request="this.reset(); document.getElementById('create-form').classList.add('hidden')">
+                  hx-ext="json-enc"
+                  hx-on::after-request="if(event.detail.successful) { window.location.reload(); } else { document.getElementById('form-error').textContent = 'Error creating catalogue item. Please check your input.'; document.getElementById('form-error').classList.remove('hidden'); }">
 
                 <div class="form-group">
                     <label for="model">Model *</label>
@@ -49,10 +49,12 @@
                     </div>
                 </div>
 
+                <input type="hidden" name="constraints" value="[]">
+
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary">Create</button>
                     <button type="button" class="btn btn-secondary"
-                            onclick="document.getElementById('create-form').classList.add('hidden')">Cancel</button>
+                            onclick="document.getElementById('create-form').classList.add('hidden'); document.getElementById('form-error').classList.add('hidden');">Cancel</button>
                 </div>
             </form>
         </div>
@@ -97,25 +99,6 @@
                 </div>
             </div>
         </div>
-
-        <script th:inline="javascript">
-            // Intercept htmx form submission to send JSON
-            document.body.addEventListener('htmx:configRequest', function(evt) {
-                if (evt.detail.verb === 'post' && evt.detail.path === '/api/catalogue/item') {
-                    evt.detail.headers['Content-Type'] = 'application/json';
-
-                    const formData = evt.detail.parameters;
-                    const json = {
-                        model: formData.model,
-                        level: formData.level,
-                        type: formData.type,
-                        constraints: []
-                    };
-
-                    evt.detail.parameters = json;
-                }
-            });
-        </script>
     </main>
 
     <footer th:replace="~{layout :: footer}"></footer>

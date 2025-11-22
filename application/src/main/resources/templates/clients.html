@@ -44,7 +44,7 @@
                 </div>
                 <div class="client-body">
                     <p><strong>ID:</strong> <code th:text="${client.id}">ID</code></p>
-                    <p th:if="${client.description}" th:text="${client.description}">Description</p>
+                    <p><strong>Projects:</strong> <span th:text="${#lists.size(client.projects)}">0</span></p>
                     <p class="text-muted" th:if="${client.createdAt}">
                         Created: <span th:text="${#temporals.format(client.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
                     </p>

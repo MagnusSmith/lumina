@@ -133,7 +133,7 @@ The **Catalogue** defines meter models with validation constraints:
 
 - **Model**: Unique identifier (e.g., "GATEWAY-LORAWAN-V1")
 - **Level**: GATEWAY or DEVICE
-- **Type**: LORAWAN, MODBUS, or SIDEWALK
+- **Type**: LORAWAN, MOBIUS, or SIDEWALK
 - **Constraints**: Validation rules applied to meter configurations
 
 ### Validation Constraints

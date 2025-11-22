@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout}">
+<head>
+    <title>Meters - Lumina Meter Config</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <div class="page-header">
+            <h1>Meters</h1>
+            <button class="btn btn-primary" onclick="alert('Create meter form - Coming soon!')">
+                + Add Meter
+            </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="card">
+            <h3>Filter Meters</h3>
+            <form class="form-row">
+                <div class="form-group">
+                    <label for="filter-location">Location ID</label>
+                    <input type="text" id="filter-location" placeholder="Enter location ID"
+                           hx-get="/web/meters/by-location"
+                           hx-trigger="keyup changed delay:500ms"
+                           hx-target="#meters-list"
+                           hx-include="[name='locationId']">
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-secondary"
+                            hx-get="/web/meters"
+                            hx-target="#meters-list">
+                        Clear Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Meters List -->
+        <div id="meters-list" class="meters-grid">
+            <div th:each="meter : ${meters}" class="meter-card">
+                <div class="meter-header">
+                    <h3>Meter</h3>
+                    <span class="badge" th:text="${meter.model}">Model</span>
+                </div>
+                <div class="meter-body">
+                    <p><strong>ID:</strong> <code th:text="${meter.id}">ID</code></p>
+                    <p><strong>Location:</strong> <code th:text="${meter.locationId}">Location ID</code></p>
+                    <p><strong>Model:</strong> <span th:text="${meter.model}">Model</span></p>
+                    <p><strong>Configuration Lines:</strong> <span th:text="${#lists.size(meter.configurationLines)}">0</span></p>
+
+                    <div th:if="${!#lists.isEmpty(meter.configurationLines)}" class="config-preview">
+                        <details>
+                            <summary>View Configuration</summary>
+                            <table class="config-table">
+                                <thead>
+                                    <tr>
+                                        <th>Variable</th>
+                                        <th>Value</th>
+                                        <th>Stage</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="line : ${meter.configurationLines}">
+                                        <td th:text="${line.variable}">Variable</td>
+                                        <td th:text="${line.value}">Value</td>
+                                        <td th:text="${line.stage}">Stage</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </details>
+                    </div>
+
+                    <p class="text-muted" th:if="${meter.createdAt}">
+                        Created: <span th:text="${#temporals.format(meter.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+                    </p>
+                </div>
+            </div>
+
+            <div th:if="${#lists.isEmpty(meters)}" class="empty-state">
+                <p>No meters found. Click "Add Meter" to create one.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

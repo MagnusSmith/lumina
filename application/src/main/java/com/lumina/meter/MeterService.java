@@ -74,6 +74,10 @@ public class MeterService {
     return repository.findByLocationId(locationId);
   }
 
+  public List<Meter> findAll() {
+    return repository.findAll();
+  }
+
   MeterDto toMeterDto(Meter meter, boolean withConstraints) {
     var catItem = findCatalogueItemByModel(meter.model());
     return MeterDto.from(catItem, meter, withConstraints);

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout}">
+<head>
+    <title>Catalogue - Lumina Meter Config</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <div class="page-header">
+            <h1>Catalogue Items</h1>
+            <button class="btn btn-primary" onclick="document.getElementById('create-form').classList.toggle('hidden')">
+                + Add Catalogue Item
+            </button>
+        </div>
+
+        <!-- Create Form -->
+        <div id="create-form" class="card hidden">
+            <h2>Create New Catalogue Item</h2>
+            <form hx-post="/api/catalogue/item"
+                  hx-target="#catalogue-list"
+                  hx-swap="afterbegin"
+                  hx-on::after-request="this.reset(); document.getElementById('create-form').classList.add('hidden')">
+
+                <div class="form-group">
+                    <label for="model">Model *</label>
+                    <input type="text" id="model" name="model" required
+                           placeholder="e.g., GATEWAY-LORAWAN-V1">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="level">Level *</label>
+                        <select id="level" name="level" required>
+                            <option value="">Select level...</option>
+                            <option value="GATEWAY">GATEWAY</option>
+                            <option value="DEVICE">DEVICE</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="type">Type *</label>
+                        <select id="type" name="type" required>
+                            <option value="">Select type...</option>
+                            <option value="LORAWAN">LORAWAN</option>
+                            <option value="MODBUS">MODBUS</option>
+                            <option value="SIDEWALK">SIDEWALK</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                    <button type="button" class="btn btn-secondary"
+                            onclick="document.getElementById('create-form').classList.add('hidden')">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Catalogue List -->
+        <div id="catalogue-list" class="catalogue-grid">
+            <div th:each="item : ${catalogueItems}" class="catalogue-card">
+                <div class="catalogue-header">
+                    <h3 th:text="${item.model}">Model Name</h3>
+                    <span class="badge" th:text="${item.level}" th:classappend="${item.level}">Level</span>
+                </div>
+                <div class="catalogue-body">
+                    <p><strong>Type:</strong> <span th:text="${item.type}">Type</span></p>
+                    <p><strong>Constraints:</strong> <span th:text="${#lists.size(item.constraints)}">0</span></p>
+                    <p class="text-muted" th:if="${item.createdAt}">
+                        Created: <span th:text="${#temporals.format(item.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+                    </p>
+                </div>
+                <div class="catalogue-actions">
+                    <button class="btn btn-sm btn-secondary"
+                            th:attr="data-model=${item.model}"
+                            hx-get="${'/api/catalogue/item/' + item.model}"
+                            hx-target="#detail-modal"
+                            hx-swap="innerHTML"
+                            onclick="document.getElementById('detail-modal-container').classList.remove('hidden')">
+                        View Details
+                    </button>
+                </div>
+            </div>
+
+            <div th:if="${#lists.isEmpty(catalogueItems)}" class="empty-state">
+                <p>No catalogue items found. Click "Add Catalogue Item" to create one.</p>
+            </div>
+        </div>
+
+        <!-- Detail Modal -->
+        <div id="detail-modal-container" class="modal hidden">
+            <div class="modal-content">
+                <span class="close" onclick="document.getElementById('detail-modal-container').classList.add('hidden')">&times;</span>
+                <div id="detail-modal">
+                    <!-- Detail content will be loaded here via htmx -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        // Intercept htmx form submission to send JSON
+        document.body.addEventListener('htmx:configRequest', function(evt) {
+            if (evt.detail.verb === 'post' && evt.detail.path === '/api/catalogue/item') {
+                evt.detail.headers['Content-Type'] = 'application/json';
+
+                const formData = evt.detail.parameters;
+                const json = {
+                    model: formData.model,
+                    level: formData.level,
+                    type: formData.type,
+                    constraints: []
+                };
+
+                evt.detail.parameters = json;
+            }
+        });
+    </script>
+</body>
+</html>

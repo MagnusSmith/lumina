@@ -16,7 +16,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public record Preset(
     @Nullable @Id String id,
     @EnumNamePattern(regexp = "GATEWAY|DEVICE") Level level,
-    @EnumNamePattern(regexp = "LORAWAN|MOBIUS|SIDEWALK") MeterType type,
+    @EnumNamePattern(regexp = "LORAWAN|MODBUS|SIDEWALK") MeterType type,
     List<? extends Line> lines,
     List<Constraint<? extends Line>> constraints)
     implements Item {}

@@ -11,7 +11,7 @@ public record UpdateCatalogueItemDto(
     @NotBlank(message = "id is mandatory") String id,
     @NotBlank(message = "Model is mandatory") String model,
     @EnumNamePattern(regexp = "GATEWAY|DEVICE") Level level,
-    @EnumNamePattern(regexp = "LORAWAN|MOBIUS|SIDEWALK") MeterType type,
+    @EnumNamePattern(regexp = "LORAWAN|MODBUS|SIDEWALK") MeterType type,
     @NotBlank(message = "Description is mandatory") String description,
     @NotBlank(message = "Manufacturer is mandatory") String manufacturer,
     List<Constraint<Line>> constraints) {

@@ -41,14 +41,14 @@ public interface PresetDto {
 
   record New(
       @EnumNamePattern(regexp = "GATEWAY|DEVICE") Level level,
-      @EnumNamePattern(regexp = "LORAWAN|MOBIUS|SIDEWALK") MeterType type,
+      @EnumNamePattern(regexp = "LORAWAN|MODBUS|SIDEWALK") MeterType type,
       List<? extends Line> lines,
       List<Constraint<? extends Line>> constraints) {}
 
   record Update(
       @Nullable @Id String id,
       @EnumNamePattern(regexp = "GATEWAY|DEVICE") Level level,
-      @EnumNamePattern(regexp = "LORAWAN|MOBIUS|SIDEWALK") MeterType type,
+      @EnumNamePattern(regexp = "LORAWAN|MODBUS|SIDEWALK") MeterType type,
       List<? extends Line> lines,
       List<Constraint<? extends Line>> constraints) {}
 

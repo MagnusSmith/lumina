@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout}">
-<head>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head}">
     <title>Meters - Lumina Meter Config</title>
 </head>
 <body>
-    <div th:fragment="content">
+    <nav th:replace="~{layout :: navbar}"></nav>
+
+    <main class="container">
         <div class="page-header">
             <h1>Meters</h1>
             <button class="btn btn-primary" onclick="alert('Create meter form - Coming soon!')">
@@ -79,6 +81,8 @@
                 <p>No meters found. Click "Add Meter" to create one.</p>
             </div>
         </div>
-    </div>
+    </main>
+
+    <footer th:replace="~{layout :: footer}"></footer>
 </body>
 </html>

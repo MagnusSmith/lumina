@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout}">
-<head>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head}">
     <title>Clients - Lumina Meter Config</title>
 </head>
 <body>
-    <div th:fragment="content">
+    <nav th:replace="~{layout :: navbar}"></nav>
+
+    <main class="container">
         <div class="page-header">
             <h1>Clients</h1>
             <button class="btn btn-primary" onclick="document.getElementById('create-client-form').classList.toggle('hidden')">
@@ -60,6 +62,8 @@
                 <p>No clients found. Click "Add Client" to create one.</p>
             </div>
         </div>
-    </div>
+    </main>
+
+    <footer th:replace="~{layout :: footer}"></footer>
 </body>
 </html>

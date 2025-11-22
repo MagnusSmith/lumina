@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout}">
-<head>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head}">
     <title>Home - Lumina Meter Config</title>
 </head>
 <body>
-    <div th:fragment="content">
+    <nav th:replace="~{layout :: navbar}"></nav>
+
+    <main class="container">
         <div class="hero">
             <h1>Welcome to Lumina Meter Config</h1>
             <p class="lead">Manage IoT meter configurations with hierarchical organization and validation</p>
@@ -55,6 +57,8 @@
                 </div>
             </div>
         </div>
-    </div>
+    </main>
+
+    <footer th:replace="~{layout :: footer}"></footer>
 </body>
 </html>

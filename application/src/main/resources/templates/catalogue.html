@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout}">
-<head>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head}">
     <title>Catalogue - Lumina Meter Config</title>
 </head>
 <body>
-    <div th:fragment="content">
+    <nav th:replace="~{layout :: navbar}"></nav>
+
+    <main class="container">
         <div class="page-header">
             <h1>Catalogue Items</h1>
             <button class="btn btn-primary" onclick="document.getElementById('create-form').classList.toggle('hidden')">
@@ -95,25 +97,27 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <script th:inline="javascript">
-        // Intercept htmx form submission to send JSON
-        document.body.addEventListener('htmx:configRequest', function(evt) {
-            if (evt.detail.verb === 'post' && evt.detail.path === '/api/catalogue/item') {
-                evt.detail.headers['Content-Type'] = 'application/json';
+        <script th:inline="javascript">
+            // Intercept htmx form submission to send JSON
+            document.body.addEventListener('htmx:configRequest', function(evt) {
+                if (evt.detail.verb === 'post' && evt.detail.path === '/api/catalogue/item') {
+                    evt.detail.headers['Content-Type'] = 'application/json';
 
-                const formData = evt.detail.parameters;
-                const json = {
-                    model: formData.model,
-                    level: formData.level,
-                    type: formData.type,
-                    constraints: []
-                };
+                    const formData = evt.detail.parameters;
+                    const json = {
+                        model: formData.model,
+                        level: formData.level,
+                        type: formData.type,
+                        constraints: []
+                    };
 
-                evt.detail.parameters = json;
-            }
-        });
-    </script>
+                    evt.detail.parameters = json;
+                }
+            });
+        </script>
+    </main>
+
+    <footer th:replace="~{layout :: footer}"></footer>
 </body>
 </html>

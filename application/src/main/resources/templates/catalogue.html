@@ -86,7 +86,7 @@
                 </div>
                 <div class="catalogue-body">
                     <p><strong>Type:</strong> <span th:text="${item.type}">Type</span></p>
-                    <p><strong>Constraints:</strong> <span th:text="${#lists.size(item.constraints)}">0</span></p>
+                    <p><strong>Constraints:</strong> <span th:text="${item.constraints != null ? item.constraints.size() : 0}">0</span></p>
                     <p><strong>Description:</strong> <span th:text="${item.description}">Description</span></p>
                     <p><strong>Manufacturer:</strong> <span th:text="${item.manufacturer}">Manufacturer</span></p>
                 </div>

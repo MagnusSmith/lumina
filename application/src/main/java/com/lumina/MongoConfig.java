@@ -17,9 +17,12 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
   @Value("${spring.data.mongodb.uri}")
   private String mongoUri;
 
+  @Value("${spring.data.mongodb.database:test}")
+  private String databaseName;
+
   @Override
   protected String getDatabaseName() {
-    return "test";
+    return databaseName;
   }
 
   @Override

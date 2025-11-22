@@ -17,16 +17,13 @@ spring:
   output:
     ansi:
       enabled: ALWAYS
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${OAUTH2_ISSUER_URI:}
-          jwk-set-uri: ${OAUTH2_JWK_SET_URI:}
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration
 
 lumina:
   security:
-    enabled: ${SECURITY_ENABLED:false}  # Disabled by default for development
+    enabled: false  # Disable security for tests
 
 management:
   endpoints:

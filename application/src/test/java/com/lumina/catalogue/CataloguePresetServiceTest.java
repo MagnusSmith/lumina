@@ -25,7 +25,7 @@ public class CataloguePresetServiceTest {
 
   @Mock private ItemRepository itemRepository;
 
-  @InjectMocks private CatalogueService.PresetService presetService;
+  @InjectMocks private CataloguePresetService presetService;
 
   private Preset testPreset;
 

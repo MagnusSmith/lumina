@@ -32,7 +32,7 @@ public class ClientControllerTest {
   @DisplayName("POST /api/client should create a new client and return 201")
   void testCreateClient() throws Exception {
     NewClientDto newClientDto = new NewClientDto("Test Client");
-    Client savedClient = new Client("client-1", "Test Client", List.of());
+    Client savedClient = new Client("client-1", "Test Client", List.of(), null, null, null, null);
 
     when(clientService.create(any(Client.class))).thenReturn(savedClient);
 
@@ -76,7 +76,7 @@ public class ClientControllerTest {
   @DisplayName("PUT /api/client should update existing client and return 200")
   void testUpdateClient() throws Exception {
     UpdateClientDto updateClientDto = new UpdateClientDto("client-1", "Updated Client");
-    Client updatedClient = new Client("client-1", "Updated Client", List.of());
+    Client updatedClient = new Client("client-1", "Updated Client", List.of(), null, null, null, null);
 
     when(clientService.update(any(Client.class))).thenReturn(updatedClient);
 
@@ -119,7 +119,7 @@ public class ClientControllerTest {
   @Test
   @DisplayName("GET /api/client/{id} should return client when it exists")
   void testGetClientById() throws Exception {
-    Client client = new Client("client-1", "Test Client", List.of());
+    Client client = new Client("client-1", "Test Client", List.of(), null, null, null, null);
 
     when(clientService.findById("client-1")).thenReturn(Optional.of(client));
 
@@ -141,8 +141,8 @@ public class ClientControllerTest {
   @Test
   @DisplayName("GET /api/client should return all clients")
   void testGetAllClients() throws Exception {
-    Client client1 = new Client("client-1", "Client 1", List.of());
-    Client client2 = new Client("client-2", "Client 2", List.of());
+    Client client1 = new Client("client-1", "Client 1", List.of(), null, null, null, null);
+    Client client2 = new Client("client-2", "Client 2", List.of(), null, null, null, null);
 
     when(clientService.findAll()).thenReturn(List.of(client1, client2));
 

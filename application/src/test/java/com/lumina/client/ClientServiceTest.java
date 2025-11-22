@@ -29,7 +29,7 @@ public class ClientServiceTest {
 
   @BeforeEach
   void setup() {
-    testClient = new Client("client-1", "Test Client", List.of());
+    testClient = new Client("client-1", "Test Client", List.of(), null, null, null, null);
   }
 
   @Test
@@ -48,29 +48,29 @@ public class ClientServiceTest {
   @Test
   @DisplayName("update() should update and return existing client")
   void testUpdate() {
-    when(repository.findById("client-1")).thenReturn(Optional.of(testClient));
+    when(repository.existsById("client-1")).thenReturn(true);
     when(repository.save(any(Client.class))).thenReturn(testClient);
 
     Client result = clientService.update(testClient);
 
     assertThat(result).isNotNull();
     assertThat(result.id()).isEqualTo("client-1");
-    verify(repository).findById("client-1");
+    verify(repository).existsById("client-1");
     verify(repository).save(testClient);
   }
 
   @Test
   @DisplayName("update() should throw NotFoundException when client doesn't exist")
   void testUpdateNotFound() {
-    when(repository.findById("non-existent")).thenReturn(Optional.empty());
+    when(repository.existsById("non-existent")).thenReturn(false);
 
-    Client nonExistentClient = new Client("non-existent", "Non Existent", List.of());
+    Client nonExistentClient = new Client("non-existent", "Non Existent", List.of(), null, null, null, null);
 
     assertThatThrownBy(() -> clientService.update(nonExistentClient))
         .isInstanceOf(NotFoundException.class)
         .hasMessageContaining("The client with id non-existent could not be found!");
 
-    verify(repository).findById("non-existent");
+    verify(repository).existsById("non-existent");
   }
 
   @Test
@@ -99,7 +99,7 @@ public class ClientServiceTest {
   @Test
   @DisplayName("findAll() should return all clients")
   void testFindAll() {
-    Client client2 = new Client("client-2", "Test Client 2", List.of());
+    Client client2 = new Client("client-2", "Test Client 2", List.of(), null, null, null, null);
     when(repository.findAll()).thenReturn(List.of(testClient, client2));
 
     List<Client> result = clientService.findAll();

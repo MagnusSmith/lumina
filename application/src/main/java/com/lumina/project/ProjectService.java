@@ -17,13 +17,18 @@ public class ProjectService {
     return repository.save(project);
   }
 
+  /**
+   * Updates a project. This method validates that the project exists before performing the update.
+   *
+   * @param project the project with updated data
+   * @return the updated project
+   * @throws NotFoundException if the project does not exist
+   */
   public Project update(Project project) {
-    repository
-        .findById(project.id())
-        .orElseThrow(
-            () ->
-                new NotFoundException(
-                    "The project with id %s could not be found!".formatted(project.id())));
+    if (!repository.existsById(project.id())) {
+      throw new NotFoundException(
+          "The project with id %s could not be found!".formatted(project.id()));
+    }
     return repository.save(project);
   }
 }

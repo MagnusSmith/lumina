@@ -60,9 +60,7 @@ public class MeterController {
     return MeterDto.from(catalogueItem, meter, false);
   }
 
-  @Operation(
-      summary = "Get meter by ID",
-      description = "Retrieves a meter configuration by its ID")
+  @Operation(summary = "Get meter by ID", description = "Retrieves a meter configuration by its ID")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "200", description = "Meter found"),
@@ -71,8 +69,7 @@ public class MeterController {
   @GetMapping("meter/{id}")
   public ResponseEntity<MeterDto> findById(
       @PathVariable String id,
-      @Parameter(description = "Include constraint details in response")
-          @RequestParam
+      @Parameter(description = "Include constraint details in response") @RequestParam
           Optional<Boolean> withConstraints) {
     return meterService
         .findById(id)
@@ -89,8 +86,7 @@ public class MeterController {
   @GetMapping("meter/location/{locationId}")
   public List<MeterDto> findByLocationId(
       @PathVariable String locationId,
-      @Parameter(description = "Include constraint details in response")
-          @RequestParam
+      @Parameter(description = "Include constraint details in response") @RequestParam
           Optional<Boolean> withConstraints) {
     return meterService.findByLocationId(locationId).stream()
         .map(m -> meterService.toMeterDto(m, withConstraints.isPresent()))

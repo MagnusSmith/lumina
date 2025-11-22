@@ -204,7 +204,9 @@ curl -X 'POST' \
   -d '{
   "model": "GATEWAY-LORAWAN-V1",
   "level": "GATEWAY",
-  "type": "LORAWAN"
+  "type": "LORAWAN",
+  "description": "LoRaWAN Gateway Version 1",
+  "manufacturer": "Acme IoT Devices Inc."
 }'
 ```
 
@@ -217,8 +219,7 @@ curl -X 'POST' \
   'http://localhost:8080/api/client' \
   -H 'Content-Type: application/json' \
   -d '{
-  "name": "Acme Corporation",
-  "description": "Main client account"
+  "name": "Acme Corporation"
 }'
 ```
 

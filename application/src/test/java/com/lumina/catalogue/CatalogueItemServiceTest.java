@@ -25,7 +25,7 @@ public class CatalogueItemServiceTest {
 
   @Mock private ItemRepository itemRepository;
 
-  @InjectMocks private CatalogueService.Item catalogueItemService;
+  @InjectMocks private CatalogueItemService catalogueItemService;
 
   private CatalogueItem testItem;
 
@@ -59,21 +59,21 @@ public class CatalogueItemServiceTest {
   @Test
   @DisplayName("update() should update and return existing catalogue item")
   void testUpdate() {
-    when(itemRepository.findById("item-1")).thenReturn(Optional.of(testItem));
+    when(itemRepository.existsById("item-1")).thenReturn(true);
     when(itemRepository.save(any(CatalogueItem.class))).thenReturn(testItem);
 
     CatalogueItem result = catalogueItemService.update(testItem);
 
     assertThat(result).isNotNull();
     assertThat(result.id()).isEqualTo("item-1");
-    verify(itemRepository).findById("item-1");
+    verify(itemRepository).existsById("item-1");
     verify(itemRepository).save(testItem);
   }
 
   @Test
   @DisplayName("update() should throw NotFoundException when item doesn't exist")
   void testUpdateNotFound() {
-    when(itemRepository.findById("non-existent")).thenReturn(Optional.empty());
+    when(itemRepository.existsById("non-existent")).thenReturn(false);
 
     CatalogueItem nonExistentItem =
         new CatalogueItem(
@@ -90,7 +90,7 @@ public class CatalogueItemServiceTest {
         .isInstanceOf(NotFoundException.class)
         .hasMessageContaining("The catalogue item with id non-existent could not be found!");
 
-    verify(itemRepository).findById("non-existent");
+    verify(itemRepository).existsById("non-existent");
   }
 
   @Test

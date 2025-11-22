@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.lumina.catalogue.CatalogueService;
+import com.lumina.catalogue.CatalogueItemService;
 import com.lumina.catalogue.model.*;
 import com.lumina.catalogue.model.CatalogueItemBuilder;
 import com.lumina.catalogue.model.constraint.Constraint;
@@ -22,7 +22,7 @@ public class MeterValidatorTest {
 
   CatalogueItem item;
 
-  CatalogueService.Item catalogueService = mock(CatalogueService.Item.class);
+  CatalogueItemService catalogueService = mock(CatalogueItemService.class);
 
   @Test
   @DisplayName("A Meter with optional lines should be valid when all lines are valid")

@@ -4,7 +4,7 @@ import static com.lumina.meter.validation.MeterValidator.FunctionalHelper.*;
 import static com.lumina.meter.validation.MeterValidator.FunctionalHelper.when;
 import static com.lumina.validation.ErrorCode.*;
 
-import com.lumina.catalogue.CatalogueService;
+import com.lumina.catalogue.CatalogueItemService;
 import com.lumina.catalogue.model.ValidationStage;
 import com.lumina.catalogue.model.constraint.Constraint;
 import com.lumina.catalogue.model.constraint.NumberLineConstraint;
@@ -22,9 +22,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class MeterValidator {
 
-  private final CatalogueService.Item itemService;
+  private final CatalogueItemService itemService;
 
-  public MeterValidator(CatalogueService.Item itemService) {
+  public MeterValidator(CatalogueItemService itemService) {
     this.itemService = itemService;
   }
 

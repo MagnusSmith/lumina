@@ -52,7 +52,7 @@ public class LorawanGateway {
 
     Constraint<? extends Line> lnsTrust =
         TextLineConstraintBuilder.builder()
-            .name("lnsTrust ")
+            .name("lnsTrust")
             .description("The LNS Trust")
             .minLength(0)
             .maxLength(16)

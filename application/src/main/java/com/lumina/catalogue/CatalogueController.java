@@ -19,11 +19,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/catalogue/")
 public class CatalogueController {
 
-  private final CatalogueService.Item itemService;
-  private final CatalogueService.PresetService presetService;
+  private final CatalogueItemService itemService;
+  private final CataloguePresetService presetService;
 
   public CatalogueController(
-      CatalogueService.Item itemService, CatalogueService.PresetService presetService) {
+      CatalogueItemService itemService, CataloguePresetService presetService) {
     this.itemService = itemService;
     this.presetService = presetService;
   }

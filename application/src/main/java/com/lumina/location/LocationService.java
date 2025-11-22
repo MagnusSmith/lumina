@@ -18,13 +18,18 @@ public class LocationService {
     return repository.save(location);
   }
 
+  /**
+   * Updates a location. This method validates that the location exists before performing the update.
+   *
+   * @param location the location with updated data
+   * @return the updated location
+   * @throws NotFoundException if the location does not exist
+   */
   public Location update(Location location) {
-    repository
-        .findById(location.id())
-        .orElseThrow(
-            () ->
-                new NotFoundException(
-                    "The location with id %s could not be found!".formatted(location.id())));
+    if (!repository.existsById(location.id())) {
+      throw new NotFoundException(
+          "The location with id %s could not be found!".formatted(location.id()));
+    }
     return repository.save(location);
   }
 

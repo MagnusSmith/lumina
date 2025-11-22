@@ -18,7 +18,8 @@ public class Errors {
   }
 
   public String popContext() {
-    context = context.substring(0, context.lastIndexOf("."));
+    int lastDotIndex = context.lastIndexOf(".");
+    context = lastDotIndex == -1 ? "" : context.substring(0, lastDotIndex);
     return context;
   }
 

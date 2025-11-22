@@ -48,21 +48,21 @@ public class LocationServiceTest {
   @Test
   @DisplayName("update() should update and return existing location")
   void testUpdate() {
-    when(repository.findById("location-1")).thenReturn(Optional.of(testLocation));
+    when(repository.existsById("location-1")).thenReturn(true);
     when(repository.save(any(Location.class))).thenReturn(testLocation);
 
     Location result = locationService.update(testLocation);
 
     assertThat(result).isNotNull();
     assertThat(result.id()).isEqualTo("location-1");
-    verify(repository).findById("location-1");
+    verify(repository).existsById("location-1");
     verify(repository).save(testLocation);
   }
 
   @Test
   @DisplayName("update() should throw NotFoundException when location doesn't exist")
   void testUpdateNotFound() {
-    when(repository.findById("non-existent")).thenReturn(Optional.empty());
+    when(repository.existsById("non-existent")).thenReturn(false);
 
     Location nonExistentLocation = new Location("non-existent", "Non Existent", "project-1", null);
 
@@ -70,7 +70,7 @@ public class LocationServiceTest {
         .isInstanceOf(NotFoundException.class)
         .hasMessageContaining("The location with id non-existent could not be found!");
 
-    verify(repository).findById("non-existent");
+    verify(repository).existsById("non-existent");
   }
 
   @Test

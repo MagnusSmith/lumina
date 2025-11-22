@@ -40,6 +40,7 @@ out/
 **/mongodb-data/
 **/mongodb-log/
 .env
+application-local.yml
 
 
 # CDK asset staging directory

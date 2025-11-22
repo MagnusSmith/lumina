@@ -48,21 +48,21 @@ public class ProjectServiceTest {
   @Test
   @DisplayName("update() should update and return existing project")
   void testUpdate() {
-    when(repository.findById("project-1")).thenReturn(Optional.of(testProject));
+    when(repository.existsById("project-1")).thenReturn(true);
     when(repository.save(any(Project.class))).thenReturn(testProject);
 
     Project result = projectService.update(testProject);
 
     assertThat(result).isNotNull();
     assertThat(result.id()).isEqualTo("project-1");
-    verify(repository).findById("project-1");
+    verify(repository).existsById("project-1");
     verify(repository).save(testProject);
   }
 
   @Test
   @DisplayName("update() should throw NotFoundException when project doesn't exist")
   void testUpdateNotFound() {
-    when(repository.findById("non-existent")).thenReturn(Optional.empty());
+    when(repository.existsById("non-existent")).thenReturn(false);
 
     Project nonExistentProject =
         new Project("non-existent", "client-1", "Non Existent", "BillingGroup1", null);
@@ -71,6 +71,6 @@ public class ProjectServiceTest {
         .isInstanceOf(NotFoundException.class)
         .hasMessageContaining("The project with id non-existent could not be found!");
 
-    verify(repository).findById("non-existent");
+    verify(repository).existsById("non-existent");
   }
 }

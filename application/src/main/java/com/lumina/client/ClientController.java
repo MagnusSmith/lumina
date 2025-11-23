@@ -72,7 +72,8 @@ public class ClientController {
 
   @Operation(
       summary = "Get all clients",
-      description = "Retrieves all clients in the system. For paginated results, use /api/client/page")
+      description =
+          "Retrieves all clients in the system. For paginated results, use /api/client/page")
   @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Clients retrieved")})
   @GetMapping("client")
   public List<ClientDto> findAll() {

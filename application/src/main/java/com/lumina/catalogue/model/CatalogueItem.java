@@ -7,6 +7,7 @@ import io.soabase.recordbuilder.core.RecordBuilder;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -16,7 +17,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public record CatalogueItem(
 
     // @NotBlank(message = "Id is mandatory")
-    @Nullable String id,
+    @Id @Nullable String id,
     // @UniqueModel
     @NotBlank(message = "Model is mandatory") String model,
     @EnumNamePattern(regexp = "GATEWAY|DEVICE") Level level,

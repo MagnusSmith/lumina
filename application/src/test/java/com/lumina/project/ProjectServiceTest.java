@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 
 import com.lumina.NotFoundException;
 import com.lumina.project.model.Project;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

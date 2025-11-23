@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="detail">
+        <h2 th:text="${item.model}">Model Name</h2>
+
+        <div class="detail-section">
+            <h3>Basic Information</h3>
+            <table class="detail-table">
+                <tr>
+                    <th>Level:</th>
+                    <td><span class="badge" th:text="${item.level}" th:classappend="${item.level}"></span></td>
+                </tr>
+                <tr>
+                    <th>Type:</th>
+                    <td th:text="${item.type}"></td>
+                </tr>
+                <tr>
+                    <th>Manufacturer:</th>
+                    <td th:text="${item.manufacturer}"></td>
+                </tr>
+                <tr>
+                    <th>Description:</th>
+                    <td th:text="${item.description}"></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="detail-section" th:if="${item.constraints != null && !item.constraints.isEmpty()}">
+            <h3>Constraints (<span th:text="${item.constraints.size()}">0</span>)</h3>
+            <div th:each="constraint, iterStat : ${item.constraints}" class="constraint-item">
+                <h4>Constraint #<span th:text="${iterStat.count}">1</span>: <span th:text="${constraint.name}">Name</span></h4>
+                <table class="detail-table">
+                    <tr>
+                        <th>Type:</th>
+                        <td>
+                            <span th:if="${T(com.lumina.catalogue.model.constraint.TextLineConstraint).isInstance(constraint)}">TEXT</span>
+                            <span th:if="${T(com.lumina.catalogue.model.constraint.NumberLineConstraint).isInstance(constraint)}">NUMERIC</span>
+                            <span th:if="${T(com.lumina.catalogue.model.constraint.PatternLineConstraint).isInstance(constraint)}">PATTERN</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Stage:</th>
+                        <td th:text="${constraint.stage}"></td>
+                    </tr>
+                    <tr th:if="${constraint.description != null && !constraint.description.isEmpty()}">
+                        <th>Description:</th>
+                        <td th:text="${constraint.description}"></td>
+                    </tr>
+                    <!-- TEXT constraint fields -->
+                    <tr th:if="${T(com.lumina.catalogue.model.constraint.TextLineConstraint).isInstance(constraint) && constraint.minLength != null}">
+                        <th>Min Length:</th>
+                        <td th:text="${constraint.minLength}"></td>
+                    </tr>
+                    <tr th:if="${T(com.lumina.catalogue.model.constraint.TextLineConstraint).isInstance(constraint) && constraint.maxLength != null}">
+                        <th>Max Length:</th>
+                        <td th:text="${constraint.maxLength}"></td>
+                    </tr>
+                    <!-- NUMERIC constraint fields -->
+                    <tr th:if="${T(com.lumina.catalogue.model.constraint.NumberLineConstraint).isInstance(constraint)}">
+                        <th>Number Type:</th>
+                        <td th:text="${constraint.numberType}"></td>
+                    </tr>
+                    <tr th:if="${T(com.lumina.catalogue.model.constraint.NumberLineConstraint).isInstance(constraint) && constraint.min != null}">
+                        <th>Min Value:</th>
+                        <td th:text="${constraint.min}"></td>
+                    </tr>
+                    <tr th:if="${T(com.lumina.catalogue.model.constraint.NumberLineConstraint).isInstance(constraint) && constraint.max != null}">
+                        <th>Max Value:</th>
+                        <td th:text="${constraint.max}"></td>
+                    </tr>
+                    <!-- PATTERN constraint fields -->
+                    <tr th:if="${T(com.lumina.catalogue.model.constraint.PatternLineConstraint).isInstance(constraint)}">
+                        <th>Pattern:</th>
+                        <td><code th:text="${constraint.pattern}"></code></td>
+                    </tr>
+                    <tr>
+                        <th>Required:</th>
+                        <td th:text="${constraint.isRequired ? 'Yes' : 'No'}"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="detail-section" th:if="${item.constraints == null || item.constraints.isEmpty()}">
+            <p class="empty-state">No constraints defined for this catalogue item.</p>
+        </div>
+    </div>
+</body>
+</html>

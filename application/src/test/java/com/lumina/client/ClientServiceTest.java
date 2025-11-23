@@ -64,7 +64,8 @@ public class ClientServiceTest {
   void testUpdateNotFound() {
     when(repository.existsById("non-existent")).thenReturn(false);
 
-    Client nonExistentClient = new Client("non-existent", "Non Existent", List.of(), null, null, null, null);
+    Client nonExistentClient =
+        new Client("non-existent", "Non Existent", List.of(), null, null, null, null);
 
     assertThatThrownBy(() -> clientService.update(nonExistentClient))
         .isInstanceOf(NotFoundException.class)

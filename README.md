@@ -258,16 +258,17 @@ curl -X 'POST' \
   -d '{
   "locationId": "660aeb0fc1e5a312013963f1",
   "model": "GATEWAY-LORAWAN-V1",
-  "configurationLines": [
+  "lines": [
     {
-      "variable": "age",
-      "value": "50",
-      "stage": "INTAKE"
+      "type": "NUMERIC",
+      "name": "age",
+      "numberType": "INTEGER",
+      "value": 50
     },
     {
-      "variable": "publicKey",
-      "value": "SHA-256:mypublickeyvalue",
-      "stage": "INTAKE"
+      "type": "TEXT",
+      "name": "publicKey",
+      "value": "SHA-256:mypublickeyvalue"
     }
   ]
 }'

@@ -27,7 +27,7 @@ public class CatalogueItemService {
 
   /**
    * Updates a catalogue item. This method validates that the item exists before performing the
-   * update. Uses MongoTemplate to perform an explicit replace operation.
+   * update. Uses MongoTemplate's findAndReplace for atomic replacement.
    *
    * @param item the catalogue item with updated data
    * @return the updated catalogue item
@@ -36,16 +36,16 @@ public class CatalogueItemService {
   public CatalogueItem update(CatalogueItem item) {
     Objects.requireNonNull(item.id());
 
-    // Verify item exists
-    if (!itemRepository.existsById(item.id())) {
+    // Use atomic findAndReplace operation to avoid race conditions
+    Query query = new Query(Criteria.where("_id").is(item.id()));
+    CatalogueItem result = mongoTemplate.findAndReplace(query, item);
+
+    if (result == null) {
       throw new NotFoundException(
           "The catalogue item with id %s could not be found!".formatted(item.id()));
     }
 
-    // Delete and re-insert to avoid save() confusion between insert and update
-    Query query = new Query(Criteria.where("_id").is(item.id()));
-    mongoTemplate.remove(query, CatalogueItem.class);
-    return mongoTemplate.insert(item);
+    return item;
   }
 
   public void delete(String model) {

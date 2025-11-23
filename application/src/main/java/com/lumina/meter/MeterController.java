@@ -92,4 +92,16 @@ public class MeterController {
         .map(m -> meterService.toMeterDto(m, withConstraints.isPresent()))
         .toList();
   }
+
+  @Operation(summary = "Delete a meter", description = "Deletes a meter by its ID")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "204", description = "Meter deleted successfully"),
+        @ApiResponse(responseCode = "404", description = "Meter not found")
+      })
+  @DeleteMapping("meter/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void delete(@PathVariable String id) {
+    meterService.delete(id);
+  }
 }

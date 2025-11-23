@@ -2,6 +2,8 @@ package com.lumina.project;
 
 import com.lumina.NotFoundException;
 import com.lumina.project.model.Project;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,5 +32,17 @@ public class ProjectService {
           "The project with id %s could not be found!".formatted(project.id()));
     }
     return repository.save(project);
+  }
+
+  public List<Project> findByClientId(String clientId) {
+    return repository.findByClientId(clientId);
+  }
+
+  public Optional<Project> findById(String id) {
+    return repository.findById(id);
+  }
+
+  public List<Project> findAll() {
+    return repository.findAll();
   }
 }

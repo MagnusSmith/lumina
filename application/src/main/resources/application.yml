@@ -27,6 +27,11 @@ spring:
 lumina:
   security:
     enabled: ${SECURITY_ENABLED:false}  # Disabled by default for development
+  meter:
+    status:
+      simulator:
+        enabled: ${STATUS_SIMULATOR_ENABLED:true}  # Enable status simulation by default
+        interval: ${STATUS_SIMULATOR_INTERVAL:60000}  # Interval in milliseconds (default: 60 seconds)
 
 management:
   endpoints:

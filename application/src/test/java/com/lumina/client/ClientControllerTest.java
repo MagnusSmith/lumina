@@ -78,7 +78,8 @@ public class ClientControllerTest {
   @DisplayName("PUT /api/client should update existing client and return 200")
   void testUpdateClient() throws Exception {
     UpdateClientDto updateClientDto = new UpdateClientDto("client-1", "Updated Client");
-    Client updatedClient = new Client("client-1", "Updated Client", List.of(), null, null, null, null);
+    Client updatedClient =
+        new Client("client-1", "Updated Client", List.of(), null, null, null, null);
 
     when(clientService.update(any(Client.class))).thenReturn(updatedClient);
 

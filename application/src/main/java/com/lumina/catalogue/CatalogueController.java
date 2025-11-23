@@ -1,9 +1,11 @@
 package com.lumina.catalogue;
 
+import com.lumina.NotFoundException;
 import com.lumina.catalogue.dto.CatalogueItemDto;
 import com.lumina.catalogue.dto.NewCatalogueItemDto;
 import com.lumina.catalogue.dto.PresetDto;
 import com.lumina.catalogue.dto.UpdateCatalogueItemDto;
+import com.lumina.catalogue.model.CatalogueItem;
 import com.lumina.catalogue.model.CatalogueItemBuilder;
 import com.lumina.catalogue.model.Level;
 import com.lumina.catalogue.model.MeterType;
@@ -48,9 +50,29 @@ public class CatalogueController {
   }
 
   @PutMapping("item")
-  public CatalogueItemDto update(@Valid @RequestBody UpdateCatalogueItemDto item) {
+  public CatalogueItemDto update(@Valid @RequestBody UpdateCatalogueItemDto updateDto) {
+    // Fetch existing item to preserve lines
+    CatalogueItem existingItem =
+        itemService
+            .findByModel(updateDto.model())
+            .orElseThrow(
+                () ->
+                    new NotFoundException(
+                        "Catalogue item with model %s not found".formatted(updateDto.model())));
 
-    return CatalogueItemDto.from(itemService.update(UpdateCatalogueItemDto.toModel(item)));
+    // Create updated item using record constructor to preserve all fields
+    CatalogueItem updatedItem =
+        new CatalogueItem(
+            existingItem.id(), // Use existing ID
+            updateDto.model(),
+            updateDto.level(),
+            updateDto.type(),
+            updateDto.description(),
+            updateDto.manufacturer(),
+            existingItem.lines() != null ? existingItem.lines() : List.of(),
+            updateDto.constraints() != null ? updateDto.constraints() : List.of());
+
+    return CatalogueItemDto.from(itemService.update(updatedItem));
   }
 
   @DeleteMapping("item/{model}")

@@ -12,9 +12,9 @@ import java.lang.annotation.Target;
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
 @Retention(RUNTIME)
 @Documented
-@Constraint(validatedBy = EnumNamePatternValidator.class)
+@Constraint(validatedBy = ValidationStageEnumValidator.class)
 public @interface ValidationStageEnum {
-  String regexp() default "INTAKE|CONNECTION|STAGING|DEPLOYMENT";
+  String regexp() default "Intake|Connection|Staging|Deployment";
 
   String message() default "must match \"{regexp}\"";
 

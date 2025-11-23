@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head}">
+    <title>Meters - Lumina Meter Config</title>
+</head>
+<body>
+    <nav th:replace="~{layout :: navbar}"></nav>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>Meters</h1>
+            <button class="btn btn-primary" onclick="openCreateForm()">
+                + Add Meter
+            </button>
+        </div>
+
+        <!-- Create Form -->
+        <div id="create-form" class="card hidden">
+            <h2>Create New Meter</h2>
+            <div id="form-success" class="alert alert-success hidden"></div>
+            <div id="form-error" class="alert alert-error hidden"></div>
+            <form id="meter-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="clientSelect">Client *</label>
+                        <select id="clientSelect" name="client" required>
+                            <option value="">Select a client...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="projectSelect">Project *</label>
+                        <select id="projectSelect" name="project" required disabled>
+                            <option value="">Select a project...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="locationSelect">Location *</label>
+                        <select id="locationSelect" name="location" required disabled>
+                            <option value="">Select a location...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="model">Model *</label>
+                        <input type="text" id="model" name="model" required
+                               placeholder="e.g., GATEWAY-LORAWAN-V1">
+                        <small class="form-hint">Enter the catalogue item model</small>
+                    </div>
+                </div>
+
+                <div id="constraints-section" class="form-section hidden">
+                    <h3>Configuration Fields</h3>
+                    <p class="form-hint">Fill in the required configuration values based on the model constraints</p>
+                    <div id="constraints-container"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Create Meter</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeCreateForm()">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Update Form -->
+        <div id="update-form" class="card hidden">
+            <h2>Update Meter</h2>
+            <div id="update-form-success" class="alert alert-success hidden"></div>
+            <div id="update-form-error" class="alert alert-error hidden"></div>
+            <form id="update-meter-form">
+                <input type="hidden" id="update-id" name="id">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="update-locationId">Location ID *</label>
+                        <input type="text" id="update-locationId" name="locationId" required readonly>
+                        <div class="field-error hidden"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="update-model">Model *</label>
+                        <input type="text" id="update-model" name="model" required readonly>
+                        <div class="field-error hidden"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="update-stage">Validation Stage *</label>
+                        <select id="update-stage" name="stage" required>
+                            <option value="Intake">Intake</option>
+                            <option value="Connection">Connection</option>
+                            <option value="Staging">Staging</option>
+                            <option value="Deployment">Deployment</option>
+                        </select>
+                        <div class="field-error hidden"></div>
+                    </div>
+                </div>
+
+                <div id="update-constraints-section" class="form-section hidden">
+                    <h3>Configuration Fields</h3>
+                    <p class="form-hint">Update the configuration values. All fields show their validation requirements.</p>
+                    <div id="update-constraints-container"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Update Meter</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeUpdateForm()">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Meters List -->
+        <div id="meters-list" class="meters-grid">
+            <div th:each="meter : ${meters}" class="meter-card">
+                <div class="meter-header">
+                    <h3>Meter</h3>
+                    <span class="badge" th:text="${meter.model}">Model</span>
+                </div>
+                <div class="meter-body">
+                    <p><strong>ID:</strong> <code th:text="${meter.id}">ID</code></p>
+                    <p><strong>Location:</strong> <code th:text="${meter.locationId}">Location ID</code></p>
+                    <p><strong>Model:</strong> <span th:text="${meter.model}">Model</span></p>
+                    <p><strong>Stage:</strong> <span class="badge" th:text="${meter.stage}">Stage</span></p>
+                    <p><strong>Configuration Lines:</strong> <span th:text="${meter.lines != null ? meter.lines.size() : 0}">0</span></p>
+
+                    <div th:if="${meter.lines != null && !meter.lines.isEmpty()}" class="config-preview">
+                        <details>
+                            <summary>View Configuration</summary>
+                            <table class="config-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Value</th>
+                                        <th>Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="line : ${meter.lines}">
+                                        <td th:text="${line.name}">Name</td>
+                                        <td th:text="${line.value}">Value</td>
+                                        <td>
+                                            <span th:if="${T(com.lumina.meter.model.Line.Text).isInstance(line)}">TEXT</span>
+                                            <span th:if="${T(com.lumina.meter.model.Line.Number).isInstance(line)}">NUMERIC</span>
+                                            <span th:if="${T(com.lumina.meter.model.Line.Pattern).isInstance(line)}">PATTERN</span>
+                                            <span th:if="${T(com.lumina.meter.model.Line.ReadOnly).isInstance(line)}">READ_ONLY</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </details>
+                    </div>
+
+                    <!-- Status Graphs Section -->
+                    <div class="status-section">
+                        <details>
+                            <summary>View Status Graphs</summary>
+                            <div class="status-controls">
+                                <label>Time Period:</label>
+                                <select class="period-selector" th:attr="data-meter-id=${meter.id}" onchange="updateMeterStatus(this)">
+                                    <option value="1">Last Hour</option>
+                                    <option value="24">Last 24 Hours</option>
+                                </select>
+                            </div>
+                            <div class="status-graphs" th:attr="data-meter-id=${meter.id},data-model=${meter.model}">
+                                <!-- Graphs will be inserted here by JavaScript -->
+                            </div>
+                        </details>
+                    </div>
+                </div>
+                <div class="meter-actions">
+                    <button class="btn btn-sm btn-primary"
+                            th:attr="data-meter-id=${meter.id}"
+                            onclick="openUpdateForm(this)">
+                        Edit
+                    </button>
+                    <button class="btn btn-sm btn-secondary"
+                            th:attr="data-meter-id=${meter.id}"
+                            onclick="deleteMeter(this)">
+                        Delete
+                    </button>
+                </div>
+            </div>
+
+            <div th:if="${#lists.isEmpty(meters)}" class="empty-state">
+                <p>No meters found. Click "Add Meter" to create one.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{layout :: footer}"></footer>
+
+    <script>
+        let lineCounter = 0;
+
+        async function loadClients() {
+            try {
+                const response = await fetch('/web/api/clients');
+                const clients = await response.json();
+
+                const clientSelect = document.getElementById('clientSelect');
+                clientSelect.innerHTML = '<option value="">Select a client...</option>';
+
+                clients.forEach(client => {
+                    const option = document.createElement('option');
+                    option.value = client.id;
+                    option.textContent = client.name;
+                    clientSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading clients:', error);
+            }
+        }
+
+        async function loadProjects(clientId) {
+            try {
+                const response = await fetch(`/web/api/projects/${clientId}`);
+                const projects = await response.json();
+
+                const projectSelect = document.getElementById('projectSelect');
+                projectSelect.innerHTML = '<option value="">Select a project...</option>';
+                projectSelect.disabled = false;
+
+                projects.forEach(project => {
+                    const option = document.createElement('option');
+                    option.value = project.id;
+                    option.textContent = project.name;
+                    projectSelect.appendChild(option);
+                });
+
+                // Reset location dropdown
+                const locationSelect = document.getElementById('locationSelect');
+                locationSelect.innerHTML = '<option value="">Select a location...</option>';
+                locationSelect.disabled = true;
+            } catch (error) {
+                console.error('Error loading projects:', error);
+            }
+        }
+
+        async function loadLocations(projectId) {
+            try {
+                const response = await fetch(`/web/api/locations/${projectId}`);
+                const locations = await response.json();
+
+                const locationSelect = document.getElementById('locationSelect');
+                locationSelect.innerHTML = '<option value="">Select a location...</option>';
+                locationSelect.disabled = false;
+
+                locations.forEach(location => {
+                    const option = document.createElement('option');
+                    option.value = location.id;
+                    option.textContent = location.name;
+                    locationSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading locations:', error);
+            }
+        }
+
+        // Event listeners for cascading dropdowns
+        document.getElementById('clientSelect').addEventListener('change', function() {
+            const clientId = this.value;
+            if (clientId) {
+                loadProjects(clientId);
+            } else {
+                document.getElementById('projectSelect').disabled = true;
+                document.getElementById('projectSelect').innerHTML = '<option value="">Select a project...</option>';
+                document.getElementById('locationSelect').disabled = true;
+                document.getElementById('locationSelect').innerHTML = '<option value="">Select a location...</option>';
+            }
+        });
+
+        document.getElementById('projectSelect').addEventListener('change', function() {
+            const projectId = this.value;
+            if (projectId) {
+                loadLocations(projectId);
+            } else {
+                document.getElementById('locationSelect').disabled = true;
+                document.getElementById('locationSelect').innerHTML = '<option value="">Select a location...</option>';
+            }
+        });
+
+        function openCreateForm() {
+            document.getElementById('create-form').classList.remove('hidden');
+            document.getElementById('form-error').classList.add('hidden');
+            loadClients();
+        }
+
+        function closeCreateForm() {
+            document.getElementById('create-form').classList.add('hidden');
+            document.getElementById('form-error').classList.add('hidden');
+            document.getElementById('meter-form').reset();
+            document.getElementById('projectSelect').disabled = true;
+            document.getElementById('locationSelect').disabled = true;
+            document.getElementById('constraints-section').classList.add('hidden');
+            document.getElementById('constraints-container').innerHTML = '';
+        }
+
+        // Load constraints when model is entered
+        let modelLoadTimeout;
+        document.getElementById('model').addEventListener('input', function() {
+            const model = this.value.trim();
+            clearTimeout(modelLoadTimeout);
+
+            if (model) {
+                modelLoadTimeout = setTimeout(() => loadConstraints(model), 500);
+            } else {
+                document.getElementById('constraints-section').classList.add('hidden');
+                document.getElementById('constraints-container').innerHTML = '';
+            }
+        });
+
+        async function loadConstraints(model) {
+            try {
+                const response = await fetch(`/api/catalogue/item/${encodeURIComponent(model)}`);
+                if (!response.ok) {
+                    document.getElementById('constraints-section').classList.add('hidden');
+                    document.getElementById('constraints-container').innerHTML = '';
+                    return;
+                }
+
+                const catalogueItem = await response.json();
+                displayConstraints(catalogueItem.constraints || []);
+            } catch (error) {
+                console.error('Error loading constraints:', error);
+                document.getElementById('constraints-section').classList.add('hidden');
+            }
+        }
+
+        function displayConstraints(constraints) {
+            const container = document.getElementById('constraints-container');
+            container.innerHTML = '';
+
+            if (constraints.length === 0) {
+                document.getElementById('constraints-section').classList.add('hidden');
+                return;
+            }
+
+            document.getElementById('constraints-section').classList.remove('hidden');
+
+            constraints.forEach((constraint, index) => {
+                const constraintDiv = document.createElement('div');
+                constraintDiv.className = 'constraint-field';
+                constraintDiv.dataset.constraintIndex = index;
+                constraintDiv.dataset.constraintName = constraint.name;
+
+                let inputField = '';
+                let hint = constraint.description || '';
+
+                if (constraint.type === 'TEXT') {
+                    const minMaxHint = [];
+                    const validationAttrs = [];
+
+                    if (constraint.minLength) {
+                        minMaxHint.push(`min: ${constraint.minLength}`);
+                        validationAttrs.push(`minlength="${constraint.minLength}"`);
+                    }
+                    if (constraint.maxLength) {
+                        minMaxHint.push(`max: ${constraint.maxLength}`);
+                        validationAttrs.push(`maxlength="${constraint.maxLength}"`);
+                    }
+                    const lengthHint = minMaxHint.length > 0 ? ` (${minMaxHint.join(', ')})` : '';
+
+                    inputField = `
+                        <input type="text"
+                               class="constraint-value"
+                               data-constraint-name="${constraint.name}"
+                               data-constraint-type="TEXT"
+                               ${constraint.isRequired ? 'required' : ''}
+                               ${validationAttrs.join(' ')}
+                               placeholder="Enter text value">
+                        <small class="form-hint">${hint}${lengthHint}</small>
+                        <div class="field-error hidden"></div>
+                    `;
+                } else if (constraint.type === 'NUMERIC') {
+                    const minMaxHint = [];
+                    const validationAttrs = [];
+
+                    if (constraint.min !== null && constraint.min !== undefined) {
+                        minMaxHint.push(`min: ${constraint.min}`);
+                        validationAttrs.push(`min="${constraint.min}"`);
+                    }
+                    if (constraint.max !== null && constraint.max !== undefined) {
+                        minMaxHint.push(`max: ${constraint.max}`);
+                        validationAttrs.push(`max="${constraint.max}"`);
+                    }
+                    const rangeHint = minMaxHint.length > 0 ? ` (${minMaxHint.join(', ')})` : '';
+
+                    inputField = `
+                        <input type="number"
+                               step="${constraint.numberType === 'FLOAT' ? 'any' : '1'}"
+                               class="constraint-value"
+                               data-constraint-name="${constraint.name}"
+                               data-constraint-type="NUMERIC"
+                               data-number-type="${constraint.numberType}"
+                               ${constraint.isRequired ? 'required' : ''}
+                               ${validationAttrs.join(' ')}
+                               placeholder="Enter ${constraint.numberType.toLowerCase()} value">
+                        <small class="form-hint">${hint} (Type: ${constraint.numberType})${rangeHint}</small>
+                        <div class="field-error hidden"></div>
+                    `;
+                } else if (constraint.type === 'PATTERN') {
+                    inputField = `
+                        <input type="text"
+                               class="constraint-value"
+                               data-constraint-name="${constraint.name}"
+                               data-constraint-type="PATTERN"
+                               ${constraint.isRequired ? 'required' : ''}
+                               pattern="${constraint.pattern}"
+                               title="Must match pattern: ${constraint.pattern}"
+                               placeholder="Enter value matching pattern">
+                        <small class="form-hint">${hint}<br>Pattern: <code>${constraint.pattern}</code></small>
+                        <div class="field-error hidden"></div>
+                    `;
+                }
+
+                const requiredBadge = constraint.isRequired
+                    ? '<span class="badge-required">Required</span>'
+                    : '<span class="badge-optional">Optional</span>';
+
+                constraintDiv.innerHTML = `
+                    <label>
+                        ${constraint.name}
+                        ${requiredBadge}
+                        <span class="badge">${constraint.stage}</span>
+                    </label>
+                    ${inputField}
+                `;
+
+                container.appendChild(constraintDiv);
+            });
+        }
+
+        function clearFieldErrors() {
+            // Clear all field errors
+            document.querySelectorAll('.field-error').forEach(el => {
+                el.classList.add('hidden');
+                el.textContent = '';
+            });
+            document.querySelectorAll('.constraint-value').forEach(el => {
+                el.classList.remove('error');
+            });
+            document.querySelectorAll('.line-name, .line-value, .line-type').forEach(el => {
+                el.classList.remove('error');
+            });
+            // Clear errors from regular form fields
+            document.querySelectorAll('input.error, select.error').forEach(el => {
+                el.classList.remove('error');
+            });
+        }
+
+        function displayFieldErrors(errors) {
+            clearFieldErrors();
+
+            if (!errors || !errors.errors) return;
+
+            errors.errors.forEach(error => {
+                const fieldName = error.field;
+                let fieldFound = false;
+
+                // Try to find the constraint field by name
+                const constraintField = document.querySelector(`[data-constraint-name="${fieldName}"]`);
+                if (constraintField) {
+                    constraintField.classList.add('error');
+                    const errorDiv = constraintField.closest('.constraint-field').querySelector('.field-error');
+                    if (errorDiv) {
+                        errorDiv.textContent = error.message || error.errorCode;
+                        errorDiv.classList.remove('hidden');
+                        fieldFound = true;
+                    }
+                }
+
+                // Also check in update form line items
+                const lineNameInputs = document.querySelectorAll('.line-name');
+                lineNameInputs.forEach(input => {
+                    if (input.value === fieldName) {
+                        input.classList.add('error');
+                        const lineItem = input.closest('.line-item');
+                        const errorDiv = lineItem.querySelector('.field-error') || document.createElement('div');
+                        if (!lineItem.querySelector('.field-error')) {
+                            errorDiv.className = 'field-error';
+                            lineItem.appendChild(errorDiv);
+                        }
+                        errorDiv.textContent = error.message || error.errorCode;
+                        errorDiv.classList.remove('hidden');
+                        fieldFound = true;
+                    }
+                });
+
+                // If not found yet, check for regular form fields by ID or name attribute
+                if (!fieldFound) {
+                    // Try by ID first (e.g., "update-stage" for "stage" field)
+                    let formField = document.getElementById(fieldName) || document.getElementById(`update-${fieldName}`);
+
+                    // If not found by ID, try by name attribute
+                    if (!formField) {
+                        formField = document.querySelector(`[name="${fieldName}"]`);
+                    }
+
+                    if (formField) {
+                        formField.classList.add('error');
+                        const formGroup = formField.closest('.form-group');
+                        if (formGroup) {
+                            const errorDiv = formGroup.querySelector('.field-error');
+                            if (errorDiv) {
+                                errorDiv.textContent = error.message || error.errorCode;
+                                errorDiv.classList.remove('hidden');
+                                fieldFound = true;
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function displayConstraintsForUpdate(constraints, existingLines) {
+            const container = document.getElementById('update-constraints-container');
+            container.innerHTML = '';
+
+            if (constraints.length === 0) {
+                document.getElementById('update-constraints-section').classList.add('hidden');
+                return;
+            }
+
+            document.getElementById('update-constraints-section').classList.remove('hidden');
+
+            // Create a map of existing lines by name for easy lookup
+            const linesByName = {};
+            existingLines.forEach(line => {
+                linesByName[line.name] = line;
+            });
+
+            constraints.forEach((constraint, index) => {
+                const constraintDiv = document.createElement('div');
+                constraintDiv.className = 'constraint-field';
+                constraintDiv.dataset.constraintIndex = index;
+                constraintDiv.dataset.constraintName = constraint.name;
+
+                // Get existing value if it exists
+                const existingLine = linesByName[constraint.name];
+                const existingValue = existingLine ? existingLine.value : '';
+
+                let inputField = '';
+                let hint = constraint.description || '';
+
+                if (constraint.type === 'TEXT') {
+                    const minMaxHint = [];
+                    const validationAttrs = [];
+
+                    if (constraint.minLength) {
+                        minMaxHint.push(`min: ${constraint.minLength}`);
+                        validationAttrs.push(`minlength="${constraint.minLength}"`);
+                    }
+                    if (constraint.maxLength) {
+                        minMaxHint.push(`max: ${constraint.maxLength}`);
+                        validationAttrs.push(`maxlength="${constraint.maxLength}"`);
+                    }
+                    const lengthHint = minMaxHint.length > 0 ? ` (${minMaxHint.join(', ')})` : '';
+
+                    inputField = `
+                        <input type="text"
+                               class="constraint-value"
+                               data-constraint-name="${constraint.name}"
+                               data-constraint-type="TEXT"
+                               ${constraint.isRequired ? 'required' : ''}
+                               ${validationAttrs.join(' ')}
+                               value="${existingValue}"
+                               placeholder="Enter text value">
+                        <small class="form-hint">${hint}${lengthHint}</small>
+                        <div class="field-error hidden"></div>
+                    `;
+                } else if (constraint.type === 'NUMERIC') {
+                    const minMaxHint = [];
+                    const validationAttrs = [];
+
+                    if (constraint.min !== null && constraint.min !== undefined) {
+                        minMaxHint.push(`min: ${constraint.min}`);
+                        validationAttrs.push(`min="${constraint.min}"`);
+                    }
+                    if (constraint.max !== null && constraint.max !== undefined) {
+                        minMaxHint.push(`max: ${constraint.max}`);
+                        validationAttrs.push(`max="${constraint.max}"`);
+                    }
+                    const rangeHint = minMaxHint.length > 0 ? ` (${minMaxHint.join(', ')})` : '';
+
+                    inputField = `
+                        <input type="number"
+                               step="${constraint.numberType === 'FLOAT' ? 'any' : '1'}"
+                               class="constraint-value"
+                               data-constraint-name="${constraint.name}"
+                               data-constraint-type="NUMERIC"
+                               data-number-type="${constraint.numberType}"
+                               ${constraint.isRequired ? 'required' : ''}
+                               ${validationAttrs.join(' ')}
+                               value="${existingValue}"
+                               placeholder="Enter ${constraint.numberType.toLowerCase()} value">
+                        <small class="form-hint">${hint} (Type: ${constraint.numberType})${rangeHint}</small>
+                        <div class="field-error hidden"></div>
+                    `;
+                } else if (constraint.type === 'PATTERN') {
+                    inputField = `
+                        <input type="text"
+                               class="constraint-value"
+                               data-constraint-name="${constraint.name}"
+                               data-constraint-type="PATTERN"
+                               ${constraint.isRequired ? 'required' : ''}
+                               pattern="${constraint.pattern}"
+                               title="Must match pattern: ${constraint.pattern}"
+                               value="${existingValue}"
+                               placeholder="Enter value matching pattern">
+                        <small class="form-hint">${hint}<br>Pattern: <code>${constraint.pattern}</code></small>
+                        <div class="field-error hidden"></div>
+                    `;
+                }
+
+                const requiredBadge = constraint.isRequired
+                    ? '<span class="badge-required">Required</span>'
+                    : '<span class="badge-optional">Optional</span>';
+
+                constraintDiv.innerHTML = `
+                    <label>
+                        ${constraint.name}
+                        ${requiredBadge}
+                        <span class="badge">${constraint.stage}</span>
+                    </label>
+                    ${inputField}
+                `;
+
+                container.appendChild(constraintDiv);
+            });
+        }
+
+        function buildLinesFromConstraints() {
+            const lines = [];
+            const constraintInputs = document.querySelectorAll('#constraints-container .constraint-value');
+
+            constraintInputs.forEach(input => {
+                const name = input.dataset.constraintName;
+                const type = input.dataset.constraintType;
+                const value = input.value;
+
+                if (value) {
+                    const line = {
+                        type: type,
+                        name: name
+                    };
+
+                    if (type === 'NUMERIC') {
+                        const numberType = input.dataset.numberType;
+                        line.numberType = numberType;
+                        line.value = parseFloat(value) || 0;
+                    } else {
+                        line.value = value;
+                    }
+
+                    lines.push(line);
+                }
+            });
+
+            return lines;
+        }
+
+        function buildLinesFromConstraintsForUpdate() {
+            const lines = [];
+            const constraintInputs = document.querySelectorAll('#update-constraints-container .constraint-value');
+
+            constraintInputs.forEach(input => {
+                const name = input.dataset.constraintName;
+                const type = input.dataset.constraintType;
+                const value = input.value;
+
+                if (value) {
+                    const line = {
+                        type: type,
+                        name: name
+                    };
+
+                    if (type === 'NUMERIC') {
+                        const numberType = input.dataset.numberType;
+                        line.numberType = numberType;
+                        line.value = parseFloat(value) || 0;
+                    } else {
+                        line.value = value;
+                    }
+
+                    lines.push(line);
+                }
+            });
+
+            return lines;
+        }
+
+        async function openUpdateForm(button) {
+            const meterId = button.getAttribute('data-meter-id');
+
+            try {
+                // Fetch meter data with constraints
+                const response = await fetch(`/api/meter/${meterId}?withConstraints=true`);
+                if (!response.ok) {
+                    throw new Error('Failed to load meter data');
+                }
+
+                const meterData = await response.json();
+
+                document.getElementById('update-id').value = meterData.id;
+                document.getElementById('update-locationId').value = meterData.locationId;
+                document.getElementById('update-model').value = meterData.model;
+                document.getElementById('update-stage').value = meterData.stage;
+
+                // Display constraints with existing values pre-filled
+                displayConstraintsForUpdate(meterData.constraints || [], meterData.lines || []);
+
+                document.getElementById('update-form').classList.remove('hidden');
+                document.getElementById('update-form-error').classList.add('hidden');
+            } catch (error) {
+                console.error('Error loading meter data:', error);
+                alert('Failed to load meter data. Please try again.');
+            }
+        }
+
+        function closeUpdateForm() {
+            document.getElementById('update-form').classList.add('hidden');
+            document.getElementById('update-form-error').classList.add('hidden');
+            document.getElementById('update-meter-form').reset();
+            document.getElementById('update-constraints-section').classList.add('hidden');
+            document.getElementById('update-constraints-container').innerHTML = '';
+        }
+
+        function addLine(existingLine = null) {
+            const container = document.getElementById('lines-container');
+            const id = lineCounter++;
+            const lineType = existingLine?.type || 'TEXT';
+
+            const lineDiv = document.createElement('div');
+            lineDiv.className = 'line-item';
+            lineDiv.id = `line-${id}`;
+
+            let typeSpecificFields = '';
+            if (lineType === 'TEXT') {
+                typeSpecificFields = `
+                    <div class="form-group">
+                        <label>Value</label>
+                        <input type="text" class="line-value" value="${existingLine?.value || ''}" placeholder="Enter text value">
+                    </div>
+                `;
+            } else if (lineType === 'NUMERIC') {
+                typeSpecificFields = `
+                    <div class="form-group">
+                        <label>Number Type</label>
+                        <select class="line-number-type">
+                            <option value="INTEGER" ${existingLine?.numberType === 'INTEGER' ? 'selected' : ''}>INTEGER</option>
+                            <option value="FLOAT" ${existingLine?.numberType === 'FLOAT' ? 'selected' : ''}>FLOAT</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Value</label>
+                        <input type="number" step="any" class="line-value" value="${existingLine?.value || ''}" placeholder="Enter numeric value">
+                    </div>
+                `;
+            } else if (lineType === 'PATTERN') {
+                typeSpecificFields = `
+                    <div class="form-group">
+                        <label>Value</label>
+                        <input type="text" class="line-value" value="${existingLine?.value || ''}" placeholder="Enter pattern value">
+                    </div>
+                `;
+            } else if (lineType === 'READ_ONLY') {
+                typeSpecificFields = `
+                    <div class="form-group">
+                        <label>Value</label>
+                        <input type="text" class="line-value" value="${existingLine?.value || ''}" placeholder="Enter read-only value">
+                    </div>
+                `;
+            }
+
+            lineDiv.innerHTML = `
+                <h4>Line Configuration</h4>
+                <button type="button" class="btn-remove" onclick="removeLine(${id})">Remove</button>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select class="line-type" onchange="updateLineFields(${id})">
+                            <option value="TEXT" ${lineType === 'TEXT' ? 'selected' : ''}>TEXT</option>
+                            <option value="NUMERIC" ${lineType === 'NUMERIC' ? 'selected' : ''}>NUMERIC</option>
+                            <option value="PATTERN" ${lineType === 'PATTERN' ? 'selected' : ''}>PATTERN</option>
+                            <option value="READ_ONLY" ${lineType === 'READ_ONLY' ? 'selected' : ''}>READ_ONLY</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Name *</label>
+                        <input type="text" class="line-name" value="${existingLine?.name || ''}" required placeholder="e.g., deviceId">
+                    </div>
+                </div>
+                <div class="type-specific-fields">
+                    ${typeSpecificFields}
+                </div>
+            `;
+
+            container.appendChild(lineDiv);
+        }
+
+        function removeLine(id) {
+            const lineDiv = document.getElementById(`line-${id}`);
+            if (lineDiv) {
+                lineDiv.remove();
+            }
+        }
+
+        function updateLineFields(id) {
+            const lineDiv = document.getElementById(`line-${id}`);
+            const typeSelect = lineDiv.querySelector('.line-type');
+            const typeSpecificContainer = lineDiv.querySelector('.type-specific-fields');
+            const type = typeSelect.value;
+
+            let typeSpecificFields = '';
+            if (type === 'TEXT') {
+                typeSpecificFields = `
+                    <div class="form-group">
+                        <label>Value</label>
+                        <input type="text" class="line-value" placeholder="Enter text value">
+                    </div>
+                `;
+            } else if (type === 'NUMERIC') {
+                typeSpecificFields = `
+                    <div class="form-group">
+                        <label>Number Type</label>
+                        <select class="line-number-type">
+                            <option value="INTEGER">INTEGER</option>
+                            <option value="FLOAT">FLOAT</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Value</label>
+                        <input type="number" step="any" class="line-value" placeholder="Enter numeric value">
+                    </div>
+                `;
+            } else if (type === 'PATTERN') {
+                typeSpecificFields = `
+                    <div class="form-group">
+                        <label>Value</label>
+                        <input type="text" class="line-value" placeholder="Enter pattern value">
+                    </div>
+                `;
+            } else if (type === 'READ_ONLY') {
+                typeSpecificFields = `
+                    <div class="form-group">
+                        <label>Value</label>
+                        <input type="text" class="line-value" placeholder="Enter read-only value">
+                    </div>
+                `;
+            }
+
+            typeSpecificContainer.innerHTML = typeSpecificFields;
+        }
+
+        function buildLinesArray() {
+            const lines = [];
+            const lineItems = document.querySelectorAll('#lines-container .line-item');
+
+            lineItems.forEach(item => {
+                const type = item.querySelector('.line-type').value;
+                const name = item.querySelector('.line-name').value;
+                const valueInput = item.querySelector('.line-value');
+
+                if (name) {
+                    const line = {
+                        type: type,
+                        name: name
+                    };
+
+                    if (type === 'NUMERIC') {
+                        const numberType = item.querySelector('.line-number-type').value;
+                        line.numberType = numberType;
+                        line.value = parseFloat(valueInput.value) || 0;
+                    } else {
+                        line.value = valueInput.value || '';
+                    }
+
+                    lines.push(line);
+                }
+            });
+
+            return lines;
+        }
+
+        // Create meter form submission
+        document.getElementById('meter-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Check form validity
+            if (!this.checkValidity()) {
+                this.reportValidity();
+                return;
+            }
+
+            clearFieldErrors();
+
+            const formData = {
+                locationId: document.getElementById('locationSelect').value,
+                model: document.getElementById('model').value,
+                lines: buildLinesFromConstraints()
+            };
+
+            try {
+                const response = await fetch('/api/meter', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    document.getElementById('form-error').classList.add('hidden');
+                    document.getElementById('form-success').textContent = 'Meter created successfully!';
+                    document.getElementById('form-success').classList.remove('hidden');
+                    setTimeout(() => window.location.reload(), 1500);
+                } else {
+                    // Try to parse error as JSON first
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        const errorData = await response.json();
+                        displayFieldErrors(errorData);
+                        document.getElementById('form-error').textContent = 'Validation failed. Please check the highlighted fields.';
+                        document.getElementById('form-error').classList.remove('hidden');
+                    } else {
+                        const error = await response.text();
+                        document.getElementById('form-error').textContent = 'Error creating meter: ' + error;
+                        document.getElementById('form-error').classList.remove('hidden');
+                    }
+                }
+            } catch (error) {
+                document.getElementById('form-error').textContent = 'Error creating meter: ' + error.message;
+                document.getElementById('form-error').classList.remove('hidden');
+            }
+        });
+
+        // Update meter form submission
+        document.getElementById('update-meter-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Check form validity
+            if (!this.checkValidity()) {
+                this.reportValidity();
+                return;
+            }
+
+            clearFieldErrors();
+
+            const formData = {
+                id: document.getElementById('update-id').value,
+                locationId: document.getElementById('update-locationId').value,
+                model: document.getElementById('update-model').value,
+                stage: document.getElementById('update-stage').value,
+                lines: buildLinesFromConstraintsForUpdate()
+            };
+
+            try {
+                const response = await fetch('/api/meter', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    document.getElementById('update-form-error').classList.add('hidden');
+                    document.getElementById('update-form-success').textContent = 'Meter updated successfully!';
+                    document.getElementById('update-form-success').classList.remove('hidden');
+                    setTimeout(() => window.location.reload(), 1500);
+                } else {
+                    // Try to parse error as JSON first
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        const errorData = await response.json();
+                        displayFieldErrors(errorData);
+                        document.getElementById('update-form-error').textContent = 'Validation failed. Please check the highlighted fields.';
+                        document.getElementById('update-form-error').classList.remove('hidden');
+                    } else {
+                        const error = await response.text();
+                        document.getElementById('update-form-error').textContent = 'Error updating meter: ' + error;
+                        document.getElementById('update-form-error').classList.remove('hidden');
+                    }
+                }
+            } catch (error) {
+                document.getElementById('update-form-error').textContent = 'Error updating meter: ' + error.message;
+                document.getElementById('update-form-error').classList.remove('hidden');
+            }
+        });
+
+        // Delete meter function
+        async function deleteMeter(button) {
+            const meterId = button.getAttribute('data-meter-id');
+
+            if (!confirm('Are you sure you want to delete this meter? This action cannot be undone.')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/meter/${meterId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    alert('Meter deleted successfully!');
+                    window.location.reload();
+                } else {
+                    const error = await response.text();
+                    alert('Error deleting meter: ' + error);
+                }
+            } catch (error) {
+                alert('Error deleting meter: ' + error.message);
+            }
+        }
+
+        // Status Charts Management
+        const meterCharts = {};  // Store chart instances
+
+        // Sample data points to limit chart rendering load
+        function sampleData(data, maxPoints = 100) {
+            if (data.length <= maxPoints) return data;
+
+            const step = Math.ceil(data.length / maxPoints);
+            return data.filter((_, index) => index % step === 0);
+        }
+
+        function updateMeterStatus(selectElement) {
+            const meterId = selectElement.getAttribute('data-meter-id');
+            const hours = parseInt(selectElement.value);
+            loadMeterStatus(meterId, hours);
+        }
+
+        async function loadMeterStatus(meterId, hours = 1) {
+            const graphsContainer = document.querySelector(`[data-meter-id="${meterId}"].status-graphs`);
+            if (!graphsContainer) return;
+
+            const model = graphsContainer.getAttribute('data-model');
+            const isLoRaWAN = model && model.toUpperCase().includes('LORAWAN');
+            const isMODBUS = model && model.toUpperCase().includes('MODBUS');
+
+            // Show loading indicator
+            graphsContainer.innerHTML = '<p class="text-muted">Loading...</p>';
+
+            // Calculate time range
+            const endTime = new Date();
+            const startTime = new Date(endTime.getTime() - (hours * 60 * 60 * 1000));
+
+            try {
+                const response = await fetch(`/api/meter/status/${meterId}?startTime=${startTime.toISOString()}&endTime=${endTime.toISOString()}`);
+
+                if (!response.ok) {
+                    graphsContainer.innerHTML = '<p class="text-muted">No status data available</p>';
+                    return;
+                }
+
+                const statusData = await response.json();
+
+                if (statusData.length === 0) {
+                    graphsContainer.innerHTML = '<p class="text-muted">No status data available for this period</p>';
+                    return;
+                }
+
+                // Sample data if there are too many points (improves performance)
+                const sampledData = sampleData(statusData, 100);
+
+                // Prepare data for charts
+                const timestamps = sampledData.map(s => new Date(s.timestamp));
+                const signalStrength = sampledData.map(s => s.data.signalStrength || null);
+                const batteryLevel = sampledData.map(s => s.data.batteryLevel || null);
+
+                // Clear existing charts
+                const chartKey = `chart-${meterId}`;
+                if (meterCharts[chartKey]) {
+                    meterCharts[chartKey].forEach(chart => chart.destroy());
+                }
+                meterCharts[chartKey] = [];
+
+                // Build HTML for canvases
+                let html = '';
+                if (isLoRaWAN) {
+                    html = `
+                        <div class="chart-container">
+                            <h4>Signal Strength (dBm)</h4>
+                            <canvas id="signal-chart-${meterId}"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h4>Battery Level (%)</h4>
+                            <canvas id="battery-chart-${meterId}"></canvas>
+                        </div>
+                    `;
+                } else if (isMODBUS) {
+                    html = `
+                        <div class="chart-container">
+                            <h4>Signal Strength (dBm)</h4>
+                            <canvas id="signal-chart-${meterId}"></canvas>
+                        </div>
+                    `;
+                } else {
+                    html = `
+                        <div class="chart-container">
+                            <h4>Signal Strength (dBm)</h4>
+                            <canvas id="signal-chart-${meterId}"></canvas>
+                        </div>
+                    `;
+                }
+
+                graphsContainer.innerHTML = html;
+
+                // Common chart options for better performance
+                const commonOptions = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 0  // Disable animations for better performance
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                };
+
+                // Create signal strength chart
+                const signalCtx = document.getElementById(`signal-chart-${meterId}`);
+                if (signalCtx) {
+                    const signalChart = new Chart(signalCtx, {
+                        type: 'line',
+                        data: {
+                            labels: timestamps,
+                            datasets: [{
+                                label: 'Signal Strength',
+                                data: signalStrength,
+                                borderColor: 'rgb(75, 192, 192)',
+                                backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                                borderWidth: 2,
+                                pointRadius: 0,  // No point markers for better performance
+                                pointHitRadius: 10,  // But still allow hovering
+                                tension: 0.1,
+                                fill: true
+                            }]
+                        },
+                        options: {
+                            ...commonOptions,
+                            scales: {
+                                x: {
+                                    type: 'time',
+                                    time: {
+                                        unit: hours > 1 ? 'hour' : 'minute'
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'Time'
+                                    },
+                                    ticks: {
+                                        maxRotation: 0,
+                                        autoSkipPadding: 20
+                                    }
+                                },
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: 'dBm'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    meterCharts[chartKey].push(signalChart);
+                }
+
+                // Create battery chart for LoRaWAN
+                if (isLoRaWAN) {
+                    const batteryCtx = document.getElementById(`battery-chart-${meterId}`);
+                    if (batteryCtx) {
+                        const batteryChart = new Chart(batteryCtx, {
+                            type: 'line',
+                            data: {
+                                labels: timestamps,
+                                datasets: [{
+                                    label: 'Battery Level',
+                                    data: batteryLevel,
+                                    borderColor: 'rgb(255, 159, 64)',
+                                    backgroundColor: 'rgba(255, 159, 64, 0.1)',
+                                    borderWidth: 2,
+                                    pointRadius: 0,  // No point markers for better performance
+                                    pointHitRadius: 10,  // But still allow hovering
+                                    tension: 0.1,
+                                    fill: true
+                                }]
+                            },
+                            options: {
+                                ...commonOptions,
+                                scales: {
+                                    x: {
+                                        type: 'time',
+                                        time: {
+                                            unit: hours > 1 ? 'hour' : 'minute'
+                                        },
+                                        title: {
+                                            display: true,
+                                            text: 'Time'
+                                        },
+                                        ticks: {
+                                            maxRotation: 0,
+                                            autoSkipPadding: 20
+                                        }
+                                    },
+                                    y: {
+                                        min: 0,
+                                        max: 100,
+                                        title: {
+                                            display: true,
+                                            text: '%'
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                        meterCharts[chartKey].push(batteryChart);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading meter status:', error);
+                graphsContainer.innerHTML = '<p class="text-muted">Error loading status data</p>';
+            }
+        }
+
+        // Auto-refresh status graphs every 2 minutes (reduced frequency for better performance)
+        // Only refresh charts that are currently visible
+        setInterval(() => {
+            // Use requestAnimationFrame for smoother updates
+            requestAnimationFrame(() => {
+                document.querySelectorAll('.status-section details[open]').forEach(details => {
+                    const selector = details.querySelector('.period-selector');
+                    if (selector) {
+                        const meterId = selector.getAttribute('data-meter-id');
+                        const hours = parseInt(selector.value);
+                        loadMeterStatus(meterId, hours);
+                    }
+                });
+            });
+        }, 120000);  // 2 minutes instead of 1 minute
+
+        // Load status when details are opened
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.status-section details').forEach(details => {
+                details.addEventListener('toggle', function() {
+                    if (this.open) {
+                        const selector = this.querySelector('.period-selector');
+                        if (selector) {
+                            const meterId = selector.getAttribute('data-meter-id');
+                            const hours = parseInt(selector.value);
+                            loadMeterStatus(meterId, hours);
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

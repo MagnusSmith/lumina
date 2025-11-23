@@ -24,7 +24,10 @@ public class SecurityConfig {
    * <p>This configuration is enabled when security is not explicitly disabled.
    */
   @Bean
-  @ConditionalOnProperty(name = "lumina.security.enabled", havingValue = "true", matchIfMissing = true)
+  @ConditionalOnProperty(
+      name = "lumina.security.enabled",
+      havingValue = "true",
+      matchIfMissing = true)
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(
             auth ->
@@ -58,8 +61,7 @@ public class SecurityConfig {
   @Bean
   @ConditionalOnProperty(name = "lumina.security.enabled", havingValue = "false")
   public SecurityFilterChain devSecurityFilterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-        .csrf(csrf -> csrf.disable());
+    http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll()).csrf(csrf -> csrf.disable());
 
     return http.build();
   }

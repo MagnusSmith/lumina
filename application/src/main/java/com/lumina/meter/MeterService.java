@@ -74,6 +74,17 @@ public class MeterService {
     return repository.findByLocationId(locationId);
   }
 
+  public List<Meter> findAll() {
+    return repository.findAll();
+  }
+
+  public void delete(String id) {
+    if (!repository.existsById(id)) {
+      throw new NotFoundException("The meter with id %s could not be found!".formatted(id));
+    }
+    repository.deleteById(id);
+  }
+
   MeterDto toMeterDto(Meter meter, boolean withConstraints) {
     var catItem = findCatalogueItemByModel(meter.model());
     return MeterDto.from(catItem, meter, withConstraints);

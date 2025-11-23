@@ -14,7 +14,7 @@ public record UpdateCatalogueItemDto(
     @EnumNamePattern(regexp = "LORAWAN|MODBUS|SIDEWALK") MeterType type,
     @NotBlank(message = "Description is mandatory") String description,
     @NotBlank(message = "Manufacturer is mandatory") String manufacturer,
-    List<Constraint<Line>> constraints) {
+    List<Constraint<? extends Line>> constraints) {
   public static CatalogueItem toModel(UpdateCatalogueItemDto dto) {
     return CatalogueItemBuilder.builder()
         .id(dto.id())
@@ -23,6 +23,7 @@ public record UpdateCatalogueItemDto(
         .type(dto.type())
         .description(dto.description())
         .manufacturer(dto.manufacturer())
+        .constraints(dto.constraints())
         .build();
   }
 }

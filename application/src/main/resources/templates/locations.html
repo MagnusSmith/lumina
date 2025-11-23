@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head}">
+    <title>Locations - Lumina Meter Config</title>
+</head>
+<body>
+    <nav th:replace="~{layout :: navbar}"></nav>
+
+    <main class="container">
+        <div class="page-header">
+            <div>
+                <nav class="breadcrumb">
+                    <a th:href="@{/clients}">Clients</a> /
+                    <a th:href="@{/clients/{clientId}/projects(clientId=${client.id})}" th:text="${client.name}">Client Name</a> /
+                    <span th:text="${project.name}">Project Name</span>
+                </nav>
+                <h1>Locations</h1>
+            </div>
+            <button class="btn btn-primary" onclick="document.getElementById('create-location-form').classList.toggle('hidden')">
+                + Add Location
+            </button>
+        </div>
+
+        <!-- Create Form -->
+        <div id="create-location-form" class="card hidden">
+            <h2>Create New Location</h2>
+            <div id="location-form-error" class="alert alert-error hidden"></div>
+            <form hx-post="/api/location"
+                  hx-ext="json-enc"
+                  hx-on::after-request="if(event.detail.successful) { window.location.reload(); } else { document.getElementById('location-form-error').textContent = 'Error creating location. Please check your input.'; document.getElementById('location-form-error').classList.remove('hidden'); }">
+
+                <input type="hidden" name="projectId" th:value="${project.id}">
+
+                <div class="form-group">
+                    <label for="name">Location Name *</label>
+                    <input type="text" id="name" name="name" required
+                           placeholder="e.g., Building A - Floor 3">
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                    <button type="button" class="btn btn-secondary"
+                            onclick="document.getElementById('create-location-form').classList.add('hidden'); document.getElementById('location-form-error').classList.add('hidden');">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Locations List -->
+        <div id="locations-list" class="location-grid">
+            <div th:each="location : ${locations}" class="location-card">
+                <div class="location-header">
+                    <h3 th:text="${location.name}">Location Name</h3>
+                </div>
+                <div class="location-body">
+                    <p><strong>ID:</strong> <code th:text="${location.id}">ID</code></p>
+                    <p><strong>Meters:</strong> <span th:text="${location.meters != null ? location.meters.size() : 0}">0</span></p>
+                </div>
+                <div class="location-actions" th:if="${location.meters == null || location.meters.isEmpty()}">
+                    <button class="btn btn-sm btn-secondary"
+                            th:attr="data-location-id=${location.id}"
+                            onclick="deleteLocation(this)">
+                        Delete
+                    </button>
+                </div>
+                <div class="location-actions" th:if="${location.meters != null && !location.meters.isEmpty()}">
+                    <span class="text-muted" style="font-size: 0.875rem;">
+                        Cannot delete: Location has meters
+                    </span>
+                </div>
+            </div>
+
+            <div th:if="${#lists.isEmpty(locations)}" class="empty-state">
+                <p>No locations found for this project. Click "Add Location" to create one.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{layout :: footer}"></footer>
+
+    <script>
+        async function deleteLocation(button) {
+            const locationId = button.getAttribute('data-location-id');
+
+            if (!confirm('Are you sure you want to delete this location? This action cannot be undone.')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/location/${locationId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    alert('Location deleted successfully!');
+                    window.location.reload();
+                } else {
+                    const error = await response.text();
+                    alert('Error deleting location: ' + error);
+                }
+            } catch (error) {
+                alert('Error deleting location: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

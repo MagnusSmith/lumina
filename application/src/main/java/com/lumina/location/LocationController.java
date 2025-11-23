@@ -39,4 +39,10 @@ public class LocationController {
     var location = locationService.update(UpdateLocationDto.toModel(updateLocation));
     return LocationShortDto.from(location);
   }
+
+  @DeleteMapping("location/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void delete(@PathVariable String id) {
+    locationService.delete(id);
+  }
 }

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head}">
+    <title>Home - Lumina Meter Config</title>
+</head>
+<body>
+    <nav th:replace="~{layout :: navbar}"></nav>
+
+    <main class="container">
+        <div class="hero">
+            <h1>Welcome to Lumina Meter Config</h1>
+            <p class="lead">Manage IoT meter configurations with hierarchical organization and validation</p>
+        </div>
+
+        <div class="card-grid">
+            <div class="card">
+                <h2>Catalogue Management</h2>
+                <p>Define meter models with their characteristics and validation constraints.</p>
+                <a th:href="@{/catalogue}" class="btn btn-primary">View Catalogue</a>
+            </div>
+
+            <div class="card">
+                <h2>Meter Configurations</h2>
+                <p>Create and manage meter instances with validated configurations.</p>
+                <a th:href="@{/meters}" class="btn btn-primary">View Meters</a>
+            </div>
+
+            <div class="card">
+                <h2>Client Management</h2>
+                <p>Organize your meters by clients, projects, and locations.</p>
+                <a th:href="@{/clients}" class="btn btn-primary">View Clients</a>
+            </div>
+
+            <div class="card">
+                <h2>API Documentation</h2>
+                <p>Explore the REST API endpoints and test them interactively.</p>
+                <a href="/swagger-ui/index.html" class="btn btn-secondary" target="_blank">Open Swagger UI</a>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>System Architecture</h2>
+            <p>Hierarchical structure: <strong>Client → Project → Location → Meter</strong></p>
+
+            <div class="features">
+                <div class="feature">
+                    <h3>Catalogue-Based Validation</h3>
+                    <p>Meter configurations are validated against catalogue constraints (text, numeric, and pattern).</p>
+                </div>
+                <div class="feature">
+                    <h3>Validation Stages</h3>
+                    <p>Progressive validation through stages: INTAKE, CONNECTION, and more.</p>
+                </div>
+                <div class="feature">
+                    <h3>Multiple Meter Types</h3>
+                    <p>Support for LORAWAN, MODBUS, and SIDEWALK meter types at GATEWAY or DEVICE level.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

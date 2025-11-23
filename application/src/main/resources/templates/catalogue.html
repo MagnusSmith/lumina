@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head}">
+    <title>Catalogue - Lumina Meter Config</title>
+</head>
+<body>
+    <nav th:replace="~{layout :: navbar}"></nav>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>Catalogue Items</h1>
+            <button class="btn btn-primary" onclick="openCreateForm()">
+                + Add Catalogue Item
+            </button>
+        </div>
+
+        <!-- Create Form -->
+        <div id="create-form" class="card hidden">
+            <h2>Create New Catalogue Item</h2>
+            <div id="form-success" class="alert alert-success hidden"></div>
+            <div id="form-error" class="alert alert-error hidden"></div>
+            <form id="catalogue-form">
+                <div class="form-group">
+                    <label for="model">Model *</label>
+                    <input type="text" id="model" name="model" required
+                           placeholder="e.g., GATEWAY-LORAWAN-V1">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="level">Level *</label>
+                        <select id="level" name="level" required>
+                            <option value="">Select level...</option>
+                            <option value="GATEWAY">GATEWAY</option>
+                            <option value="DEVICE">DEVICE</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="type">Type *</label>
+                        <select id="type" name="type" required>
+                            <option value="">Select type...</option>
+                            <option value="LORAWAN">LORAWAN</option>
+                            <option value="MODBUS">MODBUS</option>
+                            <option value="SIDEWALK">SIDEWALK</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description *</label>
+                    <textarea id="description" name="description" rows="3" required
+                              placeholder="Describe the catalogue item"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="manufacturer">Manufacturer *</label>
+                    <input type="text" id="manufacturer" name="manufacturer" required
+                           placeholder="e.g., Acme IoT Devices Inc.">
+                </div>
+
+                <hr style="margin: 2rem 0; border: none; border-top: 1px solid var(--border);">
+
+                <div class="form-group">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3 style="margin: 0;">Constraints</h3>
+                        <button type="button" class="btn btn-secondary" onclick="addConstraint()">+ Add Constraint</button>
+                    </div>
+                    <div id="constraints-container">
+                        <!-- Constraints will be added here dynamically -->
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeCreateForm()">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Edit Form -->
+        <div id="edit-form" class="card hidden">
+            <h2>Edit Catalogue Item</h2>
+            <div id="edit-form-success" class="alert alert-success hidden"></div>
+            <div id="edit-form-error" class="alert alert-error hidden"></div>
+            <form id="edit-catalogue-form">
+                <input type="hidden" id="edit-id" name="id">
+
+                <div class="form-group">
+                    <label for="edit-model">Model *</label>
+                    <input type="text" id="edit-model" name="model" required readonly
+                           placeholder="e.g., GATEWAY-LORAWAN-V1">
+                    <small class="form-hint">Model cannot be changed after creation</small>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-level">Level *</label>
+                        <select id="edit-level" name="level" required>
+                            <option value="">Select level...</option>
+                            <option value="GATEWAY">GATEWAY</option>
+                            <option value="DEVICE">DEVICE</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-type">Type *</label>
+                        <select id="edit-type" name="type" required>
+                            <option value="">Select type...</option>
+                            <option value="LORAWAN">LORAWAN</option>
+                            <option value="MODBUS">MODBUS</option>
+                            <option value="SIDEWALK">SIDEWALK</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-description">Description *</label>
+                    <textarea id="edit-description" name="description" rows="3" required
+                              placeholder="Describe the catalogue item"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-manufacturer">Manufacturer *</label>
+                    <input type="text" id="edit-manufacturer" name="manufacturer" required
+                           placeholder="e.g., Acme IoT Devices Inc.">
+                </div>
+
+                <hr style="margin: 2rem 0; border: none; border-top: 1px solid var(--border);">
+
+                <div class="form-group">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3 style="margin: 0;">Constraints</h3>
+                        <button type="button" class="btn btn-secondary" onclick="addEditConstraint()">+ Add Constraint</button>
+                    </div>
+                    <div id="edit-constraints-container">
+                        <!-- Constraints will be added here dynamically -->
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeEditForm()">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Catalogue List -->
+        <div id="catalogue-list" class="catalogue-grid">
+            <div th:each="item : ${catalogueItems}" class="catalogue-card">
+                <div class="catalogue-header">
+                    <h3 th:text="${item.model}">Model Name</h3>
+                    <span class="badge" th:text="${item.level}" th:classappend="${item.level}">Level</span>
+                </div>
+                <div class="catalogue-body">
+                    <p><strong>Type:</strong> <span th:text="${item.type}">Type</span></p>
+                    <p><strong>Constraints:</strong> <span th:text="${item.constraints != null ? item.constraints.size() : 0}">0</span></p>
+                    <p><strong>Description:</strong> <span th:text="${item.description}">Description</span></p>
+                    <p><strong>Manufacturer:</strong> <span th:text="${item.manufacturer}">Manufacturer</span></p>
+                </div>
+                <div class="catalogue-actions">
+                    <button class="btn btn-sm btn-secondary"
+                            th:attr="data-model=${item.model}"
+                            onclick="openEditForm(this.getAttribute('data-model'))">
+                        Edit
+                    </button>
+                    <button class="btn btn-sm btn-secondary"
+                            th:attr="data-model=${item.model}"
+                            th:hx-get="@{/catalogue/item/{model}(model=${item.model})}"
+                            hx-target="#detail-modal"
+                            hx-swap="innerHTML"
+                            onclick="document.getElementById('detail-modal-container').classList.remove('hidden')">
+                        View Details
+                    </button>
+                </div>
+            </div>
+
+            <div th:if="${#lists.isEmpty(catalogueItems)}" class="empty-state">
+                <p>No catalogue items found. Click "Add Catalogue Item" to create one.</p>
+            </div>
+        </div>
+
+        <!-- Detail Modal -->
+        <div id="detail-modal-container" class="modal hidden">
+            <div class="modal-content">
+                <span class="close" onclick="document.getElementById('detail-modal-container').classList.add('hidden')">&times;</span>
+                <div id="detail-modal">
+                    <!-- Detail content will be loaded here via htmx -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{layout :: footer}"></footer>
+
+    <script>
+        let constraintCounter = 0;
+        let editConstraintCounter = 0;
+
+        function openCreateForm() {
+            document.getElementById('create-form').classList.remove('hidden');
+            document.getElementById('form-error').classList.add('hidden');
+        }
+
+        function closeCreateForm() {
+            document.getElementById('create-form').classList.add('hidden');
+            document.getElementById('form-error').classList.add('hidden');
+            document.getElementById('catalogue-form').reset();
+            document.getElementById('constraints-container').innerHTML = '';
+            constraintCounter = 0;
+        }
+
+        function addConstraint() {
+            const container = document.getElementById('constraints-container');
+            const id = constraintCounter++;
+
+            const constraintDiv = document.createElement('div');
+            constraintDiv.className = 'constraint-item card';
+            constraintDiv.id = `constraint-${id}`;
+            constraintDiv.style.marginBottom = '1rem';
+            constraintDiv.style.padding = '1rem';
+            constraintDiv.style.backgroundColor = '#f9fafb';
+            constraintDiv.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h4 style="margin: 0;">Constraint #${id + 1}</h4>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="removeConstraint(${id})">Remove</button>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="constraint-type-${id}">Type *</label>
+                        <select id="constraint-type-${id}" class="constraint-type" data-id="${id}" onchange="updateConstraintFields(${id})" required>
+                            <option value="">Select type...</option>
+                            <option value="TEXT">Text</option>
+                            <option value="NUMERIC">Numeric</option>
+                            <option value="PATTERN">Pattern</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="constraint-name-${id}">Variable Name *</label>
+                        <input type="text" id="constraint-name-${id}" placeholder="e.g., deviceId" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="constraint-description-${id}">Description *</label>
+                    <input type="text" id="constraint-description-${id}" placeholder="Describe this constraint" required>
+                </div>
+
+                <div id="constraint-specific-${id}" class="constraint-specific-fields">
+                    <!-- Type-specific fields will be added here -->
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="constraint-required-${id}">Required</label>
+                        <select id="constraint-required-${id}">
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="constraint-stage-${id}">Validation Stage *</label>
+                        <select id="constraint-stage-${id}" required>
+                            <option value="Intake">Intake</option>
+                            <option value="Connection">Connection</option>
+                            <option value="Staging">Staging</option>
+                            <option value="Deployment">Deployment</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+
+            container.appendChild(constraintDiv);
+        }
+
+        function removeConstraint(id) {
+            const element = document.getElementById(`constraint-${id}`);
+            if (element) {
+                element.remove();
+            }
+        }
+
+        function updateConstraintFields(id) {
+            const typeSelect = document.getElementById(`constraint-type-${id}`);
+            const specificFields = document.getElementById(`constraint-specific-${id}`);
+            const type = typeSelect.value;
+
+            if (type === 'TEXT') {
+                specificFields.innerHTML = `
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="constraint-minLength-${id}">Min Length</label>
+                            <input type="number" id="constraint-minLength-${id}" placeholder="Optional" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="constraint-maxLength-${id}">Max Length</label>
+                            <input type="number" id="constraint-maxLength-${id}" placeholder="Optional" min="0">
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'NUMERIC') {
+                specificFields.innerHTML = `
+                    <div class="form-group">
+                        <label for="constraint-numberType-${id}">Number Type *</label>
+                        <select id="constraint-numberType-${id}" required>
+                            <option value="">Select number type...</option>
+                            <option value="INTEGER">Integer</option>
+                            <option value="FLOAT">Float</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="constraint-min-${id}">Min Value</label>
+                            <input type="number" id="constraint-min-${id}" placeholder="Optional" step="any">
+                        </div>
+                        <div class="form-group">
+                            <label for="constraint-max-${id}">Max Value</label>
+                            <input type="number" id="constraint-max-${id}" placeholder="Optional" step="any">
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'PATTERN') {
+                specificFields.innerHTML = `
+                    <div class="form-group">
+                        <label for="constraint-pattern-${id}">Regex Pattern *</label>
+                        <input type="text" id="constraint-pattern-${id}" placeholder="e.g., \\\\d{4}-\\\\d{4}" required>
+                        <small class="text-muted">Java regex pattern (max 500 chars)</small>
+                    </div>
+                `;
+            } else {
+                specificFields.innerHTML = '';
+            }
+        }
+
+        function buildConstraintsArray() {
+            const constraints = [];
+            const container = document.getElementById('constraints-container');
+            const constraintItems = container.querySelectorAll('.constraint-item');
+
+            constraintItems.forEach((item) => {
+                const id = item.id.split('-')[1];
+                const type = document.getElementById(`constraint-type-${id}`)?.value;
+
+                if (!type) return;
+
+                const constraint = {
+                    type: type,
+                    name: document.getElementById(`constraint-name-${id}`).value,
+                    description: document.getElementById(`constraint-description-${id}`).value,
+                    isRequired: document.getElementById(`constraint-required-${id}`).value === 'true',
+                    stage: document.getElementById(`constraint-stage-${id}`).value
+                };
+
+                if (type === 'TEXT') {
+                    const minLength = document.getElementById(`constraint-minLength-${id}`)?.value;
+                    const maxLength = document.getElementById(`constraint-maxLength-${id}`)?.value;
+                    if (minLength) constraint.minLength = parseInt(minLength);
+                    if (maxLength) constraint.maxLength = parseInt(maxLength);
+                } else if (type === 'NUMERIC') {
+                    constraint.numberType = document.getElementById(`constraint-numberType-${id}`).value;
+                    const min = document.getElementById(`constraint-min-${id}`)?.value;
+                    const max = document.getElementById(`constraint-max-${id}`)?.value;
+                    if (min) constraint.min = parseFloat(min);
+                    if (max) constraint.max = parseFloat(max);
+                } else if (type === 'PATTERN') {
+                    constraint.pattern = document.getElementById(`constraint-pattern-${id}`).value;
+                }
+
+                constraints.push(constraint);
+            });
+
+            return constraints;
+        }
+
+        document.getElementById('catalogue-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = {
+                model: document.getElementById('model').value,
+                level: document.getElementById('level').value,
+                type: document.getElementById('type').value,
+                description: document.getElementById('description').value,
+                manufacturer: document.getElementById('manufacturer').value,
+                constraints: buildConstraintsArray()
+            };
+
+            try {
+                const response = await fetch('/api/catalogue/item', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    document.getElementById('form-error').classList.add('hidden');
+                    document.getElementById('form-success').textContent = 'Catalogue item created successfully!';
+                    document.getElementById('form-success').classList.remove('hidden');
+                    setTimeout(() => window.location.reload(), 1500);
+                } else {
+                    const error = await response.text();
+                    document.getElementById('form-error').textContent = 'Error creating catalogue item: ' + error;
+                    document.getElementById('form-error').classList.remove('hidden');
+                }
+            } catch (error) {
+                document.getElementById('form-error').textContent = 'Error creating catalogue item: ' + error.message;
+                document.getElementById('form-error').classList.remove('hidden');
+            }
+        });
+
+        // Edit Form Functions
+        async function openEditForm(model) {
+            try {
+                // Fetch catalogue item data
+                const response = await fetch(`/api/catalogue/item/${encodeURIComponent(model)}`);
+                if (!response.ok) {
+                    throw new Error('Failed to load catalogue item');
+                }
+
+                const item = await response.json();
+
+                // Populate form fields
+                document.getElementById('edit-id').value = item.id;
+                document.getElementById('edit-model').value = item.model;
+                document.getElementById('edit-level').value = item.level;
+                document.getElementById('edit-type').value = item.type;
+                document.getElementById('edit-description').value = item.description;
+                document.getElementById('edit-manufacturer').value = item.manufacturer;
+
+                // Clear and populate constraints
+                document.getElementById('edit-constraints-container').innerHTML = '';
+                editConstraintCounter = 0;
+
+                if (item.constraints && item.constraints.length > 0) {
+                    item.constraints.forEach(constraint => {
+                        addEditConstraint(constraint);
+                    });
+                }
+
+                // Show edit form, hide create form
+                document.getElementById('create-form').classList.add('hidden');
+                document.getElementById('edit-form').classList.remove('hidden');
+                document.getElementById('edit-form-error').classList.add('hidden');
+            } catch (error) {
+                console.error('Error loading catalogue item:', error);
+                alert('Failed to load catalogue item. Please try again.');
+            }
+        }
+
+        function closeEditForm() {
+            document.getElementById('edit-form').classList.add('hidden');
+            document.getElementById('edit-form-error').classList.add('hidden');
+            document.getElementById('edit-catalogue-form').reset();
+            document.getElementById('edit-constraints-container').innerHTML = '';
+            editConstraintCounter = 0;
+        }
+
+        function addEditConstraint(existingConstraint = null) {
+            const container = document.getElementById('edit-constraints-container');
+            const id = editConstraintCounter++;
+
+            const constraintDiv = document.createElement('div');
+            constraintDiv.className = 'constraint-item card';
+            constraintDiv.id = `edit-constraint-${id}`;
+            constraintDiv.style.marginBottom = '1rem';
+            constraintDiv.style.padding = '1rem';
+            constraintDiv.style.backgroundColor = '#f9fafb';
+            constraintDiv.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h4 style="margin: 0;">Constraint #${id + 1}</h4>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="removeEditConstraint(${id})">Remove</button>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-constraint-type-${id}">Type *</label>
+                        <select id="edit-constraint-type-${id}" class="constraint-type" data-id="${id}" onchange="updateEditConstraintFields(${id})" required>
+                            <option value="">Select type...</option>
+                            <option value="TEXT">Text</option>
+                            <option value="NUMERIC">Numeric</option>
+                            <option value="PATTERN">Pattern</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-constraint-name-${id}">Variable Name *</label>
+                        <input type="text" id="edit-constraint-name-${id}" placeholder="e.g., deviceId" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-constraint-description-${id}">Description *</label>
+                    <input type="text" id="edit-constraint-description-${id}" placeholder="Describe this constraint" required>
+                </div>
+
+                <div id="edit-constraint-specific-${id}" class="constraint-specific-fields">
+                    <!-- Type-specific fields will be added here -->
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-constraint-required-${id}">Required</label>
+                        <select id="edit-constraint-required-${id}">
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-constraint-stage-${id}">Validation Stage *</label>
+                        <select id="edit-constraint-stage-${id}" required>
+                            <option value="Intake">Intake</option>
+                            <option value="Connection">Connection</option>
+                            <option value="Staging">Staging</option>
+                            <option value="Deployment">Deployment</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+
+            container.appendChild(constraintDiv);
+
+            // If editing existing constraint, populate values
+            if (existingConstraint) {
+                document.getElementById(`edit-constraint-type-${id}`).value = existingConstraint.type;
+                document.getElementById(`edit-constraint-name-${id}`).value = existingConstraint.name;
+                document.getElementById(`edit-constraint-description-${id}`).value = existingConstraint.description;
+                document.getElementById(`edit-constraint-required-${id}`).value = existingConstraint.isRequired.toString();
+                document.getElementById(`edit-constraint-stage-${id}`).value = existingConstraint.stage;
+
+                // Update type-specific fields
+                updateEditConstraintFields(id);
+
+                // Populate type-specific values
+                if (existingConstraint.type === 'TEXT') {
+                    if (existingConstraint.minLength) {
+                        document.getElementById(`edit-constraint-minLength-${id}`).value = existingConstraint.minLength;
+                    }
+                    if (existingConstraint.maxLength) {
+                        document.getElementById(`edit-constraint-maxLength-${id}`).value = existingConstraint.maxLength;
+                    }
+                } else if (existingConstraint.type === 'NUMERIC') {
+                    document.getElementById(`edit-constraint-numberType-${id}`).value = existingConstraint.numberType;
+                    if (existingConstraint.min !== null && existingConstraint.min !== undefined) {
+                        document.getElementById(`edit-constraint-min-${id}`).value = existingConstraint.min;
+                    }
+                    if (existingConstraint.max !== null && existingConstraint.max !== undefined) {
+                        document.getElementById(`edit-constraint-max-${id}`).value = existingConstraint.max;
+                    }
+                } else if (existingConstraint.type === 'PATTERN') {
+                    document.getElementById(`edit-constraint-pattern-${id}`).value = existingConstraint.pattern;
+                }
+            }
+        }
+
+        function removeEditConstraint(id) {
+            const element = document.getElementById(`edit-constraint-${id}`);
+            if (element) {
+                element.remove();
+            }
+        }
+
+        function updateEditConstraintFields(id) {
+            const typeSelect = document.getElementById(`edit-constraint-type-${id}`);
+            const specificFields = document.getElementById(`edit-constraint-specific-${id}`);
+            const type = typeSelect.value;
+
+            if (type === 'TEXT') {
+                specificFields.innerHTML = `
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-constraint-minLength-${id}">Min Length</label>
+                            <input type="number" id="edit-constraint-minLength-${id}" placeholder="Optional" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-constraint-maxLength-${id}">Max Length</label>
+                            <input type="number" id="edit-constraint-maxLength-${id}" placeholder="Optional" min="0">
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'NUMERIC') {
+                specificFields.innerHTML = `
+                    <div class="form-group">
+                        <label for="edit-constraint-numberType-${id}">Number Type *</label>
+                        <select id="edit-constraint-numberType-${id}" required>
+                            <option value="">Select number type...</option>
+                            <option value="INTEGER">Integer</option>
+                            <option value="FLOAT">Float</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-constraint-min-${id}">Min Value</label>
+                            <input type="number" id="edit-constraint-min-${id}" placeholder="Optional" step="any">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-constraint-max-${id}">Max Value</label>
+                            <input type="number" id="edit-constraint-max-${id}" placeholder="Optional" step="any">
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'PATTERN') {
+                specificFields.innerHTML = `
+                    <div class="form-group">
+                        <label for="edit-constraint-pattern-${id}">Regex Pattern *</label>
+                        <input type="text" id="edit-constraint-pattern-${id}" placeholder="e.g., \\\\d{4}-\\\\d{4}" required>
+                        <small class="text-muted">Java regex pattern (max 500 chars)</small>
+                    </div>
+                `;
+            } else {
+                specificFields.innerHTML = '';
+            }
+        }
+
+        function buildEditConstraintsArray() {
+            const constraints = [];
+            const container = document.getElementById('edit-constraints-container');
+            const constraintItems = container.querySelectorAll('.constraint-item');
+
+            constraintItems.forEach((item) => {
+                const id = item.id.split('-')[2];
+                const type = document.getElementById(`edit-constraint-type-${id}`)?.value;
+
+                if (!type) return;
+
+                const constraint = {
+                    type: type,
+                    name: document.getElementById(`edit-constraint-name-${id}`).value,
+                    description: document.getElementById(`edit-constraint-description-${id}`).value,
+                    isRequired: document.getElementById(`edit-constraint-required-${id}`).value === 'true',
+                    stage: document.getElementById(`edit-constraint-stage-${id}`).value
+                };
+
+                if (type === 'TEXT') {
+                    const minLength = document.getElementById(`edit-constraint-minLength-${id}`)?.value;
+                    const maxLength = document.getElementById(`edit-constraint-maxLength-${id}`)?.value;
+                    if (minLength) constraint.minLength = parseInt(minLength);
+                    if (maxLength) constraint.maxLength = parseInt(maxLength);
+                } else if (type === 'NUMERIC') {
+                    constraint.numberType = document.getElementById(`edit-constraint-numberType-${id}`).value;
+                    const min = document.getElementById(`edit-constraint-min-${id}`)?.value;
+                    const max = document.getElementById(`edit-constraint-max-${id}`)?.value;
+                    if (min) constraint.min = parseFloat(min);
+                    if (max) constraint.max = parseFloat(max);
+                } else if (type === 'PATTERN') {
+                    constraint.pattern = document.getElementById(`edit-constraint-pattern-${id}`).value;
+                }
+
+                constraints.push(constraint);
+            });
+
+            return constraints;
+        }
+
+        document.getElementById('edit-catalogue-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = {
+                id: document.getElementById('edit-id').value,
+                model: document.getElementById('edit-model').value,
+                level: document.getElementById('edit-level').value,
+                type: document.getElementById('edit-type').value,
+                description: document.getElementById('edit-description').value,
+                manufacturer: document.getElementById('edit-manufacturer').value,
+                constraints: buildEditConstraintsArray()
+            };
+
+            try {
+                const response = await fetch('/api/catalogue/item', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    document.getElementById('edit-form-error').classList.add('hidden');
+                    document.getElementById('edit-form-success').textContent = 'Catalogue item updated successfully!';
+                    document.getElementById('edit-form-success').classList.remove('hidden');
+                    setTimeout(() => window.location.reload(), 1500);
+                } else {
+                    const error = await response.text();
+                    document.getElementById('edit-form-error').textContent = 'Error updating catalogue item: ' + error;
+                    document.getElementById('edit-form-error').classList.remove('hidden');
+                }
+            } catch (error) {
+                document.getElementById('edit-form-error').textContent = 'Error updating catalogue item: ' + error.message;
+                document.getElementById('edit-form-error').classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -11,12 +11,20 @@ import com.lumina.catalogue.model.CatalogueItem;
 import com.lumina.catalogue.model.Level;
 import com.lumina.catalogue.model.MeterType;
 import com.lumina.catalogue.model.ValidationStage;
+import com.lumina.client.ClientService;
+import com.lumina.client.model.Client;
+import com.lumina.location.LocationService;
+import com.lumina.location.model.Location;
+import com.lumina.meter.dto.MeterViewDto;
 import com.lumina.meter.model.Meter;
 import com.lumina.meter.validation.MeterValidator;
+import com.lumina.project.ProjectService;
+import com.lumina.project.model.Project;
 import com.lumina.validation.Errors;
 import com.lumina.validation.LuminaValidationException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,6 +41,12 @@ public class MeterServiceTest {
   @Mock private ItemRepository catalogueItemRepository;
 
   @Mock private MeterValidator meterValidator;
+
+  @Mock private LocationService locationService;
+
+  @Mock private ProjectService projectService;
+
+  @Mock private ClientService clientService;
 
   @InjectMocks private MeterService meterService;
 
@@ -173,5 +187,55 @@ public class MeterServiceTest {
     assertThat(result).hasSize(2);
     assertThat(result).containsExactly(testMeter, meter2);
     verify(meterRepository).findByLocationId("location-1");
+  }
+
+  @Test
+  @DisplayName("findAllForView() should return empty list when no meters exist")
+  void testFindAllForViewEmpty() {
+    when(meterRepository.findAll()).thenReturn(List.of());
+
+    List<MeterViewDto> result = meterService.findAllForView();
+
+    assertThat(result).isEmpty();
+    verify(meterRepository).findAll();
+    verifyNoInteractions(locationService, projectService, clientService);
+  }
+
+  @Test
+  @DisplayName("findAllForView() should batch fetch related entities and return enriched DTOs")
+  void testFindAllForViewBatchFetch() {
+    // Setup test data
+    Meter meter1 =
+        new Meter("meter-1", "location-1", "MODEL-001", List.of(), ValidationStage.Connection);
+    Meter meter2 =
+        new Meter("meter-2", "location-2", "MODEL-002", List.of(), ValidationStage.Staging);
+
+    Location location1 = new Location("location-1", "Location One", "project-1", null);
+    Location location2 = new Location("location-2", "Location Two", "project-1", null);
+
+    Project project1 = new Project("project-1", "client-1", "Project One", null, null);
+
+    Client client1 = new Client("client-1", "Client One", List.of(), null, null, null, null);
+
+    // Mock repository and service calls
+    when(meterRepository.findAll()).thenReturn(List.of(meter1, meter2));
+    when(locationService.findAllById(Set.of("location-1", "location-2")))
+        .thenReturn(List.of(location1, location2));
+    when(projectService.findAllById(Set.of("project-1"))).thenReturn(List.of(project1));
+    when(clientService.findAllById(Set.of("client-1"))).thenReturn(List.of(client1));
+
+    // Execute
+    List<MeterViewDto> result = meterService.findAllForView();
+
+    // Verify
+    assertThat(result).hasSize(2);
+    assertThat(result.get(0).locationBreadcrumb()).isEqualTo("Client One / Project One / Location One");
+    assertThat(result.get(1).locationBreadcrumb()).isEqualTo("Client One / Project One / Location Two");
+
+    // Verify batch fetching was used (only 1 call per service)
+    verify(meterRepository).findAll();
+    verify(locationService).findAllById(any());
+    verify(projectService).findAllById(any());
+    verify(clientService).findAllById(any());
   }
 }

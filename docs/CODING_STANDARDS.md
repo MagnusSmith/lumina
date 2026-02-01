@@ -236,6 +236,73 @@ public enum ErrorCode {
 
 ## Spring Boot Patterns
 
+### Controller Architecture
+
+The application follows a strict separation between REST API controllers and MVC view controllers:
+
+#### Architecture Principles
+
+1. **REST Controllers** (`@RestController`) handle all JSON API endpoints under `/api/*`
+2. **MVC Controller** (`@Controller`) handles only HTML view rendering via Thymeleaf
+3. **No duplicate endpoints** - HTMX/JavaScript calls REST APIs directly, not custom web endpoints
+
+#### Controller Responsibilities
+
+| Controller Type | Responsibility | Base Path | Response Type |
+|-----------------|---------------|-----------|---------------|
+| REST Controllers | JSON API endpoints | `/api/*` | JSON (DTOs) |
+| WebController | HTML page rendering | `/`, `/clients`, etc. | HTML (Thymeleaf) |
+
+#### Why This Matters
+
+**DON'T** create duplicate JSON endpoints in WebController:
+```java
+// BAD: Duplicates ClientController functionality
+@Controller
+public class WebController {
+    @GetMapping("/web/api/clients")
+    @ResponseBody
+    public List<Map<String, String>> getClients() {  // Avoid this!
+        return clientService.findAll().stream()
+            .map(c -> Map.of("id", c.id(), "name", c.name()))
+            .toList();
+    }
+}
+```
+
+**DO** use existing REST endpoints from JavaScript/HTMX:
+```javascript
+// GOOD: Calls the canonical REST API
+async function loadClients() {
+    const response = await fetch('/api/client');
+    const clients = await response.json();
+    // ...
+}
+```
+
+**DO** add missing endpoints to REST controllers when needed:
+```java
+// GOOD: Add to the domain's REST controller
+@RestController
+@RequestMapping("/api/")
+public class ProjectController {
+    @GetMapping("project/client/{clientId}")
+    public List<ProjectDto> getByClientId(@PathVariable String clientId) {
+        return projectService.findByClientId(clientId).stream()
+            .map(ProjectDto::from)
+            .toList();
+    }
+}
+```
+
+#### Benefits
+
+- **Single source of truth** for each API operation
+- **Consistent response format** via DTOs
+- **Reduced maintenance burden** - changes in one place
+- **Better API documentation** - OpenAPI annotations in REST controllers
+- **Easier testing** - test each endpoint once
+
 ### REST Controller Pattern
 
 ```java

@@ -93,12 +93,12 @@ public class CataloguePresetServiceTest {
   @Test
   @DisplayName("findByTypeAndLevel() should return empty when preset doesn't exist")
   void testFindByTypeAndLevelNotFound() {
-    when(itemRepository.findByTypeAndLevel(MeterType.MOBIUS, Level.GATEWAY))
+    when(itemRepository.findByTypeAndLevel(MeterType.MODBUS, Level.GATEWAY))
         .thenReturn(Optional.empty());
 
-    Optional<Preset> result = presetService.findByTypeAndLevel(MeterType.MOBIUS, Level.GATEWAY);
+    Optional<Preset> result = presetService.findByTypeAndLevel(MeterType.MODBUS, Level.GATEWAY);
 
     assertThat(result).isEmpty();
-    verify(itemRepository).findByTypeAndLevel(MeterType.MOBIUS, Level.GATEWAY);
+    verify(itemRepository).findByTypeAndLevel(MeterType.MODBUS, Level.GATEWAY);
   }
 }

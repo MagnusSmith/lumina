@@ -3,6 +3,7 @@ package com.lumina.location;
 import com.lumina.NotFoundException;
 import com.lumina.location.model.Location;
 import com.lumina.meter.MeterRepository;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,10 @@ public class LocationService {
 
   public Optional<Location> findById(String id) {
     return repository.findById(id);
+  }
+
+  public List<Location> findAllById(Collection<String> ids) {
+    return repository.findAllById(ids);
   }
 
   public List<Location> findByProjectId(String projectId) {

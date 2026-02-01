@@ -3,6 +3,7 @@ package com.lumina.catalogue;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -16,21 +17,25 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 
 @ExtendWith(MockitoExtension.class)
 public class CatalogueItemServiceTest {
 
   @Mock private ItemRepository itemRepository;
 
-  @InjectMocks private CatalogueItemService catalogueItemService;
+  @Mock private MongoTemplate mongoTemplate;
+
+  private CatalogueItemService catalogueItemService;
 
   private CatalogueItem testItem;
 
   @BeforeEach
   void setup() {
+    catalogueItemService = new CatalogueItemService(itemRepository, mongoTemplate);
     testItem =
         new CatalogueItem(
             "item-1",
@@ -59,22 +64,19 @@ public class CatalogueItemServiceTest {
   @Test
   @DisplayName("update() should update and return existing catalogue item")
   void testUpdate() {
-    when(itemRepository.existsById("item-1")).thenReturn(true);
-    when(itemRepository.save(any(CatalogueItem.class))).thenReturn(testItem);
+    // findAndReplace returns the OLD document when found
+    when(mongoTemplate.findAndReplace(any(Query.class), eq(testItem))).thenReturn(testItem);
 
     CatalogueItem result = catalogueItemService.update(testItem);
 
     assertThat(result).isNotNull();
     assertThat(result.id()).isEqualTo("item-1");
-    verify(itemRepository).existsById("item-1");
-    verify(itemRepository).save(testItem);
+    verify(mongoTemplate).findAndReplace(any(Query.class), eq(testItem));
   }
 
   @Test
   @DisplayName("update() should throw NotFoundException when item doesn't exist")
   void testUpdateNotFound() {
-    when(itemRepository.existsById("non-existent")).thenReturn(false);
-
     CatalogueItem nonExistentItem =
         new CatalogueItem(
             "non-existent",
@@ -86,11 +88,14 @@ public class CatalogueItemServiceTest {
             List.of(),
             List.of());
 
+    // findAndReplace returns null when document not found
+    when(mongoTemplate.findAndReplace(any(Query.class), eq(nonExistentItem))).thenReturn(null);
+
     assertThatThrownBy(() -> catalogueItemService.update(nonExistentItem))
         .isInstanceOf(NotFoundException.class)
         .hasMessageContaining("The catalogue item with id non-existent could not be found!");
 
-    verify(itemRepository).existsById("non-existent");
+    verify(mongoTemplate).findAndReplace(any(Query.class), eq(nonExistentItem));
   }
 
   @Test
@@ -109,7 +114,7 @@ public class CatalogueItemServiceTest {
             "item-2",
             "MODEL-002",
             Level.GATEWAY,
-            MeterType.MOBIUS,
+            MeterType.MODBUS,
             "Test Item 2",
             "Manufacturer B",
             List.of(),

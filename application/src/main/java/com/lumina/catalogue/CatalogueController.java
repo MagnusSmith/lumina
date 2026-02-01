@@ -2,6 +2,7 @@ package com.lumina.catalogue;
 
 import com.lumina.NotFoundException;
 import com.lumina.catalogue.dto.CatalogueItemDto;
+import com.lumina.catalogue.dto.ModelSummaryDto;
 import com.lumina.catalogue.dto.NewCatalogueItemDto;
 import com.lumina.catalogue.dto.PresetDto;
 import com.lumina.catalogue.dto.UpdateCatalogueItemDto;
@@ -9,6 +10,9 @@ import com.lumina.catalogue.model.CatalogueItem;
 import com.lumina.catalogue.model.CatalogueItemBuilder;
 import com.lumina.catalogue.model.Level;
 import com.lumina.catalogue.model.MeterType;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequestMapping("/api/catalogue/")
+@Tag(name = "Catalogue", description = "Catalogue management APIs")
 public class CatalogueController {
 
   private final CatalogueItemService itemService;
@@ -81,8 +86,17 @@ public class CatalogueController {
   }
 
   @GetMapping("items")
+  @Operation(summary = "Get all catalogue items")
+  @ApiResponse(responseCode = "200", description = "Catalogue items retrieved successfully")
   public List<CatalogueItemDto> getItems() {
     return itemService.findAll().stream().map(CatalogueItemDto::from).toList();
+  }
+
+  @GetMapping("models")
+  @Operation(summary = "Get simplified model list for dropdown selection")
+  @ApiResponse(responseCode = "200", description = "Models retrieved successfully")
+  public List<ModelSummaryDto> getModels() {
+    return itemService.findAll().stream().map(ModelSummaryDto::from).toList();
   }
 
   @GetMapping("item/{model}")

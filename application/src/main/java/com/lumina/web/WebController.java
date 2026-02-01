@@ -5,14 +5,21 @@ import com.lumina.client.ClientService;
 import com.lumina.location.LocationService;
 import com.lumina.meter.MeterService;
 import com.lumina.project.ProjectService;
-import java.util.List;
-import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
 
+/**
+ * MVC Controller for rendering HTML views via Thymeleaf.
+ *
+ * <p>This controller is responsible only for server-side rendering of HTML pages. All JSON API
+ * endpoints are handled by dedicated REST controllers in their respective domain packages (e.g.,
+ * ClientController, ProjectController, LocationController, CatalogueController).
+ *
+ * <p>HTMX and JavaScript in templates should call the REST API endpoints directly (e.g.,
+ * /api/client, /api/project/client/{clientId}) rather than having duplicate endpoints here.
+ */
 @Controller
 public class WebController {
 
@@ -64,7 +71,7 @@ public class WebController {
   public String meters(Model model) {
     model.addAttribute("title", "Meters - Lumina Meter Config");
     model.addAttribute("page", "meters");
-    model.addAttribute("meters", meterService.findAll());
+    model.addAttribute("meters", meterService.findAllForView());
     return "meters";
   }
 
@@ -110,30 +117,5 @@ public class WebController {
     model.addAttribute("project", project);
     model.addAttribute("locations", locations);
     return "locations";
-  }
-
-  // JSON API endpoints for cascading dropdowns
-  @GetMapping("/web/api/clients")
-  @ResponseBody
-  public List<Map<String, String>> getClients() {
-    return clientService.findAll().stream()
-        .map(client -> Map.of("id", client.id(), "name", client.name()))
-        .toList();
-  }
-
-  @GetMapping("/web/api/projects/{clientId}")
-  @ResponseBody
-  public List<Map<String, String>> getProjectsByClient(@PathVariable String clientId) {
-    return projectService.findByClientId(clientId).stream()
-        .map(project -> Map.of("id", project.id(), "name", project.name()))
-        .toList();
-  }
-
-  @GetMapping("/web/api/locations/{projectId}")
-  @ResponseBody
-  public List<Map<String, String>> getLocationsByProject(@PathVariable String projectId) {
-    return locationService.findByProjectId(projectId).stream()
-        .map(location -> Map.of("id", location.id(), "name", location.name()))
-        .toList();
   }
 }

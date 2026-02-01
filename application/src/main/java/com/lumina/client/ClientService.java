@@ -2,6 +2,7 @@ package com.lumina.client;
 
 import com.lumina.NotFoundException;
 import com.lumina.client.model.Client;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -38,6 +39,10 @@ public class ClientService {
 
   public Optional<Client> findById(String id) {
     return repository.findById(id);
+  }
+
+  public List<Client> findAllById(Collection<String> ids) {
+    return repository.findAllById(ids);
   }
 
   public List<Client> findAll() {

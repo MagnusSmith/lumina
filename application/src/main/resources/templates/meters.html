@@ -45,10 +45,11 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="model">Model *</label>
-                        <input type="text" id="model" name="model" required
-                               placeholder="e.g., GATEWAY-LORAWAN-V1">
-                        <small class="form-hint">Enter the catalogue item model</small>
+                        <label for="modelSelect">Model *</label>
+                        <select id="modelSelect" name="model" required>
+                            <option value="">Select a model...</option>
+                        </select>
+                        <small class="form-hint">Select the catalogue item model</small>
                     </div>
                 </div>
 
@@ -120,7 +121,7 @@
                 </div>
                 <div class="meter-body">
                     <p><strong>ID:</strong> <code th:text="${meter.id}">ID</code></p>
-                    <p><strong>Location:</strong> <code th:text="${meter.locationId}">Location ID</code></p>
+                    <p><strong>Location:</strong> <span th:text="${meter.locationBreadcrumb()}">Client / Project / Location</span></p>
                     <p><strong>Model:</strong> <span th:text="${meter.model}">Model</span></p>
                     <p><strong>Stage:</strong> <span class="badge" th:text="${meter.stage}">Stage</span></p>
                     <p><strong>Configuration Lines:</strong> <span th:text="${meter.lines != null ? meter.lines.size() : 0}">0</span></p>
@@ -196,7 +197,7 @@
 
         async function loadClients() {
             try {
-                const response = await fetch('/web/api/clients');
+                const response = await fetch('/api/client');
                 const clients = await response.json();
 
                 const clientSelect = document.getElementById('clientSelect');
@@ -215,7 +216,7 @@
 
         async function loadProjects(clientId) {
             try {
-                const response = await fetch(`/web/api/projects/${clientId}`);
+                const response = await fetch(`/api/project/client/${clientId}`);
                 const projects = await response.json();
 
                 const projectSelect = document.getElementById('projectSelect');
@@ -240,7 +241,7 @@
 
         async function loadLocations(projectId) {
             try {
-                const response = await fetch(`/web/api/locations/${projectId}`);
+                const response = await fetch(`/api/location/project/${projectId}`);
                 const locations = await response.json();
 
                 const locationSelect = document.getElementById('locationSelect');
@@ -255,6 +256,25 @@
                 });
             } catch (error) {
                 console.error('Error loading locations:', error);
+            }
+        }
+
+        async function loadModels() {
+            try {
+                const response = await fetch('/api/catalogue/models');
+                const models = await response.json();
+
+                const modelSelect = document.getElementById('modelSelect');
+                modelSelect.innerHTML = '<option value="">Select a model...</option>';
+
+                models.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.model;
+                    option.textContent = item.model + ' - ' + item.description;
+                    modelSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading models:', error);
             }
         }
 
@@ -285,6 +305,7 @@
             document.getElementById('create-form').classList.remove('hidden');
             document.getElementById('form-error').classList.add('hidden');
             loadClients();
+            loadModels();
         }
 
         function closeCreateForm() {
@@ -297,14 +318,12 @@
             document.getElementById('constraints-container').innerHTML = '';
         }
 
-        // Load constraints when model is entered
-        let modelLoadTimeout;
-        document.getElementById('model').addEventListener('input', function() {
-            const model = this.value.trim();
-            clearTimeout(modelLoadTimeout);
+        // Load constraints when model is selected
+        document.getElementById('modelSelect').addEventListener('change', function() {
+            const model = this.value;
 
             if (model) {
-                modelLoadTimeout = setTimeout(() => loadConstraints(model), 500);
+                loadConstraints(model);
             } else {
                 document.getElementById('constraints-section').classList.add('hidden');
                 document.getElementById('constraints-container').innerHTML = '';
@@ -898,7 +917,7 @@
 
             const formData = {
                 locationId: document.getElementById('locationSelect').value,
-                model: document.getElementById('model').value,
+                model: document.getElementById('modelSelect').value,
                 lines: buildLinesFromConstraints()
             };
 

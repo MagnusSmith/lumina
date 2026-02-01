@@ -46,26 +46,33 @@
         </div>
 
         <!-- Locations List -->
-        <div id="locations-list" class="location-grid">
-            <div th:each="location : ${locations}" class="location-card">
-                <div class="location-header">
-                    <h3 th:text="${location.name}">Location Name</h3>
+        <div id="locations-list" class="location-list">
+            <div th:each="location : ${locations}" class="location-item">
+                <div class="location-card" th:attr="data-location-id=${location.id}" onclick="toggleLocationMeters(this)">
+                    <div class="location-header">
+                        <h3 th:text="${location.name}">Location Name</h3>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="location-body">
+                        <p><strong>ID:</strong> <code th:text="${location.id}">ID</code></p>
+                        <p><strong>Meters:</strong> <span th:text="${location.meters != null ? location.meters.size() : 0}">0</span></p>
+                    </div>
+                    <div class="location-actions" th:if="${location.meters == null || location.meters.isEmpty()}">
+                        <button class="btn btn-sm btn-secondary"
+                                th:attr="data-location-id=${location.id}"
+                                onclick="event.stopPropagation(); deleteLocation(this)">
+                            Delete
+                        </button>
+                    </div>
+                    <div class="location-actions" th:if="${location.meters != null && !location.meters.isEmpty()}">
+                        <span class="text-muted" style="font-size: 0.875rem;">
+                            Cannot delete: Location has meters
+                        </span>
+                    </div>
                 </div>
-                <div class="location-body">
-                    <p><strong>ID:</strong> <code th:text="${location.id}">ID</code></p>
-                    <p><strong>Meters:</strong> <span th:text="${location.meters != null ? location.meters.size() : 0}">0</span></p>
-                </div>
-                <div class="location-actions" th:if="${location.meters == null || location.meters.isEmpty()}">
-                    <button class="btn btn-sm btn-secondary"
-                            th:attr="data-location-id=${location.id}"
-                            onclick="deleteLocation(this)">
-                        Delete
-                    </button>
-                </div>
-                <div class="location-actions" th:if="${location.meters != null && !location.meters.isEmpty()}">
-                    <span class="text-muted" style="font-size: 0.875rem;">
-                        Cannot delete: Location has meters
-                    </span>
+                <div class="location-meters hidden" th:attr="data-location-id=${location.id}">
+                    <div class="meters-loading hidden">Loading meters...</div>
+                    <div class="meters-grid"></div>
                 </div>
             </div>
 
@@ -78,6 +85,85 @@
     <footer th:replace="~{layout :: footer}"></footer>
 
     <script>
+        const loadedLocations = new Set();
+
+        async function toggleLocationMeters(card) {
+            const locationId = card.getAttribute('data-location-id');
+            const metersSection = document.querySelector(`.location-meters[data-location-id="${locationId}"]`);
+            const expandIcon = card.querySelector('.expand-icon');
+
+            if (metersSection.classList.contains('hidden')) {
+                metersSection.classList.remove('hidden');
+                expandIcon.textContent = '▲';
+                card.classList.add('expanded');
+
+                if (!loadedLocations.has(locationId)) {
+                    await loadMetersForLocation(locationId);
+                    loadedLocations.add(locationId);
+                }
+            } else {
+                metersSection.classList.add('hidden');
+                expandIcon.textContent = '▼';
+                card.classList.remove('expanded');
+            }
+        }
+
+        async function loadMetersForLocation(locationId) {
+            const metersSection = document.querySelector(`.location-meters[data-location-id="${locationId}"]`);
+            const loadingDiv = metersSection.querySelector('.meters-loading');
+            const metersGrid = metersSection.querySelector('.meters-grid');
+
+            loadingDiv.classList.remove('hidden');
+            metersGrid.innerHTML = '';
+
+            try {
+                const response = await fetch(`/api/meter/location/${locationId}`);
+                const meters = await response.json();
+
+                loadingDiv.classList.add('hidden');
+
+                if (meters.length === 0) {
+                    metersGrid.innerHTML = '<p class="text-muted">No meters at this location.</p>';
+                    return;
+                }
+
+                meters.forEach(meter => {
+                    const meterCard = document.createElement('div');
+                    meterCard.className = 'meter-card';
+                    meterCard.innerHTML = `
+                        <div class="meter-header">
+                            <h4>Meter</h4>
+                            <span class="badge">${meter.model}</span>
+                        </div>
+                        <div class="meter-body">
+                            <p><strong>ID:</strong> <code>${meter.id}</code></p>
+                            <p><strong>Model:</strong> ${meter.model}</p>
+                            <p><strong>Type:</strong> ${meter.type}</p>
+                            <p><strong>Stage:</strong> <span class="badge">${meter.stage}</span></p>
+                            <p><strong>Configuration Lines:</strong> ${meter.lines ? meter.lines.length : 0}</p>
+                            ${meter.lines && meter.lines.length > 0 ? `
+                                <details class="config-preview">
+                                    <summary>View Configuration</summary>
+                                    <table class="config-table">
+                                        <thead>
+                                            <tr><th>Name</th><th>Value</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            ${meter.lines.map(line => `<tr><td>${line.name}</td><td>${line.value}</td></tr>`).join('')}
+                                        </tbody>
+                                    </table>
+                                </details>
+                            ` : ''}
+                        </div>
+                    `;
+                    metersGrid.appendChild(meterCard);
+                });
+            } catch (error) {
+                loadingDiv.classList.add('hidden');
+                metersGrid.innerHTML = `<p class="text-error">Error loading meters: ${error.message}</p>`;
+            }
+        }
+
         async function deleteLocation(button) {
             const locationId = button.getAttribute('data-location-id');
 
